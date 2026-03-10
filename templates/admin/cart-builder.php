@@ -63,8 +63,7 @@ $sidebar_sections = array(
         'title' => 'General',
         'tabs' => array(
             array('title' => 'Placement', 'handle' => 'placement', 'icon' => 'dashicons-layout'),
-            array('title' => 'Design', 'handle' => 'design', 'icon' => 'dashicons-art'),
-            array('title' => 'Header', 'handle' => 'header', 'icon' => 'dashicons-heading')
+            array('title' => 'Design', 'handle' => 'design', 'icon' => 'dashicons-art')
         )
     ),
     array(
@@ -133,7 +132,6 @@ $sidebar_sections = array(
 
             <?php include BEE_CART_PATH . 'templates/admin/tabs/placement.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/design.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/header.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/announcements.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/rewards.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/triggered_rewards.php'; ?>
