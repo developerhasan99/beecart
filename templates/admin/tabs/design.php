@@ -216,7 +216,17 @@
                         </div>
                         <p x-show="!isValid" class="text-xs text-red-500 mt-1" style="display: none;">Invalid hex value</p>
                     </div>
-                    <div class="col-span-2 space-y-2" x-data="colorPicker('<?php echo esc_js($settings['btn_hover_text_color'] ?? '#e9e9e9'); ?>')">
+                    <div class="space-y-2" x-data="colorPicker('<?php echo esc_js($settings['btn_hover_color'] ?? '#333333'); ?>')">
+                        <label class="text-sm font-medium">Button background hover color</label>
+                        <div class="flex items-center gap-2">
+                            <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
+                                <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
+                            </label>
+                            <input type="text" name="btn_hover_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                        </div>
+                        <p x-show="!isValid" class="text-xs text-red-500 mt-1" style="display: none;">Invalid hex value</p>
+                    </div>
+                    <div class="space-y-2" x-data="colorPicker('<?php echo esc_js($settings['btn_hover_text_color'] ?? '#e9e9e9'); ?>')">
                         <label class="text-sm font-medium">Button text hover color</label>
                         <div class="flex items-center gap-2">
                             <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">

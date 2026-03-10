@@ -131,7 +131,14 @@
             <span class="text-lg font-bold" style="color: <?php echo esc_attr($settings['btn_color'] ?? '#000000'); ?>;">$120.00</span>
         </div>
 
-        <button class="w-full h-12 text-base font-semibold text-white border-0 flex items-center justify-center gap-2 shadow-md hover:opacity-95 transition-all cursor-pointer"
+        <style>
+            .preview-checkout-btn:hover {
+                background-color: <?php echo esc_attr($settings['btn_hover_color'] ?? '#333333'); ?> !important;
+                color: <?php echo esc_attr($settings['btn_hover_text_color'] ?? '#e9e9e9'); ?> !important;
+                opacity: 1 !important;
+            }
+        </style>
+        <button class="preview-checkout-btn w-full h-12 text-base font-semibold text-white border-0 flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
             style="background-color: <?php echo esc_attr($settings['btn_color'] ?? '#000000'); ?>; 
                        color: <?php echo esc_attr($settings['btn_text_color'] ?? '#FFFFFF'); ?>;
                        border-radius: <?php echo esc_attr($settings['btn_radius'] ?? '0px'); ?>;">

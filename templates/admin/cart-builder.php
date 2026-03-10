@@ -19,6 +19,7 @@ $settings = get_option('bee_cart_settings', array(
     'btn_radius' => '0px',
     'btn_color' => '#000000',
     'btn_text_color' => '#FFFFFF',
+    'btn_hover_color' => '#333333',
     'btn_hover_text_color' => '#e9e9e9',
     // Cart Icon Settings
     'cart_icon_type' => 'bag-1',

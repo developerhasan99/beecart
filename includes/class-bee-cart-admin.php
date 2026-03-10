@@ -73,7 +73,7 @@ class Bee_Cart_Admin
 
         $settings = isset($_POST['settings']) ? json_decode(stripslashes($_POST['settings']), true) : array();
 
-        update_option('bee_cart_settings', $settings);
+        // update_option('bee_cart_settings', $settings);
         wp_send_json_success('Settings saved successfully!');
     }
 }

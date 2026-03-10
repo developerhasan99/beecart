@@ -60,7 +60,13 @@ $p_color = !empty($settings['primary_color']) ? $settings['primary_color'] : '#0
 
     .bee-cart-btn-primary {
         background-color: var(--bee-cart-primary);
-        color: #fff;
+        color: <?php echo esc_attr($settings['btn_text_color'] ?? '#fff'); ?>;
+        border-radius: <?php echo esc_attr($settings['btn_radius'] ?? '4px'); ?>;
+    }
+
+    .bee-cart-btn-primary:hover {
+        background-color: <?php echo esc_attr($settings['btn_hover_color'] ?? '#333333'); ?> !important;
+        color: <?php echo esc_attr($settings['btn_hover_text_color'] ?? '#e9e9e9'); ?> !important;
     }
 </style>
 
