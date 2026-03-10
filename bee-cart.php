@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: Bee Cart
- * Description: A premium side cart plugin with cart progress, upsells, coupons, payment badges, and advanced cookie-based analytics for abandonment tracking.
+ * Description: A premium side cart plugin with cart progress, upsells, coupons, and payment badges.
  * Version: 1.0.0
  * Author: Your Name
  * Text Domain: bee-cart
@@ -24,15 +24,11 @@ function run_bee_cart()
 {
     if (class_exists('WooCommerce')) {
         require_once BEE_CART_PATH . 'includes/class-bee-cart.php';
-        require_once BEE_CART_PATH . 'includes/class-bee-cart-analytics.php';
         require_once BEE_CART_PATH . 'includes/class-bee-cart-admin.php';
         require_once BEE_CART_PATH . 'includes/class-bee-cart-customizer.php';
 
         $plugin = new Bee_Cart();
         $plugin->init();
-
-        $analytics = new Bee_Cart_Analytics();
-        $analytics->init();
 
         $admin = new Bee_Cart_Admin();
         $admin->init();

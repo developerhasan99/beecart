@@ -35,15 +35,6 @@ class Bee_Cart_Admin
             'bee-cart',
             array($this, 'render_cart_builder')
         );
-
-        add_submenu_page(
-            'bee-cart',
-            'Analytics',
-            'Analytics',
-            'manage_options',
-            'bee-cart-analytics',
-            array($this, 'render_analytics')
-        );
     }
 
     public function enqueue_admin_assets($hook)
@@ -70,11 +61,6 @@ class Bee_Cart_Admin
     public function render_cart_builder()
     {
         include BEE_CART_PATH . 'templates/admin/cart-builder.php';
-    }
-
-    public function render_analytics()
-    {
-        include BEE_CART_PATH . 'templates/admin/analytics.php';
     }
 
     public function ajax_save_settings()
