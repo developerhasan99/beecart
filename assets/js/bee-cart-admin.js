@@ -1,14 +1,103 @@
 document.addEventListener("alpine:init", () => {
   Alpine.store("admin", {
     activeTab: "placement",
+    settings: {
+      progress_type: "subtotal",
+      goals: [
+        { threshold: 50, label: "Free Shipping", icon: "truck" },
+        { threshold: 100, label: "20% Discount", icon: "tag" },
+      ],
+      primary_color: "#000000",
+      enable_coupon: true,
+      enable_badges: true,
+      show_rewards_on_empty: true,
+      rewards_bar_bg: "#E2E2E2",
+      rewards_bar_fg: "#93D3FF",
+      rewards_complete_icon_color: "#4D4949",
+      rewards_incomplete_icon_color: "#4D4949",
+      rewards_completed_text:
+        "🎉 Congratulations! You have unlocked all rewards.",
+      inherit_fonts: true,
+      show_strikethrough: true,
+      enable_subtotal_line: true,
+      bg_color: "#FFFFFF",
+      accent_color: "#f6f6f7",
+      text_color: "#000000",
+      savings_text_color: "#2ea818",
+      btn_radius: "0px",
+      btn_color: "#000000",
+      btn_text_color: "#FFFFFF",
+      btn_hover_color: "#333333",
+      btn_hover_text_color: "#e9e9e9",
+      cart_icon_type: "bag-1",
+      cart_icon_color: "#000000",
+      cart_icon_size: "24",
+      cart_bubble_bg: "#ff0000",
+      cart_bubble_text: "#ffffff",
+      show_cart_count: true,
+      cart_title: "Your Cart",
+      show_close_icon: true,
+      show_announcement: false,
+      announcement_text: "Your products are reserved for {timer}!",
+      announcement_bg: "#000000",
+      announcement_text_color: "#ffffff",
+      announcement_font_size: "13px",
+      enable_timer: false,
+      timer_duration: "0",
+      show_item_images: true,
+      show_item_total: true,
+      show_upsells: true,
+      upsell_title: "Complete your look",
+      upsell_max: 3,
+      show_trust_badges: true,
+      trust_badges_title: "Secure Checkout",
+      selected_badges: ["visa", "mastercard", "paypal", "apple-pay"],
+      ...(Array.isArray(beeCartAdminData.settings)
+        ? {}
+        : beeCartAdminData.settings),
+    },
+    isSaving: false,
 
     setTab(tab) {
       this.activeTab = tab;
     },
+
+    async saveSettings() {
+      if (this.isSaving) return;
+      this.isSaving = true;
+
+      try {
+        const response = await jQuery.ajax({
+          url: beeCartAdminData.ajax_url,
+          type: "POST",
+          data: {
+            action: "beecart_save_settings",
+            security: beeCartAdminData.nonce,
+            settings: JSON.stringify(this.settings),
+          },
+        });
+
+        if (response.success) {
+          alert(response.data);
+          window.location.reload();
+        } else {
+          alert("Error: " + response.data);
+        }
+      } catch (error) {
+        alert("An error occurred while saving.");
+      } finally {
+        this.isSaving = false;
+      }
+    },
   });
 
-  Alpine.data("colorPicker", (initialValue) => ({
-    color: initialValue,
+  Alpine.data("colorPicker", (settingKey) => ({
+    get color() {
+      return Alpine.store("admin").settings[settingKey];
+    },
+    set color(val) {
+      Alpine.store("admin").settings[settingKey] = val;
+    },
     isValid: true,
 
     updatePicker(e) {
@@ -26,74 +115,8 @@ document.addEventListener("alpine:init", () => {
       this.isValid = regex.test(val);
     },
   }));
+});
 
-  // Handle Save Settings
-  jQuery(document).on("click", "#bee-save-settings", function (e) {
-    const $btn = jQuery(this);
-    const originalText = $btn.text();
-    $btn.text("Saving...").prop("disabled", true);
-
-    const settings = {};
-
-    // Helper to set nested value
-    const setNestedValue = (obj, path, value) => {
-      const keys = path.split(/[\[\]]+/).filter((k) => k);
-      let current = obj;
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        if (i === keys.length - 1) {
-          current[key] = value;
-        } else {
-          current[key] = current[key] || (isNaN(keys[i + 1]) ? {} : []);
-          current = current[key];
-        }
-      }
-    };
-
-    // Collect all inputs, selects, and textareas
-    jQuery(
-      '.tab-pane input, .tab-pane select, .tab-pane textarea, input[name^="goals"]',
-    ).each(function () {
-      const $el = jQuery(this);
-      const name = $el.attr("name");
-
-      if (!name) return;
-
-      let value;
-      if ($el.is(":checkbox")) {
-        value = $el.is(":checked");
-      } else if ($el.is(":radio")) {
-        if (!$el.is(":checked")) return;
-        value = $el.val();
-      } else {
-        value = $el.val();
-      }
-
-      setNestedValue(settings, name, value);
-    });
-
-    jQuery.ajax({
-      url: beeCartAdminData.ajax_url,
-      type: "POST",
-      data: {
-        action: "beecart_save_settings",
-        security: beeCartAdminData.nonce,
-        settings: JSON.stringify(settings),
-      },
-      success: function (response) {
-        if (response.success) {
-          alert(response.data);
-          window.location.reload(); // Reload to reflect changes in preview
-        } else {
-          alert("Error: " + response.data);
-        }
-      },
-      error: function () {
-        alert("An error occurred while saving.");
-      },
-      complete: function () {
-        $btn.text(originalText).prop("disabled", false);
-      },
-    });
-  });
+jQuery(document).on("click", "#bee-save-settings", function (e) {
+  Alpine.store("admin").saveSettings();
 });

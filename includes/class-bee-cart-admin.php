@@ -51,10 +51,42 @@ class Bee_Cart_Admin
         wp_enqueue_style('bee-cart-style', BEE_CART_URL . 'assets/css/bee-cart.css', array(), BEE_CART_VERSION);
 
         $settings = get_option('bee_cart_settings', array());
+        $menus = wp_get_nav_menus();
+        $formatted_menus = array();
+        foreach ($menus as $menu) {
+            $formatted_menus[] = array(
+                'slug' => $menu->slug,
+                'name' => $menu->name
+            );
+        }
+
+        $icons = array(
+            'truck' => 'Truck',
+            'tag' => 'Tag',
+            'gift' => 'Gift',
+            'star' => 'Star',
+            'credit-card' => 'Card',
+            'check' => 'Check',
+            'shopping-bag' => 'Bag'
+        );
+
         wp_localize_script('bee-cart-admin-script', 'beeCartAdminData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('beecart-admin-nonce'),
-            'settings' => $settings
+            'settings' => $settings,
+            'menus'    => $formatted_menus,
+            'icons'    => $icons,
+            'badges'   => array(
+                'visa' => 'Visa',
+                'mastercard' => 'Mastercard',
+                'amex' => 'Amex',
+                'paypal' => 'PayPal',
+                'apple-pay' => 'Apple Pay',
+                'google-pay' => 'Google Pay',
+                'stripe' => 'Stripe',
+                'shopify' => 'Shopify Pay',
+                'secure-lock' => 'SSL Secure'
+            )
         ));
     }
 
@@ -73,7 +105,7 @@ class Bee_Cart_Admin
 
         $settings = isset($_POST['settings']) ? json_decode(stripslashes($_POST['settings']), true) : array();
 
-        // update_option('bee_cart_settings', $settings);
+        update_option('bee_cart_settings', $settings);
         wp_send_json_success('Settings saved successfully!');
     }
 }
