@@ -7,7 +7,44 @@ $settings = get_option('bee_cart_settings', array(
     ),
     'primary_color' => '#000000',
     'enable_coupon' => true,
-    'enable_badges' => true
+    'enable_badges' => true,
+    // Design Defaults
+    'inherit_fonts' => true,
+    'show_strikethrough' => true,
+    'enable_subtotal_line' => true,
+    'bg_color' => '#FFFFFF',
+    'accent_color' => '#f6f6f7',
+    'text_color' => '#000000',
+    'savings_text_color' => '#2ea818',
+    'btn_radius' => '0px',
+    'btn_color' => '#000000',
+    'btn_text_color' => '#FFFFFF',
+    'btn_hover_text_color' => '#e9e9e9',
+    // Cart Icon Settings
+    'cart_icon_type' => 'bag-1',
+    'cart_icon_color' => '#000000',
+    'cart_icon_size' => '24',
+    'cart_bubble_bg' => '#ff0000',
+    'cart_bubble_text' => '#ffffff',
+    'show_cart_count' => true,
+    'cart_title' => 'Your Cart',
+    'show_close_icon' => true,
+    // Announcement Settings
+    'show_announcement' => false,
+    'announcement_text' => 'Free shipping on orders over $50!',
+    'announcement_bg' => '#000000',
+    'announcement_text_color' => '#ffffff',
+    // Cart Item Settings
+    'show_item_images' => true,
+    'show_item_total' => true,
+    // Upsell Settings
+    'show_upsells' => true,
+    'upsell_title' => 'Complete your look',
+    'upsell_max' => 3,
+    // Trust Badge Settings
+    'show_trust_badges' => true,
+    'trust_badges_title' => 'Secure Checkout',
+    'selected_badges' => array('visa', 'mastercard', 'paypal', 'apple-pay')
 ));
 
 $icons = array(
