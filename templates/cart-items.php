@@ -109,9 +109,13 @@ $p_color = !empty($settings['primary_color']) ? $settings['primary_color'] : '#0
     <?php if (!empty($goals)): ?>
         <div class="bee-cart-progress-container">
             <div class="bee-cart-progress-message">
-                <?php if ($next_goal): ?>
-                    You're only <strong><?php echo ($settings['progress_type'] ?? 'subtotal') === 'subtotal' ? wc_price((float)$next_goal['threshold'] - $current_val) : (int)((float)$next_goal['threshold'] - $current_val) . ' items'; ?></strong> away from <strong><?php echo esc_html($next_goal['label']); ?></strong>
-                <?php else: ?>
+                <?php if ($next_goal):
+                    $amount_text = ($settings['progress_type'] ?? 'subtotal') === 'subtotal' ? wc_price((float)$next_goal['threshold'] - $current_val) : (int)((float)$next_goal['threshold'] - $current_val);
+                    $msg = $settings['trans_rewards_away'] ?? "You're only {amount} away from {goal}";
+                    $msg = str_replace('{amount}', '<strong>' . $amount_text . '</strong>', $msg);
+                    $msg = str_replace('{goal}', '<strong>' . esc_html($next_goal['label']) . '</strong>', $msg);
+                    echo $msg;
+                else: ?>
                     <?php echo esc_html($settings['rewards_completed_text'] ?? '🎉 Congratulations! You have unlocked all rewards.'); ?>
                 <?php endif; ?>
             </div>
@@ -171,42 +175,76 @@ $p_color = !empty($settings['primary_color']) ? $settings['primary_color'] : '#0
 
     <!-- Upsells -->
     <?php
-    $upsell_args = array('post_type' => 'product', 'posts_per_page' => 2, 'orderby' => 'rand');
-    $upsell_query = new WP_Query($upsell_args);
-    if ($upsell_query->have_posts()): ?>
-        <div class="bee-cart-upsells">
-            <h4 class="bee-cart-upsells-heading">Recommended for you</h4>
-            <div class="bee-cart-upsells-list">
-                <?php while ($upsell_query->have_posts()): $upsell_query->the_post();
-                    global $product; ?>
-                    <div class="bee-cart-upsell-item">
-                        <div class="bee-cart-upsell-image"><?php the_post_thumbnail(array(60, 60)); ?></div>
-                        <div class="bee-cart-upsell-details">
-                            <div class="bee-cart-upsell-title"><?php the_title(); ?></div>
-                            <div class="bee-cart-upsell-price"><?php echo $product->get_price_html(); ?></div>
+    $show_upsells = $settings['show_upsells'] ?? true;
+    if ($show_upsells):
+        $upsell_title = $settings['upsell_title'] ?? 'You might also like...';
+        $upsell_max = $settings['upsell_max'] ?? 3;
+        $upsell_source = $settings['upsell_source'] ?? 'random';
+
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => $upsell_max,
+            'status' => 'publish',
+        );
+
+        switch ($upsell_source) {
+            case 'best_sellers':
+                $args['meta_key'] = 'total_sales';
+                $args['orderby'] = 'meta_value_num';
+                break;
+            case 'newest':
+                $args['orderby'] = 'date';
+                $args['order'] = 'DESC';
+                break;
+            case 'random':
+            default:
+                $args['orderby'] = 'rand';
+                break;
+        }
+
+        $upsell_query = new WP_Query($args);
+        if ($upsell_query->have_posts()): ?>
+            <div class="bee-cart-upsells">
+                <h4 class="bee-cart-upsells-heading"><?php echo esc_html($upsell_title); ?></h4>
+                <div class="bee-cart-upsells-list">
+                    <?php while ($upsell_query->have_posts()): $upsell_query->the_post();
+                        global $product; ?>
+                        <div class="bee-cart-upsell-item">
+                            <div class="bee-cart-upsell-image"><?php the_post_thumbnail(array(60, 60)); ?></div>
+                            <div class="bee-cart-upsell-details">
+                                <div class="bee-cart-upsell-title"><?php the_title(); ?></div>
+                                <div class="bee-cart-upsell-price"><?php echo $product->get_price_html(); ?></div>
+                            </div>
+                            <button class="bee-cart-add-upsell bee-sh-btn-primary" @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)" title="<?php echo esc_attr($settings['upsell_btn_text'] ?? 'Add to Cart'); ?>">+</button>
                         </div>
-                        <button class="bee-cart-add-upsell bee-sh-btn-primary" @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">+</button>
-                    </div>
-                <?php endwhile;
-                wp_reset_postdata(); ?>
+                    <?php endwhile;
+                    wp_reset_postdata(); ?>
+                </div>
             </div>
-        </div>
-    <?php endif; ?>
+    <?php endif;
+    endif; ?>
 
     <div class="bee-cart-footer">
         <?php if ($settings['enable_coupon'] ?? true): ?>
             <div class="bee-cart-coupon" style="margin-bottom: 20px;">
                 <div style="display: flex; gap: 8px; border: 1px dashed #ddd; padding: 4px; border-radius: 6px;">
-                    <input type="text" id="bee-coupon-code" placeholder="Discount code" class="bee-input" x-ref="couponCode" style="border: none; margin: 0; padding: 4px 8px; flex: 1; height: 32px;">
-                    <button class="bee-cart-btn bee-apply-coupon" @click.prevent="applyCoupon($refs.couponCode.value)" style="width: auto; padding: 0 16px; margin: 0; font-size: 13px; height: 32px;">Apply</button>
+                    <input type="text" id="bee-coupon-code" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bee-input" x-ref="couponCode" style="border: none; margin: 0; padding: 4px 8px; flex: 1; height: 32px;">
+                    <button class="bee-cart-btn bee-apply-coupon" @click.prevent="applyCoupon($refs.couponCode.value)" style="width: auto; padding: 0 16px; margin: 0; font-size: 13px; height: 32px;"><?php echo esc_html($settings['trans_coupon_apply_btn'] ?? 'Apply'); ?></button>
                 </div>
             </div>
         <?php endif; ?>
 
         <div class="bee-cart-subtotal">
-            <span>Subtotal</span>
+            <span><?php echo esc_html($settings['trans_subtotal'] ?? 'Subtotal'); ?></span>
             <span><?php echo $cart->get_cart_subtotal(); ?></span>
         </div>
+
+        <?php if ($cart->get_total_discount() > 0): ?>
+            <div class="bee-cart-savings" style="display: flex; justify-content: space-between; color: <?php echo esc_attr($settings['savings_text_color'] ?? '#2ea818'); ?>; font-size: 14px; margin-top: 4px;">
+                <span><?php echo esc_html($settings['trans_savings'] ?? 'You save'); ?></span>
+                <span><?php echo wc_price($cart->get_total_discount()); ?></span>
+            </div>
+        <?php endif; ?>
 
         <?php if ($settings['enable_badges'] ?? true): ?>
             <div class="bee-cart-trust-badge">
@@ -216,7 +254,7 @@ $p_color = !empty($settings['primary_color']) ? $settings['primary_color'] : '#0
             </div>
         <?php endif; ?>
 
-        <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="bee-cart-btn bee-cart-btn-primary" style="padding: 16px; font-size: 1.1rem; border-radius: 8px;">Checkout Now</a>
+        <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="bee-cart-btn bee-cart-btn-primary" style="padding: 16px; font-size: 1.1rem; border-radius: 8px;"><?php echo esc_html($settings['trans_checkout_btn'] ?? 'Checkout Now'); ?></a>
     </div>
 
 <?php else: ?>
@@ -228,7 +266,7 @@ $p_color = !empty($settings['primary_color']) ? $settings['primary_color'] : '#0
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
             </svg>
         </div>
-        <p class="bee-cart-empty-text">Your cart is empty.</p>
-        <button class="bee-cart-btn bee-cart-btn-primary" @click.prevent="closeCart()">Return to shop</button>
+        <p class="bee-cart-empty-text"><?php echo esc_html($settings['trans_empty_cart'] ?? 'Your cart is empty.'); ?></p>
+        <button class="bee-cart-btn bee-cart-btn-primary" @click.prevent="closeCart()"><?php echo esc_html($settings['trans_continue_shopping'] ?? 'Return to shop'); ?></button>
     </div>
 <?php endif; ?>

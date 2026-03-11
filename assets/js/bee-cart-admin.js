@@ -65,6 +65,7 @@ document.addEventListener("alpine:init", () => {
       trans_savings: "You save",
       trans_coupon_placeholder: "Coupon code",
       trans_coupon_apply_btn: "Apply",
+      trans_rewards_away: "You're only {amount} away from {goal}",
       ...(Array.isArray(beeCartAdminData.settings)
         ? {}
         : beeCartAdminData.settings),

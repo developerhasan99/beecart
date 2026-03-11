@@ -10,6 +10,7 @@ class Bee_Cart
     {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
         add_action('wp_footer', array($this, 'output_cart_drawer'));
+        add_action('wp_head', array($this, 'output_custom_css'), 999);
 
         add_shortcode('bee_cart_icon', array($this, 'cart_icon_shortcode'));
 
@@ -38,8 +39,22 @@ class Bee_Cart
         wp_localize_script('bee-cart-script', 'beeCartData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('bee-cart-nonce'),
-            'free_shipping_threshold' => get_option('bee_cart_shipping_threshold', 100)
+            'settings' => $this->get_settings()
         ));
+    }
+
+    public function get_settings()
+    {
+        return get_option('bee_cart_settings', array());
+    }
+
+    public function output_custom_css()
+    {
+        $settings = $this->get_settings();
+        $custom_css = isset($settings['custom_css']) ? $settings['custom_css'] : '';
+        if (! empty($custom_css)) {
+            echo '<style id="bee-cart-custom-css">' . wp_strip_all_tags($custom_css) . '</style>';
+        }
     }
 
     public function output_cart_drawer()
