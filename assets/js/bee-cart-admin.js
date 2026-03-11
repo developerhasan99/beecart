@@ -56,6 +56,15 @@ document.addEventListener("alpine:init", () => {
       show_trust_badges: true,
       trust_badges_title: "Secure Checkout",
       selected_badges: ["visa", "mastercard", "paypal", "apple-pay"],
+      custom_css: "",
+      trans_checkout_btn: "Checkout",
+      trans_view_cart_btn: "View Cart",
+      trans_continue_shopping: "Continue Shopping",
+      trans_empty_cart: "Your cart is currently empty.",
+      trans_subtotal: "Subtotal",
+      trans_savings: "You save",
+      trans_coupon_placeholder: "Coupon code",
+      trans_coupon_apply_btn: "Apply",
       ...(Array.isArray(beeCartAdminData.settings)
         ? {}
         : beeCartAdminData.settings),

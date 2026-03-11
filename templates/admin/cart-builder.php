@@ -13,11 +13,8 @@ $sidebar_sections = array(
         'tabs' => array(
             array('title' => 'Announcements', 'handle' => 'announcements', 'icon' => 'dashicons-megaphone'),
             array('title' => 'Tiered rewards', 'handle' => 'rewards', 'icon' => 'dashicons-awards'),
-            // array('title' => 'Triggered rewards', 'handle' => 'triggered_rewards', 'icon' => 'dashicons-controls-play'),
             array('title' => 'Cart items', 'handle' => 'cart_items', 'icon' => 'dashicons-cart'),
-            array('title' => 'Upsells', 'handle' => 'upsells', 'icon' => 'dashicons-arrow-up-alt2'),
-            array('title' => 'Subscription upgrades', 'handle' => 'subscriptions', 'icon' => 'dashicons-update'),
-            array('title' => 'Additional notes', 'handle' => 'notes', 'icon' => 'dashicons-edit')
+            array('title' => 'Upsells', 'handle' => 'upsells', 'icon' => 'dashicons-arrow-up-alt2')
         )
     ),
     array(
@@ -78,12 +75,8 @@ $sidebar_sections = array(
             <?php include BEE_CART_PATH . 'templates/admin/tabs/design.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/announcements.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/rewards.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/triggered_rewards.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/cart_items.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/upsells.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/subscriptions.php'; ?>
-
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/notes.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/addons.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/discount.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/summary.php'; ?>
