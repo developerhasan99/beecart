@@ -127,8 +127,8 @@
     <!-- Side Cart Footer Preview -->
     <div class="p-4 border-t border-solid border-gray-200 bg-white space-y-4" :style="{ backgroundColor: $store.admin.settings.bg_color || '#FFFFFF' }">
         <div x-show="$store.admin.settings.enable_coupon" class="flex gap-2">
-            <input type="text" placeholder="Gift card or discount code" class="flex-1 h-10 px-3 text-sm border border-solid border-gray-300 rounded-md bg-white">
-            <button class="h-10 px-4 text-sm font-medium rounded-md border-0 cursor-pointer" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7', color: $store.admin.settings.text_color || '#000000' }">Apply</button>
+            <input type="text" :placeholder="$store.admin.settings.trans_coupon_placeholder || 'Coupon code'" class="flex-1 h-10 px-3 text-sm border border-solid border-gray-300 rounded-md bg-white">
+            <button class="h-10 px-4 text-sm font-medium rounded-md border-0 cursor-pointer" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7', color: $store.admin.settings.text_color || '#000000' }" x-text="$store.admin.settings.trans_coupon_apply_btn || 'Apply'"></button>
         </div>
 
         <div x-show="$store.admin.settings.enable_subtotal_line" class="flex justify-between items-center text-sm font-medium border-0 border-b border-dashed border-gray-200 pb-2">
