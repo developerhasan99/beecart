@@ -3,7 +3,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$settings = get_option('bee_cart_settings', array());
+$settings = $this->get_settings();
 
 $heading = $settings['cart_title'] ?? 'Your Cart';
 $countdown_minutes = $settings['timer_duration'] ?? 15;

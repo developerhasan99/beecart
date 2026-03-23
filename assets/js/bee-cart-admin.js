@@ -29,7 +29,7 @@ document.addEventListener("alpine:init", () => {
       accent_color: "#f6f6f7",
       text_color: "#000000",
       savings_text_color: "#2ea818",
-      btn_radius: "0px",
+      btn_radius: "5px",
       btn_color: "#000000",
       btn_text_color: "#FFFFFF",
       btn_hover_color: "#333333",
@@ -51,7 +51,8 @@ document.addEventListener("alpine:init", () => {
       enable_timer: false,
       timer_duration: "0",
       show_item_images: true,
-      show_item_total: true,
+      show_savings: true,
+      trans_savings_prefix: "Save",
       qty_selector_type: "boxed",
       show_upsells: true,
       show_upsells_on_empty: true,
@@ -61,7 +62,8 @@ document.addEventListener("alpine:init", () => {
       upsell_layout: "list",
       upsell_btn_text: "Add to Cart",
       show_trust_badges: true,
-      trust_badge_image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' width='300' height='40'%3E%3Crect width='300' height='40' fill='transparent' rx='4'/%3E%3Ctext x='150' y='25' font-family='sans-serif' font-size='14' font-weight='bold' fill='%239ca3af' text-anchor='middle'%3ESECURE CHECKOUT%3C/text%3E%3C/svg%3E",
+      trust_badge_image:
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' width='300' height='40'%3E%3Crect width='300' height='40' fill='transparent' rx='4'/%3E%3Ctext x='150' y='25' font-family='sans-serif' font-size='14' font-weight='bold' fill='%239ca3af' text-anchor='middle'%3ESECURE CHECKOUT%3C/text%3E%3C/svg%3E",
       custom_css: "",
       trans_checkout_btn: "Checkout",
       trans_view_cart_btn: "View Cart",
@@ -72,7 +74,9 @@ document.addEventListener("alpine:init", () => {
       trans_coupon_placeholder: "Coupon code",
       trans_coupon_apply_btn: "Apply",
       trans_rewards_away: "You're only {amount} away from {goal}",
-      ...(Array.isArray(beeCartAdminData.settings) ? {} : beeCartAdminData.settings),
+      ...(Array.isArray(beeCartAdminData.settings)
+        ? {}
+        : beeCartAdminData.settings),
     },
     isSaving: false,
 

@@ -1,13 +1,11 @@
 <?php if (! defined('ABSPATH')) exit; ?>
-<div class="bc-drawer-wrap is-open" 
+<div x-data class="bc-drawer-wrap is-open"
     :style="{
         fontFamily: $store.admin.settings.inherit_fonts ? 'inherit' : 'sans-serif'
     }">
     <div class="bc-drawer-panel is-active"
         :style="{
-            position: 'absolute',
             top: '32px',
-            transform: 'translateX(0)',
             backgroundColor: $store.admin.settings.bg_color || '#FFFFFF',
             color: $store.admin.settings.text_color || '#000000'
         }">
@@ -22,14 +20,14 @@
             </h2>
             <template x-if="$store.admin.settings.show_close_icon !== false">
                 <button class="bc-drawer-close" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7' }">
-                    <span class="dashicons dashicons-no-alt" style="color: #6b7280; font-size: 16px;"></span>
+                    <span class="dashicons dashicons-no-alt" style="color: #6b7280;"></span>
                 </button>
             </template>
         </div>
 
         <!-- Side Cart Body Preview -->
         <div class="bc-drawer-body">
-            
+
             <div class="bc-drawer-top-notices" style="padding: 0; width: 100%;">
                 <!-- Announcement Bar -->
                 <div x-show="$store.admin.settings.show_announcement" class="bc-announcement"
@@ -86,23 +84,25 @@
                 <div class="bc-item">
                     <template x-if="$store.admin.settings.show_item_images !== false">
                         <div class="bc-item-img-wrap" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f9fafb' }">
-                            <img src="https://via.placeholder.com/80x80?text=Seat" alt="Preview Image" />
+                            <img src="<?php echo esc_url(BEE_CART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Preview Image" />
                         </div>
                     </template>
                     <div class="bc-item-details">
                         <button class="bc-item-remove">
                             <span class="dashicons dashicons-trash text-[16px]"></span>
                         </button>
-                        
+
                         <h4 class="bc-item-title" :style="{ color: $store.admin.settings.text_color || '#000000' }">Placeholder product</h4>
                         <p class="bc-item-meta">Size: Medium</p>
-                        
+
                         <div class="bc-item-prices">
                             <template x-if="$store.admin.settings.show_strikethrough !== false">
                                 <span class="bc-item-old-price">$120.00</span>
                             </template>
                             <span class="bc-item-price" :style="{ color: $store.admin.settings.text_color || '#000000' }">$84.00</span>
-                            <span class="bc-item-price" style="font-size: 13px;" :style="{ color: $store.admin.settings.savings_text_color || '#2ea818' }">(Speichern $36.00)</span>
+                            <template x-if="$store.admin.settings.show_savings !== false">
+                                <span class="bc-item-price" style="font-size: 13px;" :style="{ color: $store.admin.settings.savings_text_color || '#2ea818' }" x-text="'(' + ($store.admin.settings.trans_savings_prefix || 'Save') + ' $36.00)'"></span>
+                            </template>
                         </div>
 
                         <div class="bc-item-bottom">
@@ -123,9 +123,9 @@
             <!-- Recommended Upsell -->
             <div x-show="$store.admin.settings.show_upsells" class="bc-upsells w-full">
                 <div class="bc-upsells-divider"></div>
-                
+
                 <h3 class="bc-upsells-title" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="$store.admin.settings.upsell_title || 'Diese werden Sie lieben'"></h3>
-                
+
                 <div class="bc-upsell-item" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f9fafb' }">
                     <div class="bc-upsell-img-wrap">
                         <img src="https://via.placeholder.com/90x90?text=Bag" alt="Bag">
@@ -144,12 +144,14 @@
                                 <span class="dashicons dashicons-arrow-down-alt2 bc-upsell-select-icon"></span>
                             </div>
                             <button class="bc-upsell-add"
+                                @mouseenter="$event.target.style.backgroundColor = ($store.admin.settings.btn_hover_color || '#333333'); $event.target.style.color = ($store.admin.settings.btn_hover_text_color || '#e9e9e9')"
+                                @mouseleave="$event.target.style.backgroundColor = ($store.admin.settings.btn_color || '#000000'); $event.target.style.color = ($store.admin.settings.btn_text_color || '#FFFFFF')"
                                 :style="{
                                     backgroundColor: $store.admin.settings.btn_color || '#000000', 
                                     color: $store.admin.settings.btn_text_color || '#FFFFFF',
                                     borderRadius: $store.admin.settings.btn_radius || '4px'
                                 }">
-                                <span x-text="$store.admin.settings.upsell_btn_text || 'Hinzufügen'"></span>
+                                <span x-text="$store.admin.settings.upsell_btn_text || 'Add'"></span>
                             </button>
                         </div>
                     </div>
@@ -159,7 +161,7 @@
 
         <!-- Side Cart Footer Preview -->
         <div class="bc-drawer-footer" :style="{ backgroundColor: $store.admin.settings.bg_color || '#FFFFFF' }">
-            
+
             <div x-show="$store.admin.settings.enable_coupon" class="bc-coupon-wrap">
                 <input type="text" :placeholder="$store.admin.settings.trans_coupon_placeholder || 'Coupon code'" class="bc-coupon-input">
                 <button class="bc-coupon-btn" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7', color: $store.admin.settings.text_color || '#000000' }" x-text="$store.admin.settings.trans_coupon_apply_btn || 'Apply'"></button>
@@ -167,7 +169,7 @@
 
             <div class="bc-summary-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
                 <div class="label-wrap">
-                    <span>Rabatte</span>
+                    <span>Discounts:</span>
                     <div class="bc-item-discount-badge" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f0f1f2' }">
                         <span class="dashicons dashicons-tag bc-badge-icon"></span>
                         <span class="bc-badge-text">AUTO 5</span>
@@ -190,8 +192,8 @@
                         color: $store.admin.settings.btn_text_color || '#FFFFFF',
                         borderRadius: $store.admin.settings.btn_radius || '4px'
                     }">
-                    <span x-text="$store.admin.settings.trans_checkout_btn || 'Zur Kasse'"></span> 
-                    <span class="bc-checkout-sep">•</span> 
+                    <span x-text="$store.admin.settings.trans_checkout_btn || 'Zur Kasse'"></span>
+                    <span class="bc-checkout-sep">•</span>
                     <span>€84,00</span>
                 </button>
             </div>

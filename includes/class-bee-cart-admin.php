@@ -56,7 +56,8 @@ class Bee_Cart_Admin
         // For the preview, we'll also need the frontend styles/scripts
         wp_enqueue_style('bee-cart-style', BEE_CART_URL . 'assets/css/bee-cart.css', array(), BEE_CART_VERSION);
 
-        $settings = get_option('bee_cart_settings', array());
+        $plugin = new Bee_Cart();
+        $settings = $plugin->get_settings();
         $menus = wp_get_nav_menus();
         $formatted_menus = array();
         foreach ($menus as $menu) {

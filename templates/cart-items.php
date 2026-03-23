@@ -6,7 +6,7 @@ if (! defined('ABSPATH')) {
 $cart = WC()->cart;
 if (!$cart) return;
 
-$settings = get_option('bee_cart_settings', array());
+$settings = $this->get_settings();
 
 $is_empty = $cart->is_empty();
 
@@ -37,6 +37,8 @@ $btn_hover_text_color = $settings['btn_hover_text_color'] ?? '#e9e9e9';
 $btn_radius = $settings['btn_radius'] ?? '4px';
 
 $enable_rewards_bar = $settings['enable_rewards_bar'] ?? true;
+$show_savings = $settings['show_savings'] ?? true;
+$savings_prefix = $settings['trans_savings_prefix'] ?? 'Save';
 $show_item_images = $settings['show_item_images'] ?? true;
 $show_strikethrough = $settings['show_strikethrough'] ?? true;
 $savings_color = $settings['savings_text_color'] ?? '#2ea818';
@@ -100,94 +102,111 @@ $show_upsells = $settings['show_upsells'] ?? true;
                 $has_sale = $_product->is_on_sale() && $regular_price;
                 $item_data = wc_get_formatted_cart_item_data($cart_item, true);
         ?>
-            <div class="bc-item">
-                <?php if ($show_item_images !== false): ?>
-                    <div class="bc-item-img-wrap" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
-                        <?php if ($thumbnail_url): ?>
-                            <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($product_name); ?>" />
-                        <?php else: ?>
-                            <span class="dashicons dashicons-format-image"></span>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-
-                <div class="bc-item-details">
-                    <button class="bc-item-remove" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', 0)">
-                        <span class="dashicons dashicons-trash"></span>
-                    </button>
-                    
-                    <h4 class="bc-item-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($product_name); ?></h4>
-                    <?php if ($item_data): ?>
-                        <p class="bc-item-meta"><?php echo wp_kses_post($item_data); ?></p>
+                <div class="bc-item">
+                    <?php if ($show_item_images !== false): ?>
+                        <div class="bc-item-img-wrap" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
+                            <?php if ($thumbnail_url): ?>
+                                <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($product_name); ?>" />
+                            <?php else: ?>
+                                <span class="dashicons dashicons-format-image"></span>
+                            <?php endif; ?>
+                        </div>
                     <?php endif; ?>
-                    
-                    <div class="bc-item-prices">
-                        <?php if ($has_sale && $show_strikethrough !== false): ?>
-                            <span class="bc-item-old-price"><?php echo wc_price($regular_price); ?></span>
-                        <?php endif; ?>
-                        <span class="bc-item-price" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo $product_price; ?></span>
-                    </div>
 
-                    <div class="bc-item-bottom">
-                        <div class="bc-qty-wrap">
-                            <button class="bc-qty-btn minus" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', <?php echo (int) $cart_item['quantity'] - 1; ?>)">-</button>
-                            <span class="bc-qty-val"><?php echo esc_html($cart_item['quantity']); ?></span>
-                            <button class="bc-qty-btn plus" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', <?php echo (int) $cart_item['quantity'] + 1; ?>)">+</button>
+                    <div class="bc-item-details">
+                        <button class="bc-item-remove" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', 0)">
+                            <span class="dashicons dashicons-trash"></span>
+                        </button>
+
+                        <h4 class="bc-item-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($product_name); ?></h4>
+                        <?php if ($item_data): ?>
+                            <p class="bc-item-meta"><?php echo wp_kses_post($item_data); ?></p>
+                        <?php endif; ?>
+
+                        <div class="bc-item-prices">
+                            <?php if ($has_sale && $show_strikethrough !== false): ?>
+                                <span class="bc-item-old-price"><?php echo wc_price($regular_price); ?></span>
+                            <?php endif; ?>
+                            <span class="bc-item-price" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo $product_price; ?></span>
+                            <?php if ($show_savings && $has_sale): 
+                                $discount = (float)$regular_price - (float)$_product->get_price();
+                                if ($discount > 0):
+                            ?>
+                                <span class="bc-item-price" style="font-size: 13px; color: <?php echo esc_attr($savings_color); ?>;">
+                                    (<?php echo esc_html($savings_prefix); ?> <?php echo wc_price($discount * $cart_item['quantity']); ?>)
+                                </span>
+                            <?php endif; endif; ?>
+                        </div>
+
+                        <div class="bc-item-bottom">
+                            <div class="bc-qty-wrap">
+                                <button class="bc-qty-btn minus" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', <?php echo (int) $cart_item['quantity'] - 1; ?>)">-</button>
+                                <span class="bc-qty-val"><?php echo esc_html($cart_item['quantity']); ?></span>
+                                <button class="bc-qty-btn plus" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', <?php echo (int) $cart_item['quantity'] + 1; ?>)">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        <?php 
+        <?php
             }
         endforeach; ?>
     </div>
 
-    <?php if ($show_upsells): 
+    <?php if ($show_upsells):
         $upsell_title = $settings['upsell_title'] ?? 'Diese werden Sie lieben';
         $upsell_max = $settings['upsell_max'] ?? 3;
         $upsell_source = $settings['upsell_source'] ?? 'random';
         $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'status' => 'publish');
-        if ($upsell_source === 'best_sellers') { $args['meta_key'] = 'total_sales'; $args['orderby'] = 'meta_value_num'; }
-        elseif ($upsell_source === 'newest') { $args['orderby'] = 'date'; $args['order'] = 'DESC'; }
-        else { $args['orderby'] = 'rand'; }
+        if ($upsell_source === 'best_sellers') {
+            $args['meta_key'] = 'total_sales';
+            $args['orderby'] = 'meta_value_num';
+        } elseif ($upsell_source === 'newest') {
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+        } else {
+            $args['orderby'] = 'rand';
+        }
         $upsell_query = new WP_Query($args);
         if ($upsell_query->have_posts()):
     ?>
-        <div class="bc-upsells">
-            <div class="bc-upsells-divider"></div>
-            <h3 class="bc-upsells-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($upsell_title); ?></h3>
-            
-            <div class="bc-upsells-list">
-            <?php while ($upsell_query->have_posts()): $upsell_query->the_post(); global $product; 
-                  $img = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
-            ?>
-                <div class="bc-upsell-item" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
-                    <div class="bc-upsell-img-wrap">
-                        <?php if ($img): ?>
-                            <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
-                        <?php else: ?>
-                            <span class="dashicons dashicons-format-image"></span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="bc-upsell-details">
-                        <h5 class="bc-upsell-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php the_title(); ?></h5>
-                        <div class="bc-upsell-prices">
-                            <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo $product->get_price_html(); ?></span>
+            <div class="bc-upsells">
+                <div class="bc-upsells-divider"></div>
+                <h3 class="bc-upsells-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($upsell_title); ?></h3>
+
+                <div class="bc-upsells-list">
+                    <?php while ($upsell_query->have_posts()): $upsell_query->the_post();
+                        global $product;
+                        $img = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
+                    ?>
+                        <div class="bc-upsell-item" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
+                            <div class="bc-upsell-img-wrap">
+                                <?php if ($img): ?>
+                                    <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
+                                <?php else: ?>
+                                    <span class="dashicons dashicons-format-image"></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="bc-upsell-details">
+                                <h5 class="bc-upsell-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php the_title(); ?></h5>
+                                <div class="bc-upsell-prices">
+                                    <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo $product->get_price_html(); ?></span>
+                                </div>
+                                <div class="bc-upsell-actions">
+                                    <button class="bc-upsell-add"
+                                        style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
+                                        @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">
+                                        <?php echo esc_html($settings['upsell_btn_text'] ?? 'Add'); ?>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bc-upsell-actions">
-                            <button class="bc-upsell-add"
-                                style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
-                                @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">
-                                <?php echo esc_html($settings['upsell_btn_text'] ?? 'Add'); ?>
-                            </button>
-                        </div>
-                    </div>
+                    <?php endwhile;
+                    wp_reset_postdata(); ?>
                 </div>
-            <?php endwhile; wp_reset_postdata(); ?>
             </div>
-        </div>
-    <?php endif; endif; ?>
-    
+    <?php endif;
+    endif; ?>
+
 <?php else: ?>
     <div class="bc-empty-cart">
         <svg class="bc-empty-cart-icon" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -197,8 +216,8 @@ $show_upsells = $settings['show_upsells'] ?? true;
         </svg>
         <p class="bc-empty-cart-text" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($settings['trans_empty_cart'] ?? 'Your cart is empty.'); ?></p>
         <button class="bc-empty-cart-btn"
-                style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
-                @click.prevent="closeCart()">
+            style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
+            @click.prevent="closeCart()">
             <?php echo esc_html($settings['trans_continue_shopping'] ?? 'Return to shop'); ?>
         </button>
     </div>
@@ -206,56 +225,57 @@ $show_upsells = $settings['show_upsells'] ?? true;
 
 <!-- Fixed Footer Area -->
 <?php if (!$is_empty): ?>
-</div> <!-- Make the footer part of the cart flow, wait, cartHtml injects straight into a flex body... we must ensure footer is below it. Actually, wait! The cart-drawer expects cartHtml to have `<style="display:contents">` but the scrollable area is `.bc-drawer-body`. So if I leave the footer outside the list but inside `cartHtml`, it needs negative margins? No, `bc-drawer-body` is flex column. The items will sit in it. The footer can just be standard blocks inside. Oh! I changed `bc-drawer-body` to padding: 20px 24px. So I should un-pad the drawer body and manually pad the contents, OR keep it as is. Let's just create a custom `bc-drawer-footer` wrapper. -->
+    </div> <!-- Make the footer part of the cart flow, wait, cartHtml injects straight into a flex body... we must ensure footer is below it. Actually, wait! The cart-drawer expects cartHtml to have `<style="display:contents">` but the scrollable area is `.bc-drawer-body`. So if I leave the footer outside the list but inside `cartHtml`, it needs negative margins? No, `bc-drawer-body` is flex column. The items will sit in it. The footer can just be standard blocks inside. Oh! I changed `bc-drawer-body` to padding: 20px 24px. So I should un-pad the drawer body and manually pad the contents, OR keep it as is. Let's just create a custom `bc-drawer-footer` wrapper. -->
 
-<div class="bc-drawer-footer" style="background-color: <?php echo esc_attr($bg_color); ?>; margin-top: auto;">
-    
-    <?php if ($enable_coupon): ?>
-    <div class="bc-coupon-wrap">
-        <input type="text" x-ref="couponCode" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bc-coupon-input">
-        <button class="bc-coupon-btn" 
-            style="background-color: <?php echo esc_attr($accent_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>" 
-            @click.prevent="applyCoupon($refs.couponCode.value)">
-            <?php echo esc_html($settings['trans_coupon_apply_btn'] ?? 'Apply'); ?>
-        </button>
-    </div>
-    <?php endif; ?>
+    <div class="bc-drawer-footer" style="background-color: <?php echo esc_attr($bg_color); ?>; margin-top: auto;">
 
-    <?php if ($cart->get_total_discount() > 0): ?>
-    <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
-        <div class="label-wrap">
-            <span><?php echo esc_html($settings['trans_savings'] ?? 'Rabatte'); ?></span>
+        <?php if ($enable_coupon): ?>
+            <div class="bc-coupon-wrap">
+                <input type="text" x-ref="couponCode" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bc-coupon-input">
+                <button class="bc-coupon-btn"
+                    style="background-color: <?php echo esc_attr($accent_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>"
+                    @click.prevent="applyCoupon($refs.couponCode.value)">
+                    <?php echo esc_html($settings['trans_coupon_apply_btn'] ?? 'Apply'); ?>
+                </button>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($cart->get_total_discount() > 0): ?>
+            <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
+                <div class="label-wrap">
+                    <span><?php echo esc_html($settings['trans_savings'] ?? 'Discounts'); ?></span>
+                </div>
+                <span class="val-wrap">- <?php echo wc_price($cart->get_total_discount()); ?></span>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($enable_subtotal_line): ?>
+            <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
+                <span><?php echo esc_html($settings['trans_subtotal'] ?? 'Subtotal'); ?></span>
+                <span class="val-wrap"><?php echo $cart->get_cart_subtotal(); ?></span>
+            </div>
+        <?php endif; ?>
+
+        <div class="bc-checkout-btn-wrap">
+            <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="bc-checkout-btn"
+                @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
+                @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
+                style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;">
+                <span><?php echo esc_html($settings['trans_checkout_btn'] ?? 'Zur Kasse'); ?></span>
+                <span class="bc-checkout-sep">•</span>
+                <span><?php echo $cart->get_total(); ?></span>
+            </a>
         </div>
-        <span class="val-wrap">- <?php echo wc_price($cart->get_total_discount()); ?></span>
-    </div>
-    <?php endif; ?>
 
-    <?php if ($enable_subtotal_line): ?>
-    <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
-        <span><?php echo esc_html($settings['trans_subtotal'] ?? 'Subtotal'); ?></span>
-        <span class="val-wrap"><?php echo $cart->get_cart_subtotal(); ?></span>
+        <!-- Trust Badges -->
+        <?php if ($show_trust_badges):
+            $trust_badge_image = $settings['trust_badge_image'] ?? '';
+            if ($trust_badge_image):
+        ?>
+                <div class="bc-trust-badges">
+                    <img src="<?php echo esc_url($trust_badge_image); ?>" alt="Trust badges">
+                </div>
+        <?php endif;
+        endif; ?>
     </div>
-    <?php endif; ?>
-
-    <div class="bc-checkout-btn-wrap">
-        <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="bc-checkout-btn"
-            @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
-            @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
-            style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;">
-            <span><?php echo esc_html($settings['trans_checkout_btn'] ?? 'Zur Kasse'); ?></span> 
-            <span class="bc-checkout-sep">•</span> 
-            <span><?php echo $cart->get_total(); ?></span>
-        </a>
-    </div>
-
-    <!-- Trust Badges -->
-    <?php if ($show_trust_badges): 
-        $trust_badge_image = $settings['trust_badge_image'] ?? '';
-        if ($trust_badge_image):
-    ?>
-    <div class="bc-trust-badges">
-        <img src="<?php echo esc_url($trust_badge_image); ?>" alt="Trust badges">
-    </div>
-    <?php endif; endif; ?>
-</div>
 <?php endif; ?>
