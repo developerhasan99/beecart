@@ -70,7 +70,6 @@ document.addEventListener("alpine:init", () => {
       trans_continue_shopping: "Continue Shopping",
       trans_empty_cart: "Your cart is currently empty.",
       trans_subtotal: "Subtotal",
-      trans_savings: "You save",
       trans_coupon_placeholder: "Coupon code",
       trans_coupon_apply_btn: "Apply",
       trans_rewards_away: "You're only {amount} away from {goal}",

@@ -10,18 +10,13 @@
 
         <div class="space-y-4">
             <div class="space-y-2">
-                <label class="text-sm font-medium">Subtotal text</label>
-                <input type="text" x-model="$store.admin.settings.trans_subtotal" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                <label for="trans_subtotal" class="text-sm font-medium">Subtotal text</label>
+                <input type="text" id="trans_subtotal" x-model="$store.admin.settings.trans_subtotal" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
             </div>
             
             <div class="space-y-2">
-                <label class="text-sm font-medium">Savings text</label>
-                <input type="text" x-model="$store.admin.settings.trans_savings" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-sm font-medium">Checkout button text</label>
-                <input type="text" x-model="$store.admin.settings.trans_checkout_btn" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                <label for="trans_checkout_btn" class="text-sm font-medium">Checkout button text</label>
+                <input type="text" id="trans_checkout_btn" x-model="$store.admin.settings.trans_checkout_btn" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
             </div>
         </div>
     </div>

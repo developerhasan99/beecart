@@ -8,20 +8,20 @@
             <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-4">Translations</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Cart Title</label>
-                    <input type="text" x-model="$store.admin.settings.cart_title" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <label for="cart_title" class="text-sm font-medium">Cart Title</label>
+                    <input type="text" id="cart_title" x-model="$store.admin.settings.cart_title" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">View Cart Button</label>
-                    <input type="text" x-model="$store.admin.settings.trans_view_cart_btn" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <label for="trans_view_cart_btn" class="text-sm font-medium">View Cart Button</label>
+                    <input type="text" id="trans_view_cart_btn" x-model="$store.admin.settings.trans_view_cart_btn" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Continue Shopping</label>
-                    <input type="text" x-model="$store.admin.settings.trans_continue_shopping" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <label for="trans_continue_shopping" class="text-sm font-medium">Continue Shopping</label>
+                    <input type="text" id="trans_continue_shopping" x-model="$store.admin.settings.trans_continue_shopping" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Empty Cart Message</label>
-                    <input type="text" x-model="$store.admin.settings.trans_empty_cart" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <label for="trans_empty_cart" class="text-sm font-medium">Empty Cart Message</label>
+                    <input type="text" id="trans_empty_cart" x-model="$store.admin.settings.trans_empty_cart" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 </div>
                 <!-- Subtotal and savings moved to summary -->
             </div>
@@ -31,9 +31,11 @@
         <div>
             <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-4">Custom CSS</h3>
             <div class="space-y-2">
+                <label for="custom_css" class="text-sm font-medium sr-only">Custom CSS editor</label>
                 <div class="relative rounded-md border border-gray-300 bg-slate-900 p-2 overflow-hidden group">
                     <div class="absolute right-3 top-3 px-2 py-1 rounded bg-slate-800 text-slate-400 text-[10px] font-mono select-none opacity-50 group-hover:opacity-100 transition-opacity">CSS EDITOR</div>
                     <textarea
+                        id="custom_css"
                         x-model="$store.admin.settings.custom_css"
                         rows="12"
                         spellcheck="false"

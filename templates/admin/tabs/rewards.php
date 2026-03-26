@@ -21,21 +21,21 @@
                     <label class="text-sm font-medium">Progress Bar Colors</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2" x-data="colorPicker('rewards_bar_bg')">
-                            <label class="text-xs text-gray-500">Background Color</label>
+                            <label for="rewards_bar_bg" class="text-xs text-gray-500">Background Color</label>
                             <div class="flex items-center gap-2">
                                 <label class="relative cursor-pointer w-8 h-8 rounded-md border border-gray-200 shadow-sm overflow-hidden shrink-0">
                                     <input type="color" :value="isValid ? color : '#E2E2E2'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                                 </label>
-                                <input type="text" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                                <input type="text" id="rewards_bar_bg" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                             </div>
                         </div>
                         <div class="space-y-2" x-data="colorPicker('rewards_bar_fg')">
-                            <label class="text-xs text-gray-500">Foreground Color</label>
+                            <label for="rewards_bar_fg" class="text-xs text-gray-500">Foreground Color</label>
                             <div class="flex items-center gap-2">
                                 <label class="relative cursor-pointer w-8 h-8 rounded-md border border-gray-200 shadow-sm overflow-hidden shrink-0">
                                     <input type="color" :value="isValid ? color : '#93D3FF'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                                 </label>
-                                <input type="text" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                                <input type="text" id="rewards_bar_fg" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                             </div>
                         </div>
                     </div>
@@ -45,43 +45,43 @@
                     <label class="text-sm font-medium">Checkpoint Icon Colors</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2" x-data="colorPicker('rewards_complete_icon_color')">
-                            <label class="text-xs text-gray-500">Complete Tier Color</label>
+                            <label for="rewards_complete_icon_color" class="text-xs text-gray-500">Complete Tier Color</label>
                             <div class="flex items-center gap-2">
                                 <label class="relative cursor-pointer w-8 h-8 rounded-md border border-gray-200 shadow-sm overflow-hidden shrink-0">
                                     <input type="color" :value="isValid ? color : '#4D4949'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                                 </label>
-                                <input type="text" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                                <input type="text" id="rewards_complete_icon_color" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                             </div>
                         </div>
                         <div class="space-y-2" x-data="colorPicker('rewards_incomplete_icon_color')">
-                            <label class="text-xs text-gray-500">Incomplete Tier Color</label>
+                            <label for="rewards_incomplete_icon_color" class="text-xs text-gray-500">Incomplete Tier Color</label>
                             <div class="flex items-center gap-2">
                                 <label class="relative cursor-pointer w-8 h-8 rounded-md border border-gray-200 shadow-sm overflow-hidden shrink-0">
                                     <input type="color" :value="isValid ? color : '#4D4949'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                                 </label>
-                                <input type="text" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                                <input type="text" id="rewards_incomplete_icon_color" :value="color" @input="updateInput" class="flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Threshold Message (In-progress)</label>
-                    <input type="text" x-model="$store.admin.settings.trans_rewards_away" placeholder="You're only {amount} away from {goal}" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+                    <label for="trans_rewards_away" class="text-sm font-medium">Threshold Message (In-progress)</label>
+                    <input type="text" id="trans_rewards_away" x-model="$store.admin.settings.trans_rewards_away" placeholder="You're only {amount} away from {goal}" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
                     <p class="text-[11px] text-gray-400 mt-1">Use <strong>{amount}</strong> for remaining value and <strong>{goal}</strong> for reward label.</p>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Completion Message</label>
-                    <textarea x-model="$store.admin.settings.rewards_completed_text" rows="2" placeholder="Text after completing full rewards bar..." class="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors"></textarea>
+                    <label for="rewards_completed_text" class="text-sm font-medium">Completion Message</label>
+                    <textarea id="rewards_completed_text" x-model="$store.admin.settings.rewards_completed_text" rows="2" placeholder="Text after completing full rewards bar..." class="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors"></textarea>
                 </div>
             </div>
         </div>
 
 
         <div class="space-y-2 pt-6 border-0 border-t border-solid border-gray-200">
-            <label class="text-sm font-medium">Threshold Basis</label>
-            <select x-model="$store.admin.settings.progress_type" class="flex h-10 w-full items-center justify-between rounded-md border border-solid border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+            <label for="progress_type" class="text-sm font-medium">Threshold Basis</label>
+            <select id="progress_type" x-model="$store.admin.settings.progress_type" class="flex h-10 w-full items-center justify-between rounded-md border border-solid border-gray-300 bg-white px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 <option value="subtotal">Cart Subtotal ($)</option>
                 <option value="quantity">Total Item Quantity</option>
             </select>
@@ -100,12 +100,12 @@
                         <div class="grid gap-3">
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1.5">
-                                    <label class="text-xs text-gray-500 font-bold uppercase tracking-wider">Threshold</label>
-                                    <input type="number" x-model.number="goal.threshold" class="flex h-9 w-full rounded-md border border-solid border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-ring">
+                                    <label :for="'goal_threshold_' + index" class="text-xs text-gray-500 font-bold uppercase tracking-wider">Threshold</label>
+                                    <input :id="'goal_threshold_' + index" type="number" x-model.number="goal.threshold" class="flex h-9 w-full rounded-md border border-solid border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-ring">
                                 </div>
                                 <div class="space-y-1.5">
-                                    <label class="text-xs text-gray-500 font-bold uppercase tracking-wider">Icon</label>
-                                    <select x-model="goal.icon" class="flex h-9 w-full items-center justify-between rounded-md border border-solid border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring">
+                                    <label :for="'goal_icon_' + index" class="text-xs text-gray-500 font-bold uppercase tracking-wider">Icon</label>
+                                    <select :id="'goal_icon_' + index" x-model="goal.icon" class="flex h-9 w-full items-center justify-between rounded-md border border-solid border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring">
                                         <template x-for="(label, val) in beeCartAdminData.icons" :key="val">
                                             <option :value="val" x-text="label"></option>
                                         </template>
@@ -113,8 +113,8 @@
                                 </div>
                             </div>
                             <div class="space-y-1.5">
-                                <label class="text-xs text-gray-500 font-bold uppercase tracking-wider">Reward Label</label>
-                                <input type="text" x-model="goal.label" class="flex h-9 w-full rounded-md border border-solid border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-ring">
+                                <label :for="'goal_label_' + index" class="text-xs text-gray-500 font-bold uppercase tracking-wider">Reward Label</label>
+                                <input :id="'goal_label_' + index" type="text" x-model="goal.label" class="flex h-9 w-full rounded-md border border-solid border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus:outline-none focus:ring-1 focus:ring-ring">
                             </div>
                         </div>
                     </div>

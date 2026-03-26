@@ -18,42 +18,42 @@
             <div class="grid grid-cols-2 gap-y-6 gap-x-4">
                 <!-- Background color -->
                 <div class="space-y-2" x-data="colorPicker('bg_color')">
-                    <label class="text-sm font-medium">Background color</label>
+                    <label for="bg_color" class="text-sm font-medium">Background color</label>
                     <div class="flex items-center gap-2">
                         <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                             <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                         </label>
-                        <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                        <input type="text" id="bg_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                     </div>
                 </div>
                 <!-- Cart accent color -->
                 <div class="space-y-2" x-data="colorPicker('accent_color')">
-                    <label class="text-sm font-medium">Cart accent color</label>
+                    <label for="accent_color" class="text-sm font-medium">Cart accent color</label>
                     <div class="flex items-center gap-2">
                         <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                             <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                         </label>
-                        <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                        <input type="text" id="accent_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                     </div>
                 </div>
                 <!-- Cart text color -->
                 <div class="space-y-2" x-data="colorPicker('text_color')">
-                    <label class="text-sm font-medium">Cart text color</label>
+                    <label for="text_color" class="text-sm font-medium">Cart text color</label>
                     <div class="flex items-center gap-2">
                         <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                             <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                         </label>
-                        <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                        <input type="text" id="text_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                     </div>
                 </div>
                 <!-- Savings text color -->
                 <div class="space-y-2" x-data="colorPicker('savings_text_color')">
-                    <label class="text-sm font-medium">Savings text color</label>
+                    <label for="savings_text_color" class="text-sm font-medium">Savings text color</label>
                     <div class="flex items-center gap-2">
                         <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                             <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                         </label>
-                        <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                        <input type="text" id="savings_text_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                     </div>
                 </div>
             </div>
@@ -132,8 +132,8 @@
 
                     <!-- Icon Size -->
                     <div class="space-y-2">
-                        <label class="text-sm font-medium">Icon size (px)</label>
-                        <input type="number" x-model.number="$store.admin.settings.cart_icon_size" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                        <label for="cart_icon_size" class="text-sm font-medium">Icon size (px)</label>
+                        <input type="number" id="cart_icon_size" x-model.number="$store.admin.settings.cart_icon_size" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                     </div>
                 </div>
 
@@ -145,23 +145,23 @@
                 <div class="grid grid-cols-2 gap-4">
                     <!-- Bubble BG -->
                     <div class="space-y-2" x-data="colorPicker('cart_bubble_bg')">
-                        <label class="text-sm font-medium">Bubble background</label>
+                        <label for="cart_bubble_bg" class="text-sm font-medium">Bubble background</label>
                         <div class="flex items-center gap-2">
                             <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                                 <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                             </label>
-                            <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                            <input type="text" id="cart_bubble_bg" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                         </div>
                     </div>
 
                     <!-- Bubble Text -->
                     <div class="space-y-2" x-data="colorPicker('cart_bubble_text')">
-                        <label class="text-sm font-medium">Bubble text color</label>
+                        <label for="cart_bubble_text" class="text-sm font-medium">Bubble text color</label>
                         <div class="flex items-center gap-2">
                             <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                                 <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                             </label>
-                            <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                            <input type="text" id="cart_bubble_text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                         </div>
                     </div>
                 </div>
@@ -173,45 +173,45 @@
             <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-4">Button settings</h3>
             <div class="space-y-6">
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Corner radius</label>
-                    <input type="text" x-model="$store.admin.settings.btn_radius" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <label for="btn_radius" class="text-sm font-medium">Corner radius</label>
+                    <input type="text" id="btn_radius" x-model="$store.admin.settings.btn_radius" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-2" x-data="colorPicker('btn_color')">
-                        <label class="text-sm font-medium">Button color</label>
+                        <label for="btn_color" class="text-sm font-medium">Button color</label>
                         <div class="flex items-center gap-2">
                             <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                                 <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                             </label>
-                            <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                            <input type="text" id="btn_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                         </div>
                     </div>
                     <div class="space-y-2" x-data="colorPicker('btn_text_color')">
-                        <label class="text-sm font-medium">Button text color</label>
+                        <label for="btn_text_color" class="text-sm font-medium">Button text color</label>
                         <div class="flex items-center gap-2">
                             <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                                 <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                             </label>
-                            <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                            <input type="text" id="btn_text_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                         </div>
                     </div>
                     <div class="space-y-2" x-data="colorPicker('btn_hover_color')">
-                        <label class="text-sm font-medium">Button background hover color</label>
+                        <label for="btn_hover_color" class="text-sm font-medium">Button background hover color</label>
                         <div class="flex items-center gap-2">
                             <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                                 <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                             </label>
-                            <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                            <input type="text" id="btn_hover_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                         </div>
                     </div>
                     <div class="space-y-2" x-data="colorPicker('btn_hover_text_color')">
-                        <label class="text-sm font-medium">Button text hover color</label>
+                        <label for="btn_hover_text_color" class="text-sm font-medium">Button text hover color</label>
                         <div class="flex items-center gap-2">
                             <label class="relative cursor-pointer w-10 h-10 rounded-md border border-solid border-gray-200 shadow-sm overflow-hidden shrink-0">
                                 <input type="color" :value="isValid ? color : '#000000'" @input="updatePicker" class="absolute -inset-2 w-[150%] h-[150%] !p-0 !m-0 !border-0 cursor-pointer">
                             </label>
-                            <input type="text" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
+                            <input type="text" id="btn_hover_text_color" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                         </div>
                     </div>
                 </div>

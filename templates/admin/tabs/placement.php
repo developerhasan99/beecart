@@ -12,8 +12,8 @@
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-medium">Cart Drawer Position</label>
-            <select x-model="$store.admin.settings.cart_position" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
+            <label for="cart_position" class="text-sm font-medium">Cart Drawer Position</label>
+            <select id="cart_position" x-model="$store.admin.settings.cart_position" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
                 <option value="right">Right Side</option>
                 <option value="left">Left Side</option>
             </select>
@@ -27,8 +27,8 @@
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-medium">Show Cart icon on menu</label>
-            <select x-model="$store.admin.settings.menu_placement" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
+            <label for="menu_placement" class="text-sm font-medium">Show Cart icon on menu</label>
+            <select id="menu_placement" x-model="$store.admin.settings.menu_placement" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
                 <option value="none">None</option>
                 <template x-for="menu in beeCartAdminData.menus" :key="menu.slug">
                     <option :value="menu.slug" x-text="menu.name"></option>
