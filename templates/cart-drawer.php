@@ -11,7 +11,6 @@ $bg_color = $settings['bg_color'] ?? '#FFFFFF';
 $text_color = $settings['text_color'] ?? '#000000';
 $accent_color = $settings['accent_color'] ?? '#f6f6f7';
 $show_cart_count = $settings['show_cart_count'] ?? true;
-$show_close_icon = $settings['show_close_icon'] ?? true;
 $inherit_fonts = $settings['inherit_fonts'] ?? true;
 
 $show_announcement = $settings['show_announcement'] ?? false;
@@ -44,11 +43,9 @@ $enable_timer = $settings['enable_timer'] ?? false;
                 <span><span class="bc-drawer-title-sep">•</span> <span x-text="cartCount"></span></span>
                 <?php endif; ?>
             </h2>
-            <?php if ($show_close_icon): ?>
-                <button @click="closeCart()" title="Close Cart" class="bc-drawer-close" style="background-color: <?php echo esc_attr($accent_color); ?>;">
-                    <span class="dashicons dashicons-no-alt" style="color: #6b7280; font-size: 16px;"></span>
-                </button>
-            <?php endif; ?>
+            <button @click="closeCart()" title="Close Cart" class="bc-drawer-close" style="background-color: <?php echo esc_attr($accent_color); ?>;">
+                <span class="dashicons dashicons-no-alt" style="color: #6b7280; font-size: 16px;"></span>
+            </button>
         </div>
 
         <!-- Announcement and Timer -->

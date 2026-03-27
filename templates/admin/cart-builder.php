@@ -31,9 +31,9 @@ $sidebar_sections = array(
 
 ?>
 
-<div class="pr-[440px] mt-5" x-data>
+<div class="mt-5 transition-all duration-300 ease-linear" x-data :class="$store.admin.preview ? 'lg:pr-[440px]' : 'pr-5'">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex flex-wrap gap-4 items-center justify-between mb-5">
         <h1 class="flex items-center gap-2 my-0">
             <span>Bee Cart editor</span>
             <span class="px-2 py-0.5 rounded-full bg-white text-green-700 text-xs font-medium">Active</span>
@@ -48,7 +48,7 @@ $sidebar_sections = array(
     </div>
     <div class="grid grid-cols-4 gap-5">
         <!-- Navigation Sidebar (Left) -->
-        <div class="col-span-1 flex flex-col gap-3">
+        <div class="col-span-4 md:col-span-1 flex flex-col gap-3">
             <?php foreach ($sidebar_sections as $section) : ?>
                 <div>
                     <h3 class="text-xs uppercase tracking-wider mt-0 mb-2 px-3"><?php echo $section['title']; ?></h3>
@@ -69,7 +69,7 @@ $sidebar_sections = array(
             </div>
         </div>
         <!-- Settings Content (Middle Side) -->
-        <div class="col-span-3 border border-solid border-gray-300 bg-white overflow-hidden rounded-lg min-h-[600px]">
+        <div class="col-span-4 md:col-span-3 border border-solid border-gray-300 bg-white overflow-hidden rounded-lg min-h-[600px]">
 
             <?php include BEE_CART_PATH . 'templates/admin/tabs/placement.php'; ?>
             <?php include BEE_CART_PATH . 'templates/admin/tabs/design.php'; ?>

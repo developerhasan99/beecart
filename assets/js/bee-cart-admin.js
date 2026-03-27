@@ -1,6 +1,7 @@
 document.addEventListener("alpine:init", () => {
   Alpine.store("admin", {
     activeTab: "placement",
+    preview: window.innerWidth >= 991,
     settings: {
       enable_cart_drawer: true,
       cart_position: "right",
@@ -41,7 +42,6 @@ document.addEventListener("alpine:init", () => {
       cart_bubble_text: "#ffffff",
       show_cart_count: true,
       cart_title: "Your Cart",
-      show_close_icon: true,
       show_announcement: false,
       announcement_text: "Your products are reserved for {timer}!",
       announcement_bg: "#000000",
@@ -78,6 +78,14 @@ document.addEventListener("alpine:init", () => {
         : beeCartAdminData.settings),
     },
     isSaving: false,
+
+    init() {
+      window.addEventListener("resize", () => {
+        this.preview = window.innerWidth >= 991;
+
+        console.log(this.preview);
+      });
+    },
 
     setTab(tab) {
       this.activeTab = tab;

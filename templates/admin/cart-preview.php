@@ -1,14 +1,13 @@
 <?php if (! defined('ABSPATH')) exit; ?>
-<div x-data class="bc-drawer-wrap is-open"
-    :style="{
-        fontFamily: $store.admin.settings.inherit_fonts ? 'inherit' : 'sans-serif'
-    }">
-    <div class="bc-drawer-panel is-active"
+<div x-data class="bc-drawer-wrap">
+    <div class="bc-drawer-panel !top-[46px] md:!top-8 relative"
         :style="{
-            top: '32px',
+            transform: $store.admin.preview ? 'translateX(0px)' : 'translateX(100%)',
             backgroundColor: $store.admin.settings.bg_color || '#FFFFFF',
-            color: $store.admin.settings.text_color || '#000000'
+            color: $store.admin.settings.text_color || '#000000',
+            fontFamily: $store.admin.settings.inherit_fonts ? 'inherit' : 'sans-serif'
         }">
+        <button @click="$store.admin.preview = !$store.admin.preview" class="absolute top-20 right-full py-2 pr-3 pl-4 rounded-l-full bg-gray-900 text-white border-0 z-50 leading-none cursor-pointer" x-text="$store.admin.preview ? 'Hide Preview' : 'Show Preview'"></button>
 
         <!-- Side Cart Header Preview -->
         <div class="bc-drawer-header">
@@ -18,16 +17,13 @@
                     <span><span class="bc-drawer-title-sep">•</span> 2</span>
                 </template>
             </h2>
-            <template x-if="$store.admin.settings.show_close_icon !== false">
-                <button class="bc-drawer-close" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7' }">
-                    <span class="dashicons dashicons-no-alt" style="color: #6b7280;"></span>
-                </button>
-            </template>
+            <button @click="$store.admin.preview = false" class="bc-drawer-close" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7' }">
+                <span class="dashicons dashicons-no-alt" style="color: #6b7280;"></span>
+            </button>
         </div>
 
         <!-- Side Cart Body Preview -->
         <div class="bc-drawer-body">
-
             <div class="bc-drawer-top-notices" style="padding: 0; width: 100%;">
                 <!-- Announcement Bar -->
                 <div x-show="$store.admin.settings.show_announcement" class="bc-announcement"

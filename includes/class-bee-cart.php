@@ -107,7 +107,6 @@ class Bee_Cart
             'cart_bubble_text'            => '#ffffff',
             'show_cart_count'             => true,
             'cart_title'                  => 'Your Cart',
-            'show_close_icon'             => true,
             'show_announcement'           => false,
             'announcement_text'           => 'Your products are reserved for {timer}!',
             'announcement_bg'             => '#000000',
