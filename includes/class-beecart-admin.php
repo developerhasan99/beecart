@@ -10,6 +10,7 @@ class BeeCart_Admin
     {
         add_action('admin_menu', array($this, 'register_menus'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
+        add_action('admin_head', array($this, 'output_global_admin_css'));
 
         // Handle AJAX save settings (Disabled for now)
         // add_action('wp_ajax_beecart_save_settings', array($this, 'ajax_save_settings'));
@@ -23,7 +24,7 @@ class BeeCart_Admin
             'manage_options',
             'beecart',
             array($this, 'render_cart_builder'),
-            'dashicons-cart',
+            BEECART_URL . 'assets/img/bee-cart-icon.svg',
             58
         );
 
@@ -46,7 +47,7 @@ class BeeCart_Admin
         wp_enqueue_media();
         // Load standard admin styles for the tab system
         wp_enqueue_style('beecart-admin-style', BEECART_URL . 'assets/css/beecart-admin.css', array(), BEECART_VERSION);
-        
+
         // Ensure Vanilla drawer classes load natively inside the admin without Tailwind conflicts
         wp_enqueue_style('beecart-drawer-style', BEECART_URL . 'assets/css/cart-drawer.css', array(), BEECART_VERSION);
 
@@ -91,4 +92,19 @@ class BeeCart_Admin
         include BEECART_PATH . 'templates/admin/cart-builder.php';
     }
 
+    public function output_global_admin_css()
+    {
+?>
+        <style id="beecart-global-admin-css">
+            #adminmenu .toplevel_page_beecart .wp-menu-image img {
+                padding: 0;
+                opacity: 0.9;
+            }
+
+            #adminmenu .toplevel_page_beecart.current .wp-menu-image img {
+                opacity: 1;
+            }
+        </style>
+<?php
+    }
 }

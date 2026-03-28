@@ -7,7 +7,7 @@
             color: $store.admin.settings.text_color || '#000000',
             fontFamily: $store.admin.settings.inherit_fonts ? 'inherit' : 'sans-serif'
         }">
-        <button @click="$store.admin.preview = !$store.admin.preview" class="absolute top-20 right-full py-2 pr-3 pl-4 rounded-l-full bg-gray-900 text-white border-0 z-50 leading-none cursor-pointer" x-text="$store.admin.preview ? 'Hide Preview' : 'Show Preview'"></button>
+        <button @click="$store.admin.preview = !$store.admin.preview" class="absolute top-32 right-full py-2 pr-3 pl-4 rounded-l-full bg-gray-900 text-white border-0 z-50 leading-none cursor-pointer" x-text="$store.admin.preview ? 'Hide Preview' : 'Show Preview'"></button>
 
         <!-- Side Cart Header Preview -->
         <div class="bc-drawer-header">

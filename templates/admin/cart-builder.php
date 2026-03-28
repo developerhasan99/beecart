@@ -45,8 +45,8 @@ $sidebar_sections = array(
         </div>
         <!-- TODO: Work on buttons to make it more prominent on mobile, we can use floating buttons on mobile also -->
         <div class="flex gap-3">
-            <button type="button" @click="window.location.reload()" class="px-4 py-2 text-sm font-medium rounded-md leading-none bg-white hover:bg-gray-100 text-gray-900 hover:text-gray-900 shadow cursor-pointer">Discard</button>
-            <button type="button" id="bee-save-settings" class="px-4 py-2 text-sm font-medium rounded-md leading-none bg-gray-900 text-white hover:bg-gray-800 shadow cursor-pointer" :disabled="$store.admin.isSaving">
+            <button type="button" @click="window.location.reload()" class="px-6 py-2.5 text-sm font-semibold rounded-full leading-none bg-transparent hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all cursor-pointer border-2 border-solid border-gray-200">Discard</button>
+            <button type="button" id="bee-save-settings" class="bg-black text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all shadow-lg shadow-amber-200/50 border-0 cursor-pointer" :disabled="$store.admin.isSaving">
                 <span x-show="!$store.admin.isSaving">Save</span>
                 <span x-show="$store.admin.isSaving">Saving...</span>
             </button>
