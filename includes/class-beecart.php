@@ -142,8 +142,7 @@ class BeeCart
 
     public function get_settings()
     {
-        $saved_settings = get_option('beecart_settings', array());
-        return wp_parse_args($saved_settings, self::get_default_settings());
+        return self::get_default_settings();
     }
 
     public function output_custom_css()

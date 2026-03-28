@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Plugin Name: BeeCart
- * Description: A premium side cart plugin with cart progress, upsells, coupons, and payment badges.
+ * Plugin Name: BeeCart – AOV Booster, Cart Drawer & Upsell Suite
+ * Description: A premium WooCommerce side cart plugin featuring AOV Booster, Cart Drawer, Upsell, Cart Progress.
  * Version: 1.0.0
  * Author: Your Name
  * Text Domain: beecart
@@ -25,7 +25,6 @@ function run_beecart()
     if (class_exists('WooCommerce')) {
         require_once BEECART_PATH . 'includes/class-beecart.php';
         require_once BEECART_PATH . 'includes/class-beecart-admin.php';
-        require_once BEECART_PATH . 'includes/class-beecart-customizer.php';
 
         $plugin = new BeeCart();
         $plugin->init();
@@ -36,11 +35,3 @@ function run_beecart()
 }
 add_action('plugins_loaded', 'run_beecart');
 
-/**
- * Handle activation
- */
-function activate_beecart()
-{
-    // Custom DB tables or setup can go here
-}
-register_activation_hook(__FILE__, 'activate_beecart');

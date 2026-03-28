@@ -11,8 +11,8 @@ class BeeCart_Admin
         add_action('admin_menu', array($this, 'register_menus'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
 
-        // Handle AJAX save settings
-        add_action('wp_ajax_beecart_save_settings', array($this, 'ajax_save_settings'));
+        // Handle AJAX save settings (Disabled for now)
+        // add_action('wp_ajax_beecart_save_settings', array($this, 'ajax_save_settings'));
     }
 
     public function register_menus()
@@ -91,17 +91,4 @@ class BeeCart_Admin
         include BEECART_PATH . 'templates/admin/cart-builder.php';
     }
 
-    public function ajax_save_settings()
-    {
-        check_ajax_referer('beecart-admin-nonce', 'security');
-
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error('Unauthorized');
-        }
-
-        $settings = isset($_POST['settings']) ? json_decode(stripslashes($_POST['settings']), true) : array();
-
-        update_option('beecart_settings', $settings);
-        wp_send_json_success('Settings saved successfully!');
-    }
 }

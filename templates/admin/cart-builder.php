@@ -34,10 +34,15 @@ $sidebar_sections = array(
 <div class="mt-5 transition-all duration-300 ease-linear" x-data :class="$store.admin.preview ? 'lg:pr-[440px]' : 'pr-5'">
     <!-- Header -->
     <div class="flex flex-wrap gap-4 items-center justify-between mb-5">
-        <h1 class="flex items-center gap-2 my-0">
-            <span>BeeCart editor</span>
-            <span class="px-2 py-0.5 rounded-full bg-white text-green-700 text-xs font-medium">Active</span>
-        </h1>
+        <div class="flex items-center gap-2">
+            <div class="bg-amber-400 p-2 rounded-xl leading-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag w-6 h-6 text-black" aria-hidden="true">
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    <path d="M3.103 6.034h17.794"></path>
+                    <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"></path>
+                </svg>
+            </div><span class="text-2xl font-bold tracking-tight text-gray-900">Bee<span class="text-amber-500">Cart</span></span>
+        </div>
         <!-- TODO: Work on buttons to make it more prominent on mobile, we can use floating buttons on mobile also -->
         <div class="flex gap-3">
             <button type="button" @click="window.location.reload()" class="px-4 py-2 text-sm font-medium rounded-md leading-none bg-white hover:bg-gray-100 text-gray-900 hover:text-gray-900 shadow cursor-pointer">Discard</button>
