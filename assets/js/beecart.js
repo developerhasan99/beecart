@@ -1,5 +1,5 @@
 const initBeeCartJS = () => {
-  Alpine.data("beeCart", (initialMinutes = 15) => ({
+  Alpine.data("beecart", (initialMinutes = 15) => ({
     isOpen: false,
     isLoading: false,
     cartHtml: "",
@@ -26,9 +26,9 @@ const initBeeCartJS = () => {
 
           const formData = new FormData(e.target);
           formData.append("action", "beecart_add_to_cart");
-          formData.append("security", beeCartData.nonce);
+          formData.append("security", beecartData.nonce);
 
-          fetch(beeCartData.ajax_url, {
+          fetch(beecartData.ajax_url, {
             method: "POST",
             body: formData,
           })
@@ -72,9 +72,9 @@ const initBeeCartJS = () => {
       try {
         const formData = new FormData();
         formData.append("action", "beecart_get_cart");
-        formData.append("security", beeCartData.nonce);
+        formData.append("security", beecartData.nonce);
 
-        const response = await fetch(beeCartData.ajax_url, {
+        const response = await fetch(beecartData.ajax_url, {
           method: "POST",
           body: formData,
         });
@@ -97,11 +97,11 @@ const initBeeCartJS = () => {
       try {
         const formData = new FormData();
         formData.append("action", "beecart_update_item");
-        formData.append("security", beeCartData.nonce);
+        formData.append("security", beecartData.nonce);
         formData.append("cart_item_key", key);
         formData.append("quantity", qty);
 
-        const response = await fetch(beeCartData.ajax_url, {
+        const response = await fetch(beecartData.ajax_url, {
           method: "POST",
           body: formData,
         });
@@ -127,11 +127,11 @@ const initBeeCartJS = () => {
       try {
         const formData = new FormData();
         formData.append("action", "beecart_add_to_cart");
-        formData.append("security", beeCartData.nonce);
+        formData.append("security", beecartData.nonce);
         formData.append("product_id", id);
         formData.append("quantity", 1);
 
-        const response = await fetch(beeCartData.ajax_url, {
+        const response = await fetch(beecartData.ajax_url, {
           method: "POST",
           body: formData,
         });
@@ -157,10 +157,10 @@ const initBeeCartJS = () => {
       try {
         const formData = new FormData();
         formData.append("action", "beecart_apply_coupon");
-        formData.append("security", beeCartData.nonce);
+        formData.append("security", beecartData.nonce);
         formData.append("coupon", code);
 
-        const response = await fetch(beeCartData.ajax_url, {
+        const response = await fetch(beecartData.ajax_url, {
           method: "POST",
           body: formData,
         });
@@ -181,7 +181,7 @@ const initBeeCartJS = () => {
     },
 
     updateHeaderBubble() {
-      document.querySelectorAll(".bee-cart-count-bubble").forEach((b) => {
+      document.querySelectorAll(".beecart-count-bubble").forEach((b) => {
         b.textContent = this.cartCount;
       });
     },

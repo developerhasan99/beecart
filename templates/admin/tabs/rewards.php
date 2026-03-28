@@ -106,7 +106,7 @@
                                 <div class="space-y-1.5">
                                     <label :for="'goal_icon_' + index" class="text-xs text-gray-500 font-bold uppercase tracking-wider">Icon</label>
                                     <select :id="'goal_icon_' + index" x-model="goal.icon" class="flex h-9 w-full items-center justify-between rounded-md border border-solid border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring">
-                                        <template x-for="(label, val) in beeCartAdminData.icons" :key="val">
+                                        <template x-for="(label, val) in beecartAdminData.icons" :key="val">
                                             <option :value="val" x-text="label"></option>
                                         </template>
                                     </select>

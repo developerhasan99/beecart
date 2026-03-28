@@ -73,9 +73,9 @@ document.addEventListener("alpine:init", () => {
       trans_coupon_placeholder: "Coupon code",
       trans_coupon_apply_btn: "Apply",
       trans_rewards_away: "You're only {amount} away from {goal}",
-      ...(Array.isArray(beeCartAdminData.settings)
+      ...(Array.isArray(beecartAdminData.settings)
         ? {}
-        : beeCartAdminData.settings),
+        : beecartAdminData.settings),
     },
     isSaving: false,
 
@@ -97,11 +97,11 @@ document.addEventListener("alpine:init", () => {
 
       try {
         const response = await jQuery.ajax({
-          url: beeCartAdminData.ajax_url,
+          url: beecartAdminData.ajax_url,
           type: "POST",
           data: {
             action: "beecart_save_settings",
-            security: beeCartAdminData.nonce,
+            security: beecartAdminData.nonce,
             settings: JSON.stringify(this.settings),
           },
         });

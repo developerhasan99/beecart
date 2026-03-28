@@ -35,7 +35,7 @@ $sidebar_sections = array(
     <!-- Header -->
     <div class="flex flex-wrap gap-4 items-center justify-between mb-5">
         <h1 class="flex items-center gap-2 my-0">
-            <span>Bee Cart editor</span>
+            <span>BeeCart editor</span>
             <span class="px-2 py-0.5 rounded-full bg-white text-green-700 text-xs font-medium">Active</span>
         </h1>
         <!-- TODO: Work on buttons to make it more prominent on mobile, we can use floating buttons on mobile also -->
@@ -72,20 +72,20 @@ $sidebar_sections = array(
         <!-- Settings Content (Middle Side) -->
         <div class="col-span-4 md:col-span-3 border border-solid border-gray-300 bg-white overflow-hidden rounded-lg min-h-[600px]">
 
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/placement.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/design.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/announcements.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/rewards.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/cart_items.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/upsells.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/addons.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/discount.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/summary.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/express_payments.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/badges.php'; ?>
-            <?php include BEE_CART_PATH . 'templates/admin/tabs/settings.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/placement.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/design.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/announcements.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/rewards.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/cart_items.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/upsells.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/addons.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/discount.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/summary.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/express_payments.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/badges.php'; ?>
+            <?php include BEECART_PATH . 'templates/admin/tabs/settings.php'; ?>
         </div>
     </div>
 </div>
 
-<?php include BEE_CART_PATH . 'templates/admin/cart-preview.php'; ?>
+<?php include BEECART_PATH . 'templates/admin/cart-preview.php'; ?>

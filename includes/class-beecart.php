@@ -3,7 +3,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-class Bee_Cart
+class BeeCart
 {
 
     public function init()
@@ -12,7 +12,7 @@ class Bee_Cart
         add_action('wp_footer', array($this, 'output_cart_drawer'));
         add_action('wp_head', array($this, 'output_custom_css'), 999);
 
-        add_shortcode('bee_cart_icon', array($this, 'cart_icon_shortcode'));
+        add_shortcode('beecart_icon', array($this, 'cart_icon_shortcode'));
 
         add_action('wp_ajax_nopriv_beecart_get_cart', array($this, 'ajax_get_cart'));
         add_action('wp_ajax_beecart_get_cart', array($this, 'ajax_get_cart'));
@@ -34,13 +34,13 @@ class Bee_Cart
         ob_start();
         $this->cart_icon_shortcode_output();
         $iconHtml = ob_get_clean();
-        $fragments['div.bee-cart-icon-wrapper'] = $iconHtml;
+        $fragments['div.beecart-icon-wrapper'] = $iconHtml;
         return $fragments;
     }
 
     public function cart_icon_shortcode_output()
     {
-        include BEE_CART_PATH . 'templates/cart-icon.php';
+        include BEECART_PATH . 'templates/cart-icon.php';
     }
 
     public function enqueue_assets()
@@ -48,20 +48,20 @@ class Bee_Cart
         if (function_exists('is_cart') && is_cart()) return;
         if (function_exists('is_checkout') && is_checkout()) return;
 
-        // We don't load bee-cart-admin.css anymore since it's tailwind
-        // wp_enqueue_style('bee-cart-admin-style', BEE_CART_URL . 'assets/css/bee-cart-admin.css', array(), BEE_CART_VERSION);
+        // We don't load beecart-admin.css anymore since it's tailwind
+        // wp_enqueue_style('beecart-admin-style', BEECART_URL . 'assets/css/beecart-admin.css', array(), BEECART_VERSION);
         
         // Native / Frontend CSS
-        wp_enqueue_style('bee-cart-style', BEE_CART_URL . 'assets/css/bee-cart.css', array(), BEE_CART_VERSION);
+        wp_enqueue_style('beecart-style', BEECART_URL . 'assets/css/beecart.css', array(), BEECART_VERSION);
         
         // The newly created Vanilla CSS classes for the generic layout
-        wp_enqueue_style('bee-cart-drawer-style', BEE_CART_URL . 'assets/css/cart-drawer.css', array(), BEE_CART_VERSION);
-        wp_enqueue_script('bee-cart-script', BEE_CART_URL . 'assets/js/bee-cart.js', array('jquery'), BEE_CART_VERSION, true);
-        wp_enqueue_script('alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js', array('bee-cart-script'), null, true);
+        wp_enqueue_style('beecart-drawer-style', BEECART_URL . 'assets/css/cart-drawer.css', array(), BEECART_VERSION);
+        wp_enqueue_script('beecart-script', BEECART_URL . 'assets/js/beecart.js', array('jquery'), BEECART_VERSION, true);
+        wp_enqueue_script('alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js', array('beecart-script'), null, true);
 
-        wp_localize_script('bee-cart-script', 'beeCartData', array(
+        wp_localize_script('beecart-script', 'beecartData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('bee-cart-nonce'),
+            'nonce'    => wp_create_nonce('beecart-nonce'),
             'settings' => $this->get_settings()
         ));
     }
@@ -142,7 +142,7 @@ class Bee_Cart
 
     public function get_settings()
     {
-        $saved_settings = get_option('bee_cart_settings', array());
+        $saved_settings = get_option('beecart_settings', array());
         return wp_parse_args($saved_settings, self::get_default_settings());
     }
 
@@ -151,7 +151,7 @@ class Bee_Cart
         $settings = $this->get_settings();
         $custom_css = isset($settings['custom_css']) ? $settings['custom_css'] : '';
         if (! empty($custom_css)) {
-            echo '<style id="bee-cart-custom-css">' . wp_strip_all_tags($custom_css) . '</style>';
+            echo '<style id="beecart-custom-css">' . wp_strip_all_tags($custom_css) . '</style>';
         }
     }
 
@@ -160,12 +160,12 @@ class Bee_Cart
         if (function_exists('is_cart') && is_cart()) return;
         if (function_exists('is_checkout') && is_checkout()) return;
 
-        include BEE_CART_PATH . 'templates/cart-drawer.php';
+        include BEECART_PATH . 'templates/cart-drawer.php';
     }
 
     public function ajax_get_cart()
     {
-        check_ajax_referer('bee-cart-nonce', 'security');
+        check_ajax_referer('beecart-nonce', 'security');
         ob_start();
         $this->render_cart_content();
         $html = ob_get_clean();
@@ -178,7 +178,7 @@ class Bee_Cart
 
     public function ajax_update_item()
     {
-        check_ajax_referer('bee-cart-nonce', 'security');
+        check_ajax_referer('beecart-nonce', 'security');
         $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
         $quantity      = isset($_POST['quantity']) ? absint($_POST['quantity']) : 0;
 
@@ -195,7 +195,7 @@ class Bee_Cart
 
     public function ajax_apply_coupon()
     {
-        check_ajax_referer('bee-cart-nonce', 'security');
+        check_ajax_referer('beecart-nonce', 'security');
         $coupon_code = sanitize_text_field($_POST['coupon']);
 
         if (! empty($coupon_code)) {
@@ -208,7 +208,7 @@ class Bee_Cart
 
     public function ajax_add_to_cart()
     {
-        check_ajax_referer('bee-cart-nonce', 'security');
+        check_ajax_referer('beecart-nonce', 'security');
 
         $product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : (isset($_POST['add-to-cart']) ? absint($_POST['add-to-cart']) : 0);
         $quantity   = empty($_POST['quantity']) ? 1 : wc_stock_amount(wp_unslash($_POST['quantity']));
@@ -236,13 +236,13 @@ class Bee_Cart
 
     public function render_cart_content()
     {
-        include BEE_CART_PATH . 'templates/cart-items.php';
+        include BEECART_PATH . 'templates/cart-items.php';
     }
 
     public function cart_icon_shortcode()
     {
         ob_start();
-        include BEE_CART_PATH . 'templates/cart-icon.php';
+        include BEECART_PATH . 'templates/cart-icon.php';
         return ob_get_clean();
     }
 }

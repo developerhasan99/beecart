@@ -30,7 +30,7 @@
             <label for="menu_placement" class="text-sm font-medium">Show Cart icon on menu</label>
             <select id="menu_placement" x-model="$store.admin.settings.menu_placement" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
                 <option value="none">None</option>
-                <template x-for="menu in beeCartAdminData.menus" :key="menu.slug">
+                <template x-for="menu in beecartAdminData.menus" :key="menu.slug">
                     <option :value="menu.slug" x-text="menu.name"></option>
                 </template>
             </select>
@@ -41,7 +41,7 @@
             <h3 class="text-sm font-semibold text-blue-900 mt-0 mb-2">Shortcode & Snippets</h3>
             <p class="text-sm text-blue-800 mb-3">You can use these shortcodes to place the cart icon manually on any page, menu, or builder.</p>
             <div class="flex items-center gap-2">
-                <code class="px-2 py-1 bg-white text-blue-900 border border-blue-200 rounded text-xs select-all">[bee_cart_icon]</code>
+                <code class="px-2 py-1 bg-white text-blue-900 border border-blue-200 rounded text-xs select-all">[beecart_icon]</code>
                 <span class="text-xs text-blue-700">Displays the floating cart toggle button.</span>
             </div>
         </div>

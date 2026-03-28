@@ -80,7 +80,7 @@
                 <div class="bc-item">
                     <template x-if="$store.admin.settings.show_item_images !== false">
                         <div class="bc-item-img-wrap" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f9fafb' }">
-                            <img src="<?php echo esc_url(BEE_CART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Preview Image" />
+                            <img src="<?php echo esc_url(BEECART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Preview Image" />
                         </div>
                     </template>
                     <div class="bc-item-details">

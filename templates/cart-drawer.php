@@ -22,9 +22,9 @@ $announcement_font_size = $settings['announcement_font_size'] ?? '13px';
 
 $enable_timer = $settings['enable_timer'] ?? false;
 ?>
-<div x-data="beeCart(<?php echo esc_attr($countdown_minutes); ?>)"
+<div x-data="beecart(<?php echo esc_attr($countdown_minutes); ?>)"
     @added_to_cart.window="openCart()"
-    @open-bee-cart.window="openCart()"
+    @open-beecart.window="openCart()"
     class="bc-drawer-wrap"
     :class="{'is-open': isOpen}"
     style="font-family: <?php echo $inherit_fonts ? 'inherit' : 'sans-serif'; ?>;">
