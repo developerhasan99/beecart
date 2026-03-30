@@ -76,9 +76,9 @@ $show_upsells = $settings['show_upsells'] ?? true;
                     ?>
                         <div class="bc-checkpoint <?php echo $reached ? 'is-reached' : ''; ?>"
                             style="left: <?php echo esc_attr($pos); ?>%; 
-                                   background-color: <?php echo $reached ? esc_attr($settings['rewards_complete_icon_color'] ?? '#4D4949') : esc_attr($settings['rewards_incomplete_icon_color'] ?? '#E2E2E2'); ?>;
-                                   color: <?php echo $reached ? '#FFFFFF' : '#4D4949'; ?>;">
-                            <span class="dashicons dashicons-<?php echo esc_attr($icon_key); ?>"></span>
+                                   background-color: <?php echo $reached ? esc_attr($settings['rewards_bar_fg'] ?? '#93D3FF') : esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>;
+                                   color: <?php echo $reached ? esc_attr($settings['rewards_complete_icon_color'] ?? '#4D4949') : esc_attr($settings['rewards_incomplete_icon_color'] ?? '#4D4949'); ?>;">
+                            <?php echo BeeCart::get_svg_icon($icon_key, 'bc-checkpoint-icon'); ?>
                             <div class="bc-checkpoint-label" style="color: <?php echo esc_attr($text_color); ?>;">
                                 <?php echo esc_html($goal['label']); ?>
                             </div>
@@ -96,7 +96,8 @@ $show_upsells = $settings['show_upsells'] ?? true;
             $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
             if ($_product && $_product->exists() && $cart_item['quantity'] > 0) {
                 $product_name  = $_product->get_name();
-                $thumbnail_url = get_the_post_thumbnail_url($_product->get_id(), 'thumbnail');
+                $thumbnail_id  = $_product->get_image_id();
+                $thumbnail_url = wp_get_attachment_image_url($thumbnail_id, 'thumbnail');
                 $product_price = $cart->get_product_price($_product);
                 $regular_price = $_product->is_type('variation') && $_product->get_regular_price() ? $_product->get_regular_price() : $_product->get_regular_price();
                 $has_sale = $_product->is_on_sale() && $regular_price;
@@ -108,14 +109,18 @@ $show_upsells = $settings['show_upsells'] ?? true;
                             <?php if ($thumbnail_url): ?>
                                 <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($product_name); ?>" />
                             <?php else: ?>
-                                <span class="dashicons dashicons-format-image"></span>
+                                <?php echo BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon'); ?>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
 
                     <div class="bc-item-details">
                         <button class="bc-item-remove" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', 0)">
-                            <span class="dashicons dashicons-trash"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                <path d="M8 6V4c0-.5.2-1 .6-1h6c.4 0 .6.5.6 1v2"></path>
+                            </svg>
                         </button>
 
                         <h4 class="bc-item-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($product_name); ?></h4>
@@ -128,14 +133,15 @@ $show_upsells = $settings['show_upsells'] ?? true;
                                 <span class="bc-item-old-price"><?php echo wc_price($regular_price); ?></span>
                             <?php endif; ?>
                             <span class="bc-item-price" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo $product_price; ?></span>
-                            <?php if ($show_savings && $has_sale): 
+                            <?php if ($show_savings && $has_sale):
                                 $discount = (float)$regular_price - (float)$_product->get_price();
                                 if ($discount > 0):
                             ?>
-                                <span class="bc-item-price" style="font-size: 13px; color: <?php echo esc_attr($savings_color); ?>;">
-                                    (<?php echo esc_html($savings_prefix); ?> <?php echo wc_price($discount * $cart_item['quantity']); ?>)
-                                </span>
-                            <?php endif; endif; ?>
+                                    <span class="bc-item-price" style="font-size: 13px; color: <?php echo esc_attr($savings_color); ?>;">
+                                        (<?php echo esc_html($savings_prefix); ?> <?php echo wc_price($discount * $cart_item['quantity']); ?>)
+                                    </span>
+                            <?php endif;
+                            endif; ?>
                         </div>
 
                         <div class="bc-item-bottom">
@@ -176,14 +182,14 @@ $show_upsells = $settings['show_upsells'] ?? true;
                 <div class="bc-upsells-list">
                     <?php while ($upsell_query->have_posts()): $upsell_query->the_post();
                         global $product;
-                        $img = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
+                        $img = wp_get_attachment_image_url($product->get_image_id(), 'thumbnail');
                     ?>
                         <div class="bc-upsell-item" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
                             <div class="bc-upsell-img-wrap">
                                 <?php if ($img): ?>
                                     <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
                                 <?php else: ?>
-                                    <span class="dashicons dashicons-format-image"></span>
+                                    <?php echo BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon'); ?>
                                 <?php endif; ?>
                             </div>
                             <div class="bc-upsell-details">
