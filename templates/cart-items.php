@@ -98,20 +98,25 @@ $show_upsells = $settings['show_upsells'] ?? true;
                 $product_name  = $_product->get_name();
                 $thumbnail_id  = $_product->get_image_id();
                 $thumbnail_url = wp_get_attachment_image_url($thumbnail_id, 'thumbnail');
-                $product_price = $cart->get_product_price($_product);
-                $regular_price = $_product->is_type('variation') && $_product->get_regular_price() ? $_product->get_regular_price() : $_product->get_regular_price();
-                $has_sale = $_product->is_on_sale() && $regular_price;
+                $item_qty = (int)$cart_item['quantity'];
+                $unit_display_price = (float)$cart_item['line_total'] / $item_qty;
+                $unit_regular_price = (float)$_product->get_regular_price();
+
+                $product_price = wc_price($unit_display_price);
+                $regular_price = $unit_regular_price;
+                $has_sale = $unit_regular_price > $unit_display_price;
                 $item_data = wc_get_formatted_cart_item_data($cart_item);
+                $product_url   = $_product->get_permalink();
         ?>
                 <div class="bc-item">
                     <?php if ($show_item_images !== false): ?>
-                        <div class="bc-item-img-wrap">
+                        <a href="<?php echo esc_url($product_url); ?>" class="bc-item-img-wrap">
                             <?php if ($thumbnail_url): ?>
                                 <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($product_name); ?>" />
                             <?php else: ?>
                                 <?php echo BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon'); ?>
                             <?php endif; ?>
-                        </div>
+                        </a>
                     <?php endif; ?>
 
                     <div class="bc-item-details">
@@ -123,9 +128,11 @@ $show_upsells = $settings['show_upsells'] ?? true;
                             </svg>
                         </button>
 
-                        <h4 class="bc-item-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($product_name); ?></h4>
-                        <?php 
-                        if ($item_data): 
+                        <a href="<?php echo esc_url($product_url); ?>" style="text-decoration: none;">
+                            <h4 class="bc-item-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($product_name); ?></h4>
+                        </a>
+                        <?php
+                        if ($item_data):
                             echo '<div class="bc-item-meta">' . wp_kses_post($item_data) . '</div>';
                         elseif ($_product->is_type('variation')):
                             $variation_data = $_product->get_variation_attributes();
@@ -139,7 +146,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                                 echo implode(', ', $meta_parts);
                                 echo '</div>';
                             endif;
-                        endif; 
+                        endif;
                         ?>
 
                         <div class="bc-item-prices">
@@ -148,7 +155,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                             <?php endif; ?>
                             <span class="bc-item-price" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo $product_price; ?></span>
                             <?php if ($show_savings && $has_sale):
-                                $discount = (float)$regular_price - (float)$_product->get_price();
+                                $discount = (float)$regular_price - $unit_display_price;
                                 if ($discount > 0):
                             ?>
                                     <span class="bc-item-price" style="font-size: 13px; color: <?php echo esc_attr($savings_color); ?>;">
@@ -164,6 +171,20 @@ $show_upsells = $settings['show_upsells'] ?? true;
                                 <span class="bc-qty-val"><?php echo esc_html($cart_item['quantity']); ?></span>
                                 <button class="bc-qty-btn plus" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', <?php echo (int) $cart_item['quantity'] + 1; ?>)">+</button>
                             </div>
+
+                            <!-- TODO: test the coupon and the badge on the frontend -->
+                            <?php
+                            $applied_coupons = WC()->cart->get_applied_coupons();
+                            if (!empty($applied_coupons)): ?>
+                                <div class="bc-item-coupons">
+                                    <?php foreach ($applied_coupons as $coupon_code): ?>
+                                        <div class="bc-coupon-badge">
+                                            <?php echo BeeCart::get_svg_icon('tag', 'bc-badge-icon'); ?>
+                                            <span><?php echo esc_html(strtoupper($coupon_code)); ?></span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
