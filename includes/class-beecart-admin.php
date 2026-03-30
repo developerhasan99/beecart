@@ -68,15 +68,6 @@ class BeeCart_Admin
             );
         }
 
-        $icons = array(
-            'truck' => 'Truck',
-            'tag' => 'Tag',
-            'gift' => 'Gift',
-            'star' => 'Star',
-            'credit-card' => 'Card',
-            'check' => 'Check',
-            'shopping-bag' => 'Bag'
-        );
 
         wp_localize_script('beecart-admin-script', 'beecartAdminData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
