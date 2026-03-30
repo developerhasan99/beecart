@@ -118,7 +118,6 @@ class BeeCart
             'show_item_images'            => true,
             'show_savings'                => true,
             'trans_savings_prefix'        => 'Save',
-            'qty_selector_type'           => 'boxed',
             'show_upsells'                => true,
             'show_upsells_on_empty'       => true,
             'upsell_title'                => 'You might also like...',

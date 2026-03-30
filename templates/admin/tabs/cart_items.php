@@ -33,19 +33,6 @@
             <p class="text-xs text-gray-400 mt-4">Control which elements of the cart items should be visible to customers.</p>
         </div>
 
-        <!-- Quantity Selector Section -->
-        <div>
-            <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-4">Quantity Selector</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label for="qty_selector_type" class="text-sm font-medium">Selector Style</label>
-                    <select id="qty_selector_type" x-model="$store.admin.settings.qty_selector_type" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
-                        <option value="boxed">Boxed with +/- buttons</option>
-                        <option value="simple">Simple input field</option>
-                    </select>
-                    <p class="text-xs text-gray-400">Choose the interaction style for quantity changes.</p>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
