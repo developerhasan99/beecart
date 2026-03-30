@@ -122,6 +122,9 @@ const initBeeCartJS = () => {
       }
     },
 
+    selectedVariations: {},
+    upsellPrices: {},
+
     async addUpsell(id) {
       this.isLoading = true;
       try {
@@ -130,6 +133,11 @@ const initBeeCartJS = () => {
         formData.append("security", beecartData.nonce);
         formData.append("product_id", id);
         formData.append("quantity", 1);
+
+        // check if has selected variation
+        if (this.selectedVariations[id]) {
+          formData.append("variation_id", this.selectedVariations[id]);
+        }
 
         const response = await fetch(beecartData.ajax_url, {
           method: "POST",

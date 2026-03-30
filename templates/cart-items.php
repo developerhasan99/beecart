@@ -217,8 +217,17 @@ $show_upsells = $settings['show_upsells'] ?? true;
                     <?php while ($upsell_query->have_posts()): $upsell_query->the_post();
                         global $product;
                         $img = wp_get_attachment_image_url($product->get_image_id(), 'thumbnail');
+                        
+                        $prices_json = '';
+                        if ($product->is_type('variable')) {
+                            $p_map = array();
+                            foreach ($product->get_available_variations() as $v) {
+                                $p_map[$v['variation_id']] = strip_tags(wc_price($v['display_price']));
+                            }
+                            $prices_json = esc_attr(json_encode($p_map));
+                        }
                     ?>
-                        <div class="bc-upsell-item">
+                        <div class="bc-upsell-item" <?php if ($prices_json) echo 'x-init="upsellPrices['.get_the_ID().'] = '.$prices_json.'"'; ?>>
                             <div class="bc-upsell-img-wrap">
                                 <?php if ($img): ?>
                                     <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
@@ -229,9 +238,28 @@ $show_upsells = $settings['show_upsells'] ?? true;
                             <div class="bc-upsell-details">
                                 <h5 class="bc-upsell-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php the_title(); ?></h5>
                                 <div class="bc-upsell-prices">
-                                    <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo $product->get_price_html(); ?></span>
+                                    <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;" x-text="upsellPrices[<?php echo get_the_ID(); ?>] && selectedVariations[<?php echo get_the_ID(); ?>] ? upsellPrices[<?php echo get_the_ID(); ?>][selectedVariations[<?php echo get_the_ID(); ?>]] : '<?php echo esc_js(strip_tags($product->get_price_html())); ?>'">
+                                        <?php echo $product->get_price_html(); ?>
+                                    </span>
                                 </div>
                                 <div class="bc-upsell-actions">
+                                    <?php if ($product->is_type('variable')): 
+                                        $product_variations = $product->get_available_variations();
+                                        if (!empty($product_variations)):
+                                    ?>
+                                        <div class="bc-upsell-select-wrap" x-init="selectedVariations[<?php echo get_the_ID(); ?>] = '<?php echo $product_variations[0]['variation_id']; ?>'">
+                                            <select x-model="selectedVariations[<?php echo get_the_ID(); ?>]" class="bc-upsell-select">
+                                                <?php foreach ($product_variations as $v): ?>
+                                                    <option value="<?php echo esc_attr($v['variation_id']); ?>">
+                                                        <?php echo esc_html(implode(' / ', array_values($v['attributes']))); ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <span class="bc-upsell-select-icon">
+                                                <?php echo BeeCart::get_svg_icon('chevron-down'); ?>
+                                            </span>
+                                        </div>
+                                    <?php endif; endif; ?>
                                     <button class="bc-upsell-add"
                                         style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
                                         @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">
