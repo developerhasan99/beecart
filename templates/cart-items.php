@@ -101,7 +101,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                 $product_price = $cart->get_product_price($_product);
                 $regular_price = $_product->is_type('variation') && $_product->get_regular_price() ? $_product->get_regular_price() : $_product->get_regular_price();
                 $has_sale = $_product->is_on_sale() && $regular_price;
-                $item_data = wc_get_formatted_cart_item_data($cart_item, true);
+                $item_data = wc_get_formatted_cart_item_data($cart_item);
         ?>
                 <div class="bc-item">
                     <?php if ($show_item_images !== false): ?>
@@ -124,9 +124,23 @@ $show_upsells = $settings['show_upsells'] ?? true;
                         </button>
 
                         <h4 class="bc-item-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($product_name); ?></h4>
-                        <?php if ($item_data): ?>
-                            <p class="bc-item-meta"><?php echo wp_kses_post($item_data); ?></p>
-                        <?php endif; ?>
+                        <?php 
+                        if ($item_data): 
+                            echo '<div class="bc-item-meta">' . wp_kses_post($item_data) . '</div>';
+                        elseif ($_product->is_type('variation')):
+                            $variation_data = $_product->get_variation_attributes();
+                            if (!empty($variation_data)):
+                                echo '<div class="bc-item-meta">';
+                                $meta_parts = array();
+                                foreach ($variation_data as $key => $value):
+                                    $label = wc_attribute_label(str_replace('attribute_', '', $key), $_product);
+                                    $meta_parts[] = esc_html($label) . ': ' . esc_html($value);
+                                endforeach;
+                                echo implode(', ', $meta_parts);
+                                echo '</div>';
+                            endif;
+                        endif; 
+                        ?>
 
                         <div class="bc-item-prices">
                             <?php if ($has_sale && $show_strikethrough !== false): ?>
