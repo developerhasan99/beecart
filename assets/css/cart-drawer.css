@@ -145,8 +145,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 20px 24px;
-  gap: 24px;
   background-color: transparent;
   transition: opacity 0.3s;
 }
@@ -166,8 +164,7 @@
 
 /* Progress Bar */
 .bc-progress-wrap {
-  padding-top: 4px;
-  padding-bottom: 16px;
+  padding: 16px 24px;
   flex-shrink: 0;
 }
 .bc-progress-text {
@@ -243,7 +240,6 @@
 .bc-item-list {
   display: flex;
   flex-direction: column;
-  gap: 24px;
   padding-top: 8px;
   flex-shrink: 0;
 }
@@ -252,6 +248,8 @@
   gap: 18px;
   position: relative;
   width: 100%;
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
 }
 .bc-item-img-wrap {
   width: 96px;
@@ -406,9 +404,9 @@
   border: 1px solid #f3f4f6;
 }
 .bc-badge-icon {
-  width: 10px;
-  height: 10px;
-  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
   color: #6b7280;
 }
 .bc-badge-text {
@@ -421,8 +419,7 @@
 
 /* Upsells */
 .bc-upsells {
-  padding-top: 32px;
-  margin-bottom: 16px;
+  padding: 24px;
   flex-shrink: 0;
   width: 100%;
 }
@@ -440,6 +437,7 @@
   margin: 0 0 24px;
   text-align: center;
   letter-spacing: -0.02em;
+  line-height: 1;
 }
 .bc-upsells-list {
   display: flex;
@@ -447,12 +445,13 @@
   gap: 16px;
 }
 .bc-upsell-item {
-  padding: 16px;
-  border-radius: 12px;
+  padding: 12px;
+  border-radius: 4px;
   display: flex;
   gap: 16px;
   align-items: center;
-  border: 1px solid transparent;
+  border: 1px solid #f0f0f0;
+  background-color: #fff;
 }
 .bc-upsell-img-wrap {
   width: 96px;
@@ -497,6 +496,7 @@
   align-items: center;
   gap: 6px;
   margin-bottom: 10px;
+  line-height: 1;
 }
 .bc-upsell-old-price {
   font-size: 13px;

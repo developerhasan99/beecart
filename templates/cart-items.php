@@ -178,9 +178,9 @@ $show_upsells = $settings['show_upsells'] ?? true;
                             if (!empty($applied_coupons)): ?>
                                 <div class="bc-item-coupons">
                                     <?php foreach ($applied_coupons as $coupon_code): ?>
-                                        <div class="bc-coupon-badge">
+                                        <div class="bc-item-discount-badge">
                                             <?php echo BeeCart::get_svg_icon('tag', 'bc-badge-icon'); ?>
-                                            <span><?php echo esc_html(strtoupper($coupon_code)); ?></span>
+                                            <span class="bc-badge-text"><?php echo esc_html(strtoupper($coupon_code)); ?></span>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
@@ -210,8 +210,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
         $upsell_query = new WP_Query($args);
         if ($upsell_query->have_posts()):
     ?>
-            <div class="bc-upsells">
-                <div class="bc-upsells-divider"></div>
+            <div class="bc-upsells" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
                 <h3 class="bc-upsells-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($upsell_title); ?></h3>
 
                 <div class="bc-upsells-list">
@@ -219,7 +218,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                         global $product;
                         $img = wp_get_attachment_image_url($product->get_image_id(), 'thumbnail');
                     ?>
-                        <div class="bc-upsell-item" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
+                        <div class="bc-upsell-item">
                             <div class="bc-upsell-img-wrap">
                                 <?php if ($img): ?>
                                     <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
