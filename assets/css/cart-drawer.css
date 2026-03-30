@@ -181,7 +181,7 @@
 }
 .bc-progress-bar {
   position: relative;
-  height: 10px;
+  height: 8px;
   border-radius: 99px;
   margin: 8px 24px 24px;
 }
@@ -342,7 +342,6 @@
 }
 .bc-item-price {
   font-size: 15px;
-  font-weight: 700;
 }
 
 .bc-item-bottom {
@@ -567,9 +566,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  height: 100%;
-  padding: 24px 0;
+  padding: 48px 0;
   flex-shrink: 0;
 }
 .bc-empty-cart-icon {

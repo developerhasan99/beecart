@@ -50,10 +50,10 @@ class BeeCart
 
         // We don't load beecart-admin.css anymore since it's tailwind
         // wp_enqueue_style('beecart-admin-style', BEECART_URL . 'assets/css/beecart-admin.css', array(), BEECART_VERSION);
-        
+
         // Native / Frontend CSS
         wp_enqueue_style('beecart-style', BEECART_URL . 'assets/css/beecart.css', array(), BEECART_VERSION);
-        
+
         // The newly created Vanilla CSS classes for the generic layout
         wp_enqueue_style('beecart-drawer-style', BEECART_URL . 'assets/css/cart-drawer.css', array(), BEECART_VERSION);
         wp_enqueue_script('beecart-script', BEECART_URL . 'assets/js/beecart.js', array('jquery'), BEECART_VERSION, true);
@@ -75,8 +75,8 @@ class BeeCart
             'menu_placement'              => 'bottom',
             'progress_type'               => 'subtotal',
             'goals'                       => array(
-                array( 'threshold' => 50, 'label' => 'Free Shipping', 'icon' => 'truck' ),
-                array( 'threshold' => 100, 'label' => '20% Discount', 'icon' => 'tag' ),
+                array('threshold' => 50, 'label' => 'Free Shipping', 'icon' => 'truck'),
+                array('threshold' => 100, 'label' => '20% Discount', 'icon' => 'tag'),
             ),
             'primary_color'               => '#000000',
             'enable_coupon'               => true,

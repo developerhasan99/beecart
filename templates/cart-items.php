@@ -105,7 +105,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
         ?>
                 <div class="bc-item">
                     <?php if ($show_item_images !== false): ?>
-                        <div class="bc-item-img-wrap" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
+                        <div class="bc-item-img-wrap">
                             <?php if ($thumbnail_url): ?>
                                 <img src="<?php echo esc_url($thumbnail_url); ?>" alt="<?php echo esc_attr($product_name); ?>" />
                             <?php else: ?>

@@ -79,7 +79,7 @@
             <div class="bc-item-list w-full">
                 <div class="bc-item">
                     <template x-if="$store.admin.settings.show_item_images !== false">
-                        <div class="bc-item-img-wrap" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f9fafb' }">
+                        <div class="bc-item-img-wrap">
                             <img src="<?php echo esc_url(BEECART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Preview Image" />
                         </div>
                     </template>
