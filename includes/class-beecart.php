@@ -23,6 +23,9 @@ class BeeCart
         add_action('wp_ajax_nopriv_beecart_apply_coupon', array($this, 'ajax_apply_coupon'));
         add_action('wp_ajax_beecart_apply_coupon', array($this, 'ajax_apply_coupon'));
 
+        add_action('wp_ajax_nopriv_beecart_remove_coupon', array($this, 'ajax_remove_coupon'));
+        add_action('wp_ajax_beecart_remove_coupon', array($this, 'ajax_remove_coupon'));
+
         add_action('wp_ajax_nopriv_beecart_add_to_cart', array($this, 'ajax_add_to_cart'));
         add_action('wp_ajax_beecart_add_to_cart', array($this, 'ajax_add_to_cart'));
 
@@ -206,6 +209,19 @@ class BeeCart
 
         if (! empty($coupon_code)) {
             WC()->cart->add_discount($coupon_code);
+        }
+
+        WC()->cart->calculate_totals();
+        $this->ajax_get_cart();
+    }
+
+    public function ajax_remove_coupon()
+    {
+        check_ajax_referer('beecart-nonce', 'security');
+        $coupon_code = sanitize_text_field($_POST['coupon']);
+
+        if (! empty($coupon_code)) {
+            WC()->cart->remove_coupon($coupon_code);
         }
 
         WC()->cart->calculate_totals();

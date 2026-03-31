@@ -295,8 +295,6 @@ $show_upsells = $settings['show_upsells'] ?? true;
 </div><!-- end bc-cart-contents-scroll -->
 <!-- Fixed Footer Area -->
 <?php if (!$is_empty): ?>
-    </div> <!-- Make the footer part of the cart flow, wait, cartHtml injects straight into a flex body... we must ensure footer is below it. Actually, wait! The cart-drawer expects cartHtml to have `<style="display:contents">` but the scrollable area is `.bc-drawer-body`. So if I leave the footer outside the list but inside `cartHtml`, it needs negative margins? No, `bc-drawer-body` is flex column. The items will sit in it. The footer can just be standard blocks inside. Oh! I changed `bc-drawer-body` to padding: 20px 24px. So I should un-pad the drawer body and manually pad the contents, OR keep it as is. Let's just create a custom `bc-drawer-footer` wrapper. -->
-
     <div class="bc-drawer-footer" style="background-color: <?php echo esc_attr($bg_color); ?>; margin-top: auto;">
 
         <?php if ($enable_coupon): ?>
@@ -333,8 +331,18 @@ $show_upsells = $settings['show_upsells'] ?? true;
             <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
                 <div class="label-wrap">
                     <span><?php echo esc_html(($settings['trans_discounts'] ?? 'Discounts') . ':'); ?></span>
+                    <?php if ($applied_coupons = $cart->get_applied_coupons()): ?>
+                        <?php foreach ($applied_coupons as $coupon_code): ?>
+                            <div class="bc-summary-discount-badge">
+                                <span class="bc-summary-badge-text"><?php echo esc_html(strtoupper($coupon_code)); ?></span>
+                                <span class="bc-badge-remove" @click.prevent="removeCoupon('<?php echo esc_js($coupon_code); ?>')">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                </span>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
-                <span class="val-wrap">- <?php echo wc_price($cart->get_total_discount()); ?></span>
+                <span class="val-wrap bc-discount-val">- <?php echo wc_price($cart->get_total_discount()); ?></span>
             </div>
         <?php endif; ?>
 

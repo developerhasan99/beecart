@@ -188,6 +188,35 @@ const initBeeCartJS = () => {
       }
     },
 
+    async removeCoupon(code) {
+      if (!code) return;
+      this.isLoading = true;
+      try {
+        const formData = new FormData();
+        formData.append("action", "beecart_remove_coupon");
+        formData.append("security", beecartData.nonce);
+        formData.append("coupon", code);
+
+        const response = await fetch(beecartData.ajax_url, {
+          method: "POST",
+          body: formData,
+        });
+        const res = await response.json();
+        if (res.success) {
+          this.cartHtml = res.data.html;
+          this.cartCount = res.data.count;
+          this.updateHeaderBubble();
+          if (typeof jQuery !== "undefined") {
+            jQuery(document.body).trigger("wc_fragment_refresh");
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
     updateHeaderBubble() {
       document.querySelectorAll(".beecart-count-bubble").forEach((b) => {
         b.textContent = this.cartCount;

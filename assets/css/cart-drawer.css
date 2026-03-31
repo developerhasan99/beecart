@@ -434,6 +434,51 @@ body.admin-bar .bc-drawer-panel {
   letter-spacing: 0.05em;
 }
 
+.bc-summary-discount-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f0fff4; /* Light green bg */
+  border: 1px dashed #22c55e; /* Dashed green border */
+  border-radius: 99px;
+  padding: 4px 6px 4px 10px;
+  line-height: 1;
+  transition: all 0.2s;
+  margin-left: 4px;
+}
+.bc-summary-badge-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #166534;
+  letter-spacing: 0.02em;
+}
+.bc-badge-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background-color: #9ca3af;
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+.bc-badge-remove:hover {
+  background-color: #6b7280;
+}
+.bc-badge-remove svg {
+  width: 10px;
+  height: 10px;
+  stroke-width: 3px;
+}
+
+.bc-discount-val {
+  color: #22c55e !important;
+  font-weight: 600 !important;
+}
+
 /* Upsells */
 .bc-upsells {
   padding: 24px;

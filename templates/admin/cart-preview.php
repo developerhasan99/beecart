@@ -180,12 +180,14 @@
             <div class="bc-summary-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
                 <div class="label-wrap">
                     <span x-text="($store.admin.settings.trans_discounts || 'Discounts') + ':'"></span>
-                    <div class="bc-item-discount-badge" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f0f1f2' }">
-                        <?php echo BeeCart::get_svg_icon('tag', 'bc-badge-icon'); ?>
-                        <span class="bc-badge-text">AUTO 5</span>
+                    <div class="bc-summary-discount-badge">
+                        <span class="bc-summary-badge-text">SAVVY15</span>
+                        <span class="bc-badge-remove">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </span>
                     </div>
                 </div>
-                <span class="val-wrap">- $36.00</span>
+                <span class="val-wrap bc-discount-val">- $19.50</span>
             </div>
 
             <div x-show="$store.admin.settings.enable_total_line" class="bc-summary-row bc-total-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
