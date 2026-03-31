@@ -44,8 +44,8 @@ document.addEventListener("alpine:init", () => {
       cart_title: "Your Cart",
       show_announcement: false,
       announcement_text: "Your products are reserved for {timer}!",
-      announcement_bg: "#000000",
-      announcement_text_color: "#ffffff",
+      announcement_bg: "#fffbeb",
+      announcement_text_color: "#92400e",
       announcement_font_size: "13px",
       announcement_bar_size: "medium",
       enable_timer: false,
@@ -57,7 +57,8 @@ document.addEventListener("alpine:init", () => {
       show_upsells_on_empty: true,
       upsell_title: "You might also like...",
       upsell_max: 3,
-      upsell_source: "random",
+      upsell_source: "best_sellers",
+      upsell_category: "",
       upsell_layout: "list",
       upsell_btn_text: "Add to Cart",
       show_trust_badges: true,
@@ -83,13 +84,40 @@ document.addEventListener("alpine:init", () => {
         : beecartAdminData.settings),
     },
     isSaving: false,
+    isDirty: false,
+    $intercept: false,
+    savedSettingsSnapshot: '',
 
     init() {
+      // Create initial snapshot for comparison
+      this.savedSettingsSnapshot = JSON.stringify(this.settings);
+
+      // We use effect to track changes and update isDirty reactively
+      Alpine.effect(() => {
+        if (this.$intercept) return;
+        // Deep compare by stringifying the reactive object
+        const current = JSON.stringify(this.settings);
+        this.isDirty = current !== this.savedSettingsSnapshot;
+      });
+
       window.addEventListener("resize", () => {
         this.preview = window.innerWidth >= 991;
-
-        console.log(this.preview);
       });
+    },
+
+    discardSettings() {
+      if (!this.isDirty) return;
+      
+      this.$intercept = true;
+      const original = JSON.parse(this.savedSettingsSnapshot);
+      
+      // Update all keys to restore state while maintaining proxy references
+      Object.keys(original).forEach(key => {
+        this.settings[key] = original[key];
+      });
+      
+      this.isDirty = false;
+      setTimeout(() => { this.$intercept = false; }, 0);
     },
 
     setTab(tab) {
@@ -112,16 +140,70 @@ document.addEventListener("alpine:init", () => {
         });
 
         if (response.success) {
-          alert(response.data);
-          window.location.reload();
+          // Update the snapshot for future comparison
+          this.savedSettingsSnapshot = JSON.stringify(this.settings);
+          this.isDirty = false;
+          this.showToast(response.data || "Settings saved!", "success");
         } else {
-          alert("Error: " + response.data);
+          this.showToast((response.data || "An error occurred."), "error");
         }
       } catch (error) {
-        alert("An error occurred while saving.");
+        this.showToast("Network error. Please try again.", "error");
       } finally {
         this.isSaving = false;
       }
+    },
+
+    showToast(message, type = "success") {
+      // Remove any existing toast
+      const existing = document.getElementById("bc-admin-toast");
+      if (existing) existing.remove();
+
+      const isSuccess = type === "success";
+      const toast = document.createElement("div");
+      toast.id = "bc-admin-toast";
+      toast.style.cssText = [
+        "position:fixed",
+        "bottom:24px",
+        "right:24px",
+        "z-index:99999",
+        "display:flex",
+        "align-items:center",
+        "gap:10px",
+        "padding:12px 18px",
+        "border-radius:10px",
+        "font-size:14px",
+        "font-weight:500",
+        "line-height:1.4",
+        "box-shadow:0 4px 20px rgba(0,0,0,0.15)",
+        "cursor:pointer",
+        "transition:opacity 0.3s ease, transform 0.3s ease",
+        "opacity:0",
+        "transform:translateY(8px)",
+        isSuccess
+          ? "background:#f0fdf4;color:#166534;border:1px solid #bbf7d0"
+          : "background:#fef2f2;color:#991b1b;border:1px solid #fecaca",
+      ].join(";");
+
+      const icon = isSuccess ? "✓" : "✕";
+      toast.innerHTML = `<strong style="font-size:16px">${icon}</strong> ${message} <span style="margin-left:8px;opacity:0.5;font-size:16px">&times;</span>`;
+
+      document.body.appendChild(toast);
+
+      // Animate in
+      requestAnimationFrame(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateY(0)";
+      });
+
+      const dismiss = () => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(8px)";
+        setTimeout(() => toast.remove(), 300);
+      };
+
+      toast.addEventListener("click", dismiss);
+      setTimeout(dismiss, 4000);
     },
   });
 

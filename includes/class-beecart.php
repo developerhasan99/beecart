@@ -5,6 +5,8 @@ if (! defined('ABSPATH')) {
 
 class BeeCart
 {
+    /** @var array|null In-request cache for settings. Cleared after save. */
+    private static $_settings_cache = null;
 
     public function init()
     {
@@ -28,6 +30,9 @@ class BeeCart
 
         add_action('wp_ajax_nopriv_beecart_add_to_cart', array($this, 'ajax_add_to_cart'));
         add_action('wp_ajax_beecart_add_to_cart', array($this, 'ajax_add_to_cart'));
+
+        // Settings save — admin-only
+        add_action('wp_ajax_beecart_save_settings', array($this, 'ajax_save_settings'));
 
         add_filter('woocommerce_add_to_cart_fragments', array($this, 'cart_bubble_fragment'));
     }
@@ -153,15 +158,29 @@ class BeeCart
 
     public function get_settings()
     {
-        return self::get_default_settings();
+        // Static class-level cache: only one DB call per PHP request
+        if (self::$_settings_cache !== null) {
+            return self::$_settings_cache;
+        }
+
+        $saved    = get_option('beecart_settings', array());
+        $defaults = self::get_default_settings();
+
+        // wp_parse_args ensures new default keys appear for existing users automatically
+        self::$_settings_cache = wp_parse_args($saved, $defaults);
+
+        return self::$_settings_cache;
     }
 
     public function output_custom_css()
     {
-        $settings = $this->get_settings();
+        $settings   = $this->get_settings();
         $custom_css = isset($settings['custom_css']) ? $settings['custom_css'] : '';
         if (! empty($custom_css)) {
-            echo '<style id="beecart-custom-css">' . wp_strip_all_tags($custom_css) . '</style>';
+            // Strip any attempt to break out of the <style> block (XSS prevention)
+            $safe_css = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', $custom_css);
+            $safe_css = wp_strip_all_tags($safe_css);
+            echo '<style id="beecart-custom-css">' . $safe_css . '</style>';
         }
     }
 
@@ -256,6 +275,121 @@ class BeeCart
             wp_send_json_error(array('error' => true));
         }
     }
+
+    // -------------------------------------------------------------------------
+    // Settings: Save, Sanitize
+    // -------------------------------------------------------------------------
+
+    public function ajax_save_settings()
+    {
+        // 1. Verify admin nonce
+        check_ajax_referer('beecart-admin-nonce', 'security');
+
+        // 2. Verify capability
+        if (! current_user_can('manage_options')) {
+            wp_send_json_error(__('Unauthorized.', 'beecart'), 403);
+        }
+
+        // 3. Decode JSON payload from JS
+        $raw = isset($_POST['settings']) ? stripslashes($_POST['settings']) : '{}';
+        $data = json_decode($raw, true);
+
+        if (! is_array($data)) {
+            wp_send_json_error(__('Invalid settings data.', 'beecart'));
+        }
+
+        // 4. Sanitize every field
+        $clean = $this->sanitize_settings($data);
+
+        // 5. Persist — autoload=false: only loaded when BeeCart needs them
+        update_option('beecart_settings', $clean, false);
+
+        // 6. Clear static cache so next get_settings() call reads fresh data
+        self::$_settings_cache = null;
+
+        wp_send_json_success(__('Settings saved.', 'beecart'));
+    }
+
+    private function sanitize_settings(array $raw): array
+    {
+        $defaults = self::get_default_settings();
+        $allowed  = array_keys($defaults);
+        $clean    = array();
+
+        $bool_keys = [
+            'enable_cart_drawer', 'auto_open_cart', 'enable_coupon',
+            'enable_badges', 'enable_rewards_bar', 'show_rewards_on_empty',
+            'inherit_fonts', 'show_strikethrough', 'enable_subtotal_line',
+            'show_announcement', 'enable_timer', 'show_item_images',
+            'show_savings', 'show_upsells', 'show_upsells_on_empty',
+            'show_trust_badges', 'show_cart_count', 'show_shipping_notice',
+            'show_subtotal_on_checkout', 'enable_total_line',
+        ];
+
+        $color_keys = [
+            'primary_color', 'bg_color', 'accent_color', 'text_color',
+            'savings_text_color', 'btn_color', 'btn_text_color',
+            'btn_hover_color', 'btn_hover_text_color', 'cart_icon_color',
+            'cart_bubble_bg', 'cart_bubble_text', 'rewards_bar_bg',
+            'rewards_bar_fg', 'rewards_complete_icon_color',
+            'rewards_incomplete_icon_color', 'announcement_bg',
+            'announcement_text_color',
+        ];
+
+        $int_keys = ['upsell_max', 'cart_icon_size', 'timer_duration'];
+        $url_keys = ['trust_badge_image'];
+
+        foreach ($allowed as $key) {
+            if (! array_key_exists($key, $raw)) {
+                continue; // leave missing keys to wp_parse_args defaults
+            }
+
+            if (in_array($key, $bool_keys, true)) {
+                $clean[$key] = (bool) $raw[$key];
+            } elseif (in_array($key, $color_keys, true)) {
+                $val = sanitize_hex_color((string) $raw[$key]);
+                if ($val) {
+                    $clean[$key] = $val;
+                }
+            } elseif (in_array($key, $int_keys, true)) {
+                $clean[$key] = absint($raw[$key]);
+            } elseif (in_array($key, $url_keys, true)) {
+                $clean[$key] = esc_url_raw((string) $raw[$key]);
+            } elseif ($key === 'goals') {
+                $clean[$key] = $this->sanitize_goals($raw[$key]);
+            } elseif ($key === 'custom_css') {
+                $safe = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', (string) $raw[$key]);
+                $clean[$key] = wp_strip_all_tags($safe);
+            } else {
+                $clean[$key] = sanitize_text_field((string) $raw[$key]);
+            }
+        }
+
+        return $clean;
+    }
+
+    private function sanitize_goals($raw): array
+    {
+        if (! is_array($raw)) {
+            return array();
+        }
+
+        $clean = array();
+        foreach ($raw as $goal) {
+            if (! is_array($goal)) {
+                continue;
+            }
+            $clean[] = array(
+                'threshold' => isset($goal['threshold']) ? floatval($goal['threshold']) : 0,
+                'label'     => isset($goal['label'])     ? sanitize_text_field($goal['label']) : '',
+                'icon'      => isset($goal['icon'])      ? sanitize_key($goal['icon'])         : 'truck',
+            );
+        }
+
+        return $clean;
+    }
+
+    // -------------------------------------------------------------------------
 
     public function render_cart_content()
     {
