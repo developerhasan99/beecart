@@ -14,7 +14,7 @@ $sidebar_sections = array(
             array('title' => 'Announcements', 'handle' => 'announcements', 'icon' => 'dashicons-megaphone'),
             array('title' => 'Tiered rewards', 'handle' => 'rewards', 'icon' => 'dashicons-awards'),
             array('title' => 'Cart items', 'handle' => 'cart_items', 'icon' => 'dashicons-cart'),
-            array('title' => 'Upsells', 'handle' => 'upsells', 'icon' => 'dashicons-arrow-up-alt2')
+            array('title' => 'Recommendations', 'handle' => 'upsells', 'icon' => 'dashicons-products')
         )
     ),
     array(

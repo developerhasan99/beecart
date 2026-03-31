@@ -196,16 +196,80 @@ $show_upsells = $settings['show_upsells'] ?? true;
         <?php if ($show_upsells):
             $upsell_title = $settings['upsell_title'] ?? 'Diese werden Sie lieben';
             $upsell_max = $settings['upsell_max'] ?? 3;
-            $upsell_source = $settings['upsell_source'] ?? 'random';
-            $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'status' => 'publish');
+            $upsell_source   = $settings['upsell_source'] ?? 'best_sellers';
+            $upsell_category = $settings['upsell_category'] ?? '';
+            $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'post_status' => 'publish');
+
             if ($upsell_source === 'best_sellers') {
                 $args['meta_key'] = 'total_sales';
-                $args['orderby'] = 'meta_value_num';
+                $args['orderby']  = 'meta_value_num';
+                $args['order']    = 'DESC';
             } elseif ($upsell_source === 'newest') {
                 $args['orderby'] = 'date';
-                $args['order'] = 'DESC';
+                $args['order']   = 'DESC';
+            } elseif ($upsell_source === 'category' && !empty($upsell_category)) {
+                $args['orderby'] = 'date';
+                $args['order']   = 'DESC';
+                $args['tax_query'] = array(array(
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $upsell_category,
+                ));
+            } elseif ($upsell_source === 'upsells') {
+                // Collect WC upsell product IDs from cart items
+                $upsell_ids = array();
+                foreach (WC()->cart->get_cart() as $cart_item) {
+                    $_p = $cart_item['data'];
+                    if ($_p) {
+                        $upsell_ids = array_merge($upsell_ids, $_p->get_upsell_ids());
+                    }
+                }
+                $upsell_ids = array_unique($upsell_ids);
+                if (!empty($upsell_ids)) {
+                    $args['post__in'] = $upsell_ids;
+                    $args['orderby']  = 'post__in';
+                } else {
+                    // Fallback to best sellers if no upsells defined
+                    $args['meta_key'] = 'total_sales';
+                    $args['orderby']  = 'meta_value_num';
+                    $args['order']    = 'DESC';
+                }
+            } elseif ($upsell_source === 'cross_sells') {
+                $cross_sell_ids = array();
+                foreach (WC()->cart->get_cart() as $cart_item) {
+                    $_p = $cart_item['data'];
+                    if ($_p) {
+                        $cross_sell_ids = array_merge($cross_sell_ids, $_p->get_cross_sell_ids());
+                    }
+                }
+                $cross_sell_ids = array_unique($cross_sell_ids);
+                if (!empty($cross_sell_ids)) {
+                    $args['post__in'] = $cross_sell_ids;
+                    $args['orderby']  = 'post__in';
+                } else {
+                    $args['meta_key'] = 'total_sales';
+                    $args['orderby']  = 'meta_value_num';
+                    $args['order']    = 'DESC';
+                }
+            } elseif ($upsell_source === 'related') {
+                $related_ids = array();
+                foreach (WC()->cart->get_cart() as $cart_item) {
+                    $related_ids = array_merge($related_ids, wc_get_related_products($cart_item['product_id'], $upsell_max));
+                }
+                $related_ids = array_unique($related_ids);
+                if (!empty($related_ids)) {
+                    $args['post__in'] = array_slice($related_ids, 0, $upsell_max);
+                    $args['orderby']  = 'post__in';
+                } else {
+                    $args['meta_key'] = 'total_sales';
+                    $args['orderby']  = 'meta_value_num';
+                    $args['order']    = 'DESC';
+                }
             } else {
-                $args['orderby'] = 'rand';
+                // Default fallback
+                $args['meta_key'] = 'total_sales';
+                $args['orderby']  = 'meta_value_num';
+                $args['order']    = 'DESC';
             }
             $upsell_query = new WP_Query($args);
             if ($upsell_query->have_posts()):
