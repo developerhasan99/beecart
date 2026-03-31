@@ -320,7 +320,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
         <?php if ($cart->get_total_discount() > 0): ?>
             <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
                 <div class="label-wrap">
-                    <span><?php echo esc_html($settings['trans_savings'] ?? 'Discounts'); ?></span>
+                    <span><?php echo esc_html(($settings['trans_discounts'] ?? 'Discounts') . ':'); ?></span>
                 </div>
                 <span class="val-wrap">- <?php echo wc_price($cart->get_total_discount()); ?></span>
             </div>

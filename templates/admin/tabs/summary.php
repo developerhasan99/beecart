@@ -14,6 +14,11 @@
                 <label for="trans_subtotal" class="text-sm font-medium">Subtotal text</label>
                 <input type="text" id="trans_subtotal" x-model="$store.admin.settings.trans_subtotal" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
             </div>
+
+            <div class="space-y-2">
+                <label for="trans_discounts" class="text-sm font-medium">Discounts text</label>
+                <input type="text" id="trans_discounts" x-model="$store.admin.settings.trans_discounts" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+            </div>
         </div>
 
         <div class="border-t border-gray-100"></div>

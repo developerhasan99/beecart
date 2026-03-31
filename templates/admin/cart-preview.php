@@ -108,7 +108,7 @@
                                 <button class="bc-qty-btn plus">+</button>
                             </div>
                             <div class="bc-item-discount-badge" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7' }">
-                                <span class="dashicons dashicons-tag bc-badge-icon"></span>
+                                <?php echo BeeCart::get_svg_icon('tag', 'bc-badge-icon'); ?>
                                 <span class="bc-badge-text">AUTO 5</span>
                             </div>
                         </div>
@@ -170,9 +170,9 @@
 
             <div class="bc-summary-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
                 <div class="label-wrap">
-                    <span>Discounts:</span>
+                    <span x-text="($store.admin.settings.trans_discounts || 'Discounts') + ':'"></span>
                     <div class="bc-item-discount-badge" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f0f1f2' }">
-                        <span class="dashicons dashicons-tag bc-badge-icon"></span>
+                        <?php echo BeeCart::get_svg_icon('tag', 'bc-badge-icon'); ?>
                         <span class="bc-badge-text">AUTO 5</span>
                     </div>
                 </div>
