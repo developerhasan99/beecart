@@ -679,6 +679,12 @@ body.admin-bar .bc-drawer-panel {
 .bc-summary-row .val-wrap {
   font-weight: 500;
 }
+.bc-total-row {
+  font-weight: 700 !important;
+}
+.bc-total-row .val-wrap {
+  font-weight: 700 !important;
+}
 .bc-shipping-notice {
   font-size: 12px;
   opacity: 0.6;

@@ -310,6 +310,13 @@ $show_upsells = $settings['show_upsells'] ?? true;
             </div>
         <?php endif; ?>
 
+        <?php if ($enable_subtotal_line): ?>
+            <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
+                <span><?php echo esc_html($settings['trans_subtotal'] ?? 'Subtotal'); ?></span>
+                <span class="val-wrap"><?php echo $cart->get_cart_subtotal(); ?></span>
+            </div>
+        <?php endif; ?>
+
         <?php if ($cart->get_total_discount() > 0): ?>
             <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
                 <div class="label-wrap">
@@ -319,10 +326,10 @@ $show_upsells = $settings['show_upsells'] ?? true;
             </div>
         <?php endif; ?>
 
-        <?php if ($enable_subtotal_line): ?>
-            <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
-                <span><?php echo esc_html($settings['trans_subtotal'] ?? 'Subtotal'); ?></span>
-                <span class="val-wrap"><?php echo $cart->get_cart_subtotal(); ?></span>
+        <?php if ($settings['enable_total_line'] ?? true): ?>
+            <div class="bc-summary-row bc-total-row" style="color: <?php echo esc_attr($text_color); ?>;">
+                <span><?php echo esc_html($settings['trans_total'] ?? 'Total'); ?></span>
+                <span class="val-wrap"><?php echo $cart->get_total(); ?></span>
             </div>
         <?php endif; ?>
 

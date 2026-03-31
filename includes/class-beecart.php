@@ -139,6 +139,8 @@ class BeeCart
             'show_shipping_notice'        => true,
             'shipping_notice_text'        => 'Shipping and taxes will be calculated at checkout.',
             'show_subtotal_on_checkout'   => true,
+            'enable_total_line'           => true,
+            'trans_total'                 => 'Total',
         );
     }
 

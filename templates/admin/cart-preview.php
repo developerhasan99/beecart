@@ -163,6 +163,11 @@
                 <button class="bc-coupon-btn" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7', color: $store.admin.settings.text_color || '#000000' }" x-text="$store.admin.settings.trans_coupon_apply_btn || 'Apply'"></button>
             </div>
 
+            <div x-show="$store.admin.settings.enable_subtotal_line" class="bc-summary-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
+                <span x-text="$store.admin.settings.trans_subtotal || 'Subtotal'"></span>
+                <span class="val-wrap">$120.00</span>
+            </div>
+
             <div class="bc-summary-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
                 <div class="label-wrap">
                     <span>Discounts:</span>
@@ -174,9 +179,9 @@
                 <span class="val-wrap">- $36.00</span>
             </div>
 
-            <div x-show="$store.admin.settings.enable_subtotal_line" class="bc-summary-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
-                <span x-text="$store.admin.settings.trans_subtotal || 'Subtotal'"></span>
-                <span class="val-wrap">$120.00</span>
+            <div x-show="$store.admin.settings.enable_total_line" class="bc-summary-row bc-total-row" :style="{ color: $store.admin.settings.text_color || '#000000' }">
+                <span x-text="$store.admin.settings.trans_total || 'Total'"></span>
+                <span class="val-wrap">$84.00</span>
             </div>
 
             <div x-show="$store.admin.settings.show_shipping_notice" class="bc-shipping-notice" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="$store.admin.settings.shipping_notice_text || 'Shipping and taxes will be calculated at checkout.'"></div>
