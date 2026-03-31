@@ -179,6 +179,8 @@
                 <span class="val-wrap">$120.00</span>
             </div>
 
+            <div x-show="$store.admin.settings.show_shipping_notice" class="bc-shipping-notice" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="$store.admin.settings.shipping_notice_text || 'Shipping and taxes will be calculated at checkout.'"></div>
+
             <div class="bc-checkout-btn-wrap">
                 <button class="bc-checkout-btn"
                     @mouseenter="$event.target.style.backgroundColor = ($store.admin.settings.btn_hover_color || '#333333'); $event.target.style.color = ($store.admin.settings.btn_hover_text_color || '#e9e9e9')"
@@ -189,8 +191,12 @@
                         borderRadius: $store.admin.settings.btn_radius || '4px'
                     }">
                     <span x-text="$store.admin.settings.trans_checkout_btn || 'Zur Kasse'"></span>
-                    <span class="bc-checkout-sep">•</span>
-                    <span>€84,00</span>
+                    <template x-if="$store.admin.settings.show_subtotal_on_checkout">
+                        <span style="display: contents;">
+                            <span class="bc-checkout-sep">•</span>
+                            <span>€84,00</span>
+                        </span>
+                    </template>
                 </button>
             </div>
 

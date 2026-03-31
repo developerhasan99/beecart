@@ -71,6 +71,9 @@ document.addEventListener("alpine:init", () => {
       trans_coupon_placeholder: "Coupon code",
       trans_coupon_apply_btn: "Apply",
       trans_rewards_away: "You're only {amount} away from {goal}",
+      show_shipping_notice: true,
+      shipping_notice_text: "Shipping and taxes will be calculated at checkout.",
+      show_subtotal_on_checkout: true,
       ...(Array.isArray(beecartAdminData.settings)
         ? {}
         : beecartAdminData.settings),

@@ -679,6 +679,12 @@ body.admin-bar .bc-drawer-panel {
 .bc-summary-row .val-wrap {
   font-weight: 500;
 }
+.bc-shipping-notice {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 4px;
+  line-height: 1.4;
+}
 
 .bc-checkout-btn-wrap {
   padding-top: 4px;

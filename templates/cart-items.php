@@ -326,14 +326,22 @@ $show_upsells = $settings['show_upsells'] ?? true;
             </div>
         <?php endif; ?>
 
+        <?php if ($settings['show_shipping_notice'] ?? true): ?>
+            <div class="bc-shipping-notice" style="color: <?php echo esc_attr($text_color); ?>;">
+                <?php echo esc_html($settings['shipping_notice_text'] ?? 'Shipping and taxes will be calculated at checkout.'); ?>
+            </div>
+        <?php endif; ?>
+
         <div class="bc-checkout-btn-wrap">
             <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="bc-checkout-btn"
                 @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
                 @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
                 style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;">
                 <span><?php echo esc_html($settings['trans_checkout_btn'] ?? 'Zur Kasse'); ?></span>
-                <span class="bc-checkout-sep">•</span>
-                <span><?php echo $cart->get_total(); ?></span>
+                <?php if ($settings['show_subtotal_on_checkout'] ?? true): ?>
+                    <span class="bc-checkout-sep">•</span>
+                    <span><?php echo $cart->get_total(); ?></span>
+                <?php endif; ?>
             </a>
         </div>
 
