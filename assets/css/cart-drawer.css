@@ -98,17 +98,11 @@ body.admin-bar .bc-drawer-panel {
 }
 
 /* Announcements & Timers */
-.bc-drawer-top-notices {
-  padding: 20px 24px 0;
-  flex-shrink: 0;
-  width: 100%;
-}
 .bc-announcement {
   text-align: center;
   font-weight: 500;
-  border-radius: 8px;
-  margin-bottom: 16px;
   width: 100%;
+  border-bottom: 1px solid #d1d5db;
 }
 .bc-announcement.size-small {
   padding: 8px;
@@ -121,29 +115,6 @@ body.admin-bar .bc-drawer-panel {
 .bc-announcement.size-large {
   padding: 16px;
   font-size: 16px;
-}
-
-.bc-timer {
-  background-color: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #92400e;
-  border-radius: 8px;
-  padding: 12px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  margin-top: 16px;
-}
-.bc-timer:empty {
-  display: none;
-}
-.bc-timer-val {
-  font-size: 18px;
 }
 
 /* Body Content Area */
@@ -227,9 +198,9 @@ body.admin-bar .bc-drawer-panel {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  padding: 6px;
+  width: 28px;
+  height: 28px;
+  padding: 5px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -527,6 +498,7 @@ body.admin-bar .bc-drawer-panel {
   mix-blend-mode: multiply;
   opacity: 0.9;
   flex-shrink: 0;
+  border: 1px solid #f3f4f6;
 }
 .bc-upsell-img-wrap img {
   max-width: 100%;
@@ -590,6 +562,19 @@ body.admin-bar .bc-drawer-panel {
   background: #fff;
   box-shadow: none;
 }
+
+/* TO FIX WP ADMIN STYLE OVERRIDING */
+body.wp-admin .bc-upsell-select {
+  font-size: 13px;
+  color: #374151;
+  border-radius: 4px;
+  padding: 0 8px;
+  appearance: none;
+  background: #fff;
+  box-shadow: none;
+  border: 1px solid #d1d5db;
+}
+
 .bc-upsell-select:focus {
   outline: none;
   border-color: #9ca3af;
