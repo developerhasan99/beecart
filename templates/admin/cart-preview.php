@@ -161,10 +161,10 @@
             <div x-show="$store.admin.settings.enable_coupon" class="bc-coupon-accordion" x-data="{ open: false }">
                 <button type="button" @click="open = !open" class="bc-coupon-toggle" :style="{ color: $store.admin.settings.text_color || '#000000' }">
                     <span x-text="$store.admin.settings.trans_coupon_accordion_title || 'Have a Coupon?'"></span>
-                    <span class="dashicons dashicons-arrow-down-alt2 transition-transform duration-200" :class="{ 'rotate-180': open }"></span>
+                    <span class="dashicons dashicons-arrow-down-alt2 bc-coupon-toggle-icon" :class="{ 'is-open': open }"></span>
                 </button>
-                <div x-show="open" x-collapse 
-                     class="bc-coupon-accordion-content mt-3">
+                <div x-show="open" x-collapse
+                    class="bc-coupon-accordion-content">
                     <div class="bc-coupon-wrap">
                         <input type="text" :placeholder="$store.admin.settings.trans_coupon_placeholder || 'Coupon code'" class="bc-coupon-input">
                         <button class="bc-coupon-btn" :style="{ backgroundColor: $store.admin.settings.accent_color || '#f6f6f7', color: $store.admin.settings.text_color || '#000000', borderRadius: $store.admin.settings.btn_radius || '4px' }" x-text="$store.admin.settings.trans_coupon_apply_btn || 'Apply'"></button>

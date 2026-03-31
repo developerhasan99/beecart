@@ -52,7 +52,8 @@ class BeeCart_Admin
         wp_enqueue_style('beecart-drawer-style', BEECART_URL . 'assets/css/cart-drawer.css', array(), BEECART_VERSION);
 
         wp_enqueue_script('beecart-admin-script', BEECART_URL . 'assets/js/beecart-admin.js', array('jquery'), BEECART_VERSION, true);
-        wp_enqueue_script('alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js', array('beecart-admin-script'), null, true);
+        wp_enqueue_script('alpine-collapse', 'https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js', array('beecart-admin-script'), null, true);
+        wp_enqueue_script('alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js', array('alpine-collapse'), null, true);
 
         // For the preview, we'll also need the frontend styles/scripts
         wp_enqueue_style('beecart-style', BEECART_URL . 'assets/css/beecart.css', array(), BEECART_VERSION);

@@ -632,6 +632,7 @@ body.admin-bar .bc-drawer-panel {
   padding: 4px;
   background: #fff;
   transition: border-color 0.2s;
+  margin-top: 12px;
 }
 .bc-coupon-wrap:focus-within {
   border-color: #9ca3af;
