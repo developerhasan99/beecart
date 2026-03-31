@@ -72,6 +72,7 @@ document.addEventListener("alpine:init", () => {
       trans_coupon_apply_btn: "Apply",
       trans_rewards_away: "You're only {amount} away from {goal}",
       trans_discounts: "Discounts",
+      trans_coupon_accordion_title: "Have a Coupon?",
       show_shipping_notice: true,
       shipping_notice_text: "Shipping and taxes will be calculated at checkout.",
       show_subtotal_on_checkout: true,

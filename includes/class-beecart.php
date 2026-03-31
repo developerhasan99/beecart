@@ -57,7 +57,8 @@ class BeeCart
         // The newly created Vanilla CSS classes for the generic layout
         wp_enqueue_style('beecart-drawer-style', BEECART_URL . 'assets/css/cart-drawer.css', array(), BEECART_VERSION);
         wp_enqueue_script('beecart-script', BEECART_URL . 'assets/js/beecart.js', array('jquery'), BEECART_VERSION, true);
-        wp_enqueue_script('alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js', array('beecart-script'), null, true);
+        wp_enqueue_script('alpine-collapse', 'https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js', array('beecart-script'), null, true);
+        wp_enqueue_script('alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js', array('alpine-collapse'), null, true);
 
         wp_localize_script('beecart-script', 'beecartData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -137,6 +138,7 @@ class BeeCart
             'trans_coupon_apply_btn'      => 'Apply',
             'trans_rewards_away'          => "You're only {amount} away from {goal}",
             'trans_discounts'             => 'Discounts',
+            'trans_coupon_accordion_title' => 'Have a Coupon?',
             'show_shipping_notice'        => true,
             'shipping_notice_text'        => 'Shipping and taxes will be calculated at checkout.',
             'show_subtotal_on_checkout'   => true,

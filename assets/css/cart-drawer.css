@@ -625,42 +625,78 @@ body.admin-bar .bc-drawer-panel {
 
 .bc-coupon-wrap {
   display: flex;
-  gap: 8px;
+  align-items: center;
   width: 100%;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  padding: 4px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+.bc-coupon-wrap:focus-within {
+  border-color: #9ca3af;
 }
 .bc-coupon-input {
   flex: 1;
-  height: 44px;
-  padding: 0 14px;
+  height: 38px;
+  padding: 0 12px;
   font-size: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  background: #fff;
-  margin: 0;
+  border: none !important;
+  background: transparent !important;
+  margin: 0 !important;
   appearance: none;
-  box-shadow: none;
+  box-shadow: none !important;
   min-width: 0;
-  transition: border-color 0.2s;
-}
-.bc-coupon-input:focus {
-  outline: none;
-  border-color: #9ca3af;
+  outline: none !important;
 }
 .bc-coupon-btn {
-  height: 44px;
-  padding: 0 20px;
-  font-size: 15px;
+  height: 38px;
+  padding: 0 16px;
+  font-size: 13px;
   font-weight: 600;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: filter 0.2s;
+  transition: opacity 0.2s;
   flex-shrink: 0;
 }
 .bc-coupon-btn:hover {
-  filter: brightness(0.95);
+  opacity: 0.9;
+}
+.bc-coupon-accordion {
+  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 16px;
+  margin-bottom: 4px;
+}
+.bc-coupon-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  line-height: 1;
+}
+.bc-coupon-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+.bc-coupon-toggle-icon.is-open {
+  transform: rotate(180deg);
+}
+.bc-coupon-accordion-content {
+  overflow: hidden;
 }
 
 .bc-summary-row {

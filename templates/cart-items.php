@@ -300,13 +300,25 @@ $show_upsells = $settings['show_upsells'] ?? true;
     <div class="bc-drawer-footer" style="background-color: <?php echo esc_attr($bg_color); ?>; margin-top: auto;">
 
         <?php if ($enable_coupon): ?>
-            <div class="bc-coupon-wrap">
-                <input type="text" x-ref="couponCode" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bc-coupon-input">
-                <button class="bc-coupon-btn"
-                    style="background-color: <?php echo esc_attr($accent_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>"
-                    @click.prevent="applyCoupon($refs.couponCode.value)">
-                    <?php echo esc_html($settings['trans_coupon_apply_btn'] ?? 'Apply'); ?>
+            <div class="bc-coupon-accordion" x-data="{ open: false }">
+                <button type="button" @click="open = !open" class="bc-coupon-toggle" style="color: <?php echo esc_attr($text_color); ?>;">
+                    <span><?php echo esc_html($settings['trans_coupon_accordion_title'] ?? 'Have a Coupon?'); ?></span>
+                    <span class="bc-coupon-toggle-icon" :class="{ 'is-open': open }">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"></path></svg>
+                    </span>
                 </button>
+                <div x-show="open" x-collapse 
+                     class="bc-coupon-accordion-content"
+                     style="margin-top: 12px;">
+                    <div class="bc-coupon-wrap">
+                        <input type="text" x-ref="couponCode" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bc-coupon-input">
+                        <button class="bc-coupon-btn"
+                            style="background-color: <?php echo esc_attr($accent_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>"
+                            @click.prevent="applyCoupon($refs.couponCode.value)">
+                            <?php echo esc_html($settings['trans_coupon_apply_btn'] ?? 'Apply'); ?>
+                        </button>
+                    </div>
+                </div>
             </div>
         <?php endif; ?>
 

@@ -14,6 +14,11 @@
 
         <div class="space-y-4">
             <div class="space-y-2">
+                <label class="text-sm font-medium">Accordion title text</label>
+                <input type="text" x-model="$store.admin.settings.trans_coupon_accordion_title" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+            </div>
+
+            <div class="space-y-2">
                 <label class="text-sm font-medium">Coupon placeholder text</label>
                 <input type="text" x-model="$store.admin.settings.trans_coupon_placeholder" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
             </div>
