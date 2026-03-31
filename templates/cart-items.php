@@ -48,6 +48,7 @@ $show_trust_badges = $settings['show_trust_badges'] ?? true;
 $show_upsells = $settings['show_upsells'] ?? true;
 ?>
 
+<div class="bc-cart-contents-scroll">
 <!-- Scrollable Inner Content Area -->
 <?php if ($enable_rewards_bar && (!$is_empty || ($settings['show_rewards_on_empty'] ?? true))): ?>
     <?php if (!empty($goals)): ?>
@@ -291,6 +292,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
     </div>
 <?php endif; ?>
 
+</div><!-- end bc-cart-contents-scroll -->
 <!-- Fixed Footer Area -->
 <?php if (!$is_empty): ?>
     </div> <!-- Make the footer part of the cart flow, wait, cartHtml injects straight into a flex body... we must ensure footer is below it. Actually, wait! The cart-drawer expects cartHtml to have `<style="display:contents">` but the scrollable area is `.bc-drawer-body`. So if I leave the footer outside the list but inside `cartHtml`, it needs negative margins? No, `bc-drawer-body` is flex column. The items will sit in it. The footer can just be standard blocks inside. Oh! I changed `bc-drawer-body` to padding: 20px 24px. So I should un-pad the drawer body and manually pad the contents, OR keep it as is. Let's just create a custom `bc-drawer-footer` wrapper. -->
