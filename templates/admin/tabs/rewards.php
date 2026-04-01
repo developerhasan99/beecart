@@ -43,11 +43,17 @@
                 </div>
                 <!-- Stacking Direction -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Bars Stacking Logic</label>
+                    <label class="text-sm font-medium">Bars Stacking Layout</label>
                     <select x-model="$store.admin.settings.rewards_bars_layout" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
                         <option value="column">Stacked (Rows)</option>
                         <option value="row">Side-by-side (Columns)</option>
                     </select>
+                </div>
+
+
+                <div class="col-span-2 p-3 rounded-md bg-amber-50 border border-solid border-amber-200 text-amber-800 text-xs flex items-center gap-3">
+                    <span class="dashicons dashicons-info-outline !text-[20px] !w-5 !h-5 flex items-center justify-center text-amber-600"></span>
+                    <p class="m-0 font-medium">The progress bar preview might not be 100% accurate, but it will appear as expected on the frontend.</p>
                 </div>
 
             </div>
