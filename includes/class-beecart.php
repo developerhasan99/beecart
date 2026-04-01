@@ -35,6 +35,35 @@ class BeeCart
         add_action('wp_ajax_beecart_save_settings', array($this, 'ajax_save_settings'));
 
         add_filter('woocommerce_add_to_cart_fragments', array($this, 'cart_bubble_fragment'));
+        add_filter('wp_nav_menu_items', array($this, 'append_cart_icon_to_menu'), 10, 2);
+    }
+
+    public function append_cart_icon_to_menu($items, $args)
+    {
+        $settings = $this->get_settings();
+        $placement = $settings['menu_placement'] ?? 'none';
+
+        if ($placement === 'none') {
+            return $items;
+        }
+
+        // Try to match the menu slug
+        $menu_slug = '';
+        if (isset($args->menu) && is_object($args->menu)) {
+            $menu_slug = $args->menu->slug;
+        } elseif (isset($args->menu)) {
+            $term = get_term_by('id', $args->menu, 'nav_menu');
+            if ($term) {
+                $menu_slug = $term->slug;
+            }
+        }
+
+        // Also check if the 'placement' matches the 'theme_location'
+        if ($menu_slug === $placement || (isset($args->theme_location) && $args->theme_location === $placement)) {
+            $items .= '<li class="menu-item beecart-menu-item">' . $this->cart_icon_shortcode() . '</li>';
+        }
+
+        return $items;
     }
 
     public function cart_bubble_fragment($fragments)

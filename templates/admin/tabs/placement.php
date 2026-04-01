@@ -22,9 +22,12 @@
             <label for="menu_placement" class="text-sm font-medium">Show Cart icon on menu</label>
             <select id="menu_placement" x-model="$store.admin.settings.menu_placement" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
                 <option value="none">None</option>
-                <template x-for="menu in beecartAdminData.menus" :key="menu.slug">
-                    <option :value="menu.slug" x-text="menu.name"></option>
-                </template>
+                <?php 
+                $menus = get_terms('nav_menu', array('hide_empty' => false));
+                foreach ($menus as $menu) : 
+                ?>
+                    <option value="<?php echo esc_attr($menu->slug); ?>"><?php echo esc_html($menu->name); ?></option>
+                <?php endforeach; ?>
             </select>
             <p class="text-xs text-gray-500 mt-1">Select a menu to automatically append the cart icon.</p>
         </div>
