@@ -10,12 +10,15 @@ const initBeeCartJS = () => {
     init() {
       const settings = beecartData.settings || {};
       const enableDrawer = settings.enable_cart_drawer !== undefined ? settings.enable_cart_drawer : true;
+      const autoOpen = settings.auto_open_cart !== undefined ? settings.auto_open_cart : true;
 
       // Bind WooCommerce added to cart event
       if (typeof jQuery !== "undefined") {
         jQuery(document.body).on("added_to_cart", () => {
-          if (enableDrawer) {
+          if (enableDrawer && autoOpen) {
             this.openCart();
+          } else {
+            this.getCart(); // Still fetch fresh data silently
           }
         });
 
@@ -28,8 +31,11 @@ const initBeeCartJS = () => {
 
           e.preventDefault();
           this.isLoading = true;
-          this.isOpen = true; // Open immediately to show loading spinner
-          document.body.style.overflow = "hidden";
+          
+          if (autoOpen) {
+            this.isOpen = true; // Open immediately to show loading spinner
+            document.body.style.overflow = "hidden";
+          }
 
           const formData = new FormData(e.target);
           formData.append("action", "beecart_add_to_cart");
