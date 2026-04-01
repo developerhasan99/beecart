@@ -64,7 +64,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                     <?php endif; ?>
                 </div>
 
-                <div class="bc-progress-bar" style="background-color: <?php echo esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>;">
+                <div class="bc-progress-bar" style="background-color: <?php echo esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>; margin-bottom: <?php echo ($bar['show_labels'] ?? true) ? '24px' : '0'; ?>;">
                     <div class="bc-progress-fill" style="width: <?php echo esc_attr($percent); ?>%; background-color: <?php echo esc_attr($settings['rewards_bar_fg'] ?? '#93D3FF'); ?>;"></div>
 
                     <div class="bc-checkpoints">
@@ -79,9 +79,11 @@ $show_upsells = $settings['show_upsells'] ?? true;
                                    background-color: <?php echo $reached ? esc_attr($settings['rewards_bar_fg'] ?? '#93D3FF') : esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>;
                                    color: <?php echo $reached ? esc_attr($settings['rewards_complete_icon_color'] ?? '#4D4949') : esc_attr($settings['rewards_incomplete_icon_color'] ?? '#4D4949'); ?>;">
                                 <?php echo BeeCart::get_svg_icon($icon_key, 'bc-checkpoint-icon'); ?>
-                                <div class="bc-checkpoint-label" style="color: <?php echo esc_attr($text_color); ?>;">
-                                    <?php echo esc_html($goal['label']); ?>
-                                </div>
+                                <?php if ($bar['show_labels'] ?? true): ?>
+                                    <div class="bc-checkpoint-label" style="color: <?php echo esc_attr($text_color); ?>;">
+                                        <?php echo esc_html($goal['label']); ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
                     </div>

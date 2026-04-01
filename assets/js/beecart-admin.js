@@ -11,6 +11,7 @@ document.addEventListener("alpine:init", () => {
           type: "subtotal",
           away_text: "You're only {amount} away from {goal}",
           completed_text: "🎉 Congratulations! You have unlocked all rewards.",
+          show_labels: true,
           checkpoints: [
             { threshold: 50, label: "Free Shipping", icon: "truck" },
             { threshold: 100, label: "10% Discount", icon: "tag" },
@@ -87,6 +88,7 @@ document.addEventListener("alpine:init", () => {
         type: "subtotal",
         away_text: "You're only {amount} away from {goal}",
         completed_text: "🎉 Congratulations! You have unlocked all rewards.",
+        show_labels: true,
         checkpoints: [
           { threshold: 50, label: "Free Shipping", icon: "truck" },
         ],

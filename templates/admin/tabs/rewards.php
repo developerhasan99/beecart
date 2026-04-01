@@ -84,6 +84,10 @@
                                     <label class="text-sm font-medium">Completion Message</label>
                                     <textarea x-model="bar.completed_text" rows="2" class="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"></textarea>
                                 </div>
+                                <div class="flex items-center space-x-2 pt-1">
+                                    <input type="checkbox" :id="'show_labels_' + barIndex" x-model="bar.show_labels" class="peer h-4 w-4 shrink-0 rounded-sm border border-gray-900 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                    <label :for="'show_labels_' + barIndex" class="text-sm font-medium leading-none">Show label on checkpoint</label>
+                                </div>
                             </div>
 
                             <!-- Right: Checkpoints -->

@@ -43,7 +43,6 @@
 
             <div class="bc-cart-contents-scroll">
                 <!-- Progress Bar Component -->
-                <!-- Progress Bar Component -->
                 <template x-for="(bar, barIndex) in $store.admin.settings.progress_bars" :key="barIndex">
                     <div x-show="$store.admin.settings.enable_rewards_bar" class="bc-progress-wrap">
                         <div class="bc-progress-text" :style="{ color: $store.admin.settings.text_color || '#000000' }">
@@ -55,7 +54,10 @@
                             </template>
                         </div>
 
-                        <div class="bc-progress-bar" :style="{ backgroundColor: $store.admin.settings.rewards_bar_bg || '#E2E2E2' }">
+                        <div class="bc-progress-bar" :style="{ 
+                            backgroundColor: $store.admin.settings.rewards_bar_bg || '#E2E2E2',
+                            marginBottom: (bar.show_labels !== false) ? '24px' : '0px'
+                         }">
                             <div class="bc-progress-fill" :style="{ width: (barIndex === 0 ? '65%' : '35%'), backgroundColor: $store.admin.settings.rewards_bar_fg || '#93D3FF' }"></div>
 
                             <div class="bc-checkpoints">
@@ -67,7 +69,9 @@
                                             color: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) <= (barIndex === 0 ? 65 : 35) ? ($store.admin.settings.rewards_complete_icon_color || '#4D4949') : ($store.admin.settings.rewards_incomplete_icon_color || '#4D4949')
                                         }">
                                         <span x-html="beecartAdminData.icon_svgs[cp.icon || 'truck'] || ''"></span>
-                                        <div class="bc-checkpoint-label" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="cp.label"></div>
+                                        <template x-if="bar.show_labels !== false">
+                                            <div class="bc-checkpoint-label" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="cp.label"></div>
+                                        </template>
                                     </div>
                                 </template>
                             </div>

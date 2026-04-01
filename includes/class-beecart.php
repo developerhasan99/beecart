@@ -115,6 +115,7 @@ class BeeCart
                     'type'           => 'subtotal',
                     'away_text'      => "You're only {amount} away from {goal}",
                     'completed_text' => '🎉 Congratulations! You have unlocked all rewards.',
+                    'show_labels'    => true,
                     'checkpoints'    => array(
                         array('threshold' => '50', 'label' => 'Free Shipping', 'icon' => 'truck'),
                         array('threshold' => '100', 'label' => '10% Discount', 'icon' => 'tag'),
@@ -411,6 +412,7 @@ class BeeCart
                     'type'           => isset($bar['type']) ? sanitize_text_field($bar['type']) : 'subtotal',
                     'away_text'      => isset($bar['away_text']) ? sanitize_text_field($bar['away_text']) : '',
                     'completed_text' => isset($bar['completed_text']) ? sanitize_text_field($bar['completed_text']) : '',
+                    'show_labels'    => isset($bar['show_labels']) ? (bool) $bar['show_labels'] : true,
                     'checkpoints'    => array()
                 );
 
