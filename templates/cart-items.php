@@ -326,6 +326,8 @@ $show_upsells = $settings['show_upsells'] ?? true;
                                         <?php endif;
                                         endif; ?>
                                         <button class="bc-upsell-add"
+                                            @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
+                                            @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
                                             style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
                                             @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">
                                             <?php echo esc_html($settings['upsell_btn_text'] ?? 'Add'); ?>
