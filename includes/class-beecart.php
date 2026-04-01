@@ -42,7 +42,7 @@ class BeeCart
         ob_start();
         $this->cart_icon_shortcode_output();
         $iconHtml = ob_get_clean();
-        $fragments['div.beecart-icon-wrapper'] = $iconHtml;
+        $fragments['.beecart-icon-wrapper'] = $iconHtml;
         return $fragments;
     }
 
@@ -79,7 +79,6 @@ class BeeCart
     {
         return array(
             'enable_cart_drawer'          => true,
-            'cart_position'               => 'right',
             'auto_open_cart'              => true,
             'menu_placement'              => 'bottom',
             'progress_type'               => 'subtotal',
@@ -112,7 +111,7 @@ class BeeCart
             'cart_icon_type'              => 'bag-1',
             'cart_icon_color'             => '#000000',
             'cart_icon_size'              => '24',
-            'cart_bubble_bg'              => '#ff0000',
+            'cart_bubble_bg'              => '#000000',
             'cart_bubble_text'            => '#ffffff',
             'show_cart_count'             => true,
             'cart_title'                  => 'Your Cart',
@@ -186,6 +185,11 @@ class BeeCart
 
     public function output_cart_drawer()
     {
+        $settings = $this->get_settings();
+        if (! ($settings['enable_cart_drawer'] ?? true)) {
+            return;
+        }
+
         if (function_exists('is_cart') && is_cart()) return;
         if (function_exists('is_checkout') && is_checkout()) return;
 
@@ -416,6 +420,10 @@ class BeeCart
             'image' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image ' . esc_attr($class) . '"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>',
             'format-image' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image ' . esc_attr($class) . '"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>',
             'chevron-down' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down ' . esc_attr($class) . '"><path d="m6 9 6 6 6-6"></path></svg>',
+            'bag-1'        => '<svg xmlns="http://www.w3.org/2000/svg" class="' . esc_attr($class) . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>',
+            'bag-2'        => '<svg xmlns="http://www.w3.org/2000/svg" class="' . esc_attr($class) . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path><circle cx="12" cy="14" r="2" stroke-width="2"></circle></svg>',
+            'cart'         => '<svg xmlns="http://www.w3.org/2000/svg" class="' . esc_attr($class) . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>',
+            'basket'       => '<svg xmlns="http://www.w3.org/2000/svg" class="' . esc_attr($class) . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18l-2 9H5l-2-9zm6-5h6l3 5H6l3-5z"></path></svg>',
         );
 
         return isset($icons[$name]) ? $icons[$name] : '';

@@ -11,14 +11,6 @@
             </label>
         </div>
 
-        <div class="space-y-2">
-            <label for="cart_position" class="text-sm font-medium">Cart Drawer Position</label>
-            <select id="cart_position" x-model="$store.admin.settings.cart_position" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
-                <option value="right">Right Side</option>
-                <option value="left">Left Side</option>
-            </select>
-        </div>
-
         <div class="flex items-center space-x-2">
             <input type="checkbox" id="auto_open_cart" x-model="$store.admin.settings.auto_open_cart" class="peer h-4 w-4 shrink-0 rounded-sm border border-gray-900 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-gray-900 data-[state=checked]:text-white">
             <label for="auto_open_cart" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">

@@ -8,14 +8,21 @@ const initBeeCartJS = () => {
     timerInterval: null,
 
     init() {
+      const settings = beecartData.settings || {};
+      const enableDrawer = settings.enable_cart_drawer !== undefined ? settings.enable_cart_drawer : true;
+
       // Bind WooCommerce added to cart event
       if (typeof jQuery !== "undefined") {
         jQuery(document.body).on("added_to_cart", () => {
-          this.openCart();
+          if (enableDrawer) {
+            this.openCart();
+          }
         });
 
         // AJAX Add to Cart for Single Product Forms
         jQuery(document).on("submit", "form.cart", (e) => {
+          if (!enableDrawer) return; // Allow default behavior if drawer is disabled
+
           const $form = jQuery(e.target);
           if ($form.closest(".product-type-external").length) return;
 

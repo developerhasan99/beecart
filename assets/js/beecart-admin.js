@@ -4,7 +4,6 @@ document.addEventListener("alpine:init", () => {
     preview: window.innerWidth >= 991,
     settings: {
       enable_cart_drawer: true,
-      cart_position: "right",
       auto_open_cart: true,
       menu_placement: "bottom",
       progress_type: "subtotal",
@@ -38,7 +37,7 @@ document.addEventListener("alpine:init", () => {
       cart_icon_type: "bag-1",
       cart_icon_color: "#000000",
       cart_icon_size: "24",
-      cart_bubble_bg: "#ff0000",
+      cart_bubble_bg: "#000000",
       cart_bubble_text: "#ffffff",
       show_cart_count: true,
       cart_title: "Your Cart",
