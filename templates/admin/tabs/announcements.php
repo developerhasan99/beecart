@@ -14,16 +14,14 @@
                     <input type="checkbox" id="show_announcement" x-model="$store.admin.settings.show_announcement" class="peer h-4 w-4 shrink-0 rounded-sm border border-gray-900 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                     <label for="show_announcement" class="text-sm font-medium leading-none">Enable Announcement Bar</label>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <input type="checkbox" id="enable_timer" x-model="$store.admin.settings.enable_timer" class="peer h-4 w-4 shrink-0 rounded-sm border border-gray-900 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                    <label for="enable_timer" class="text-sm font-medium leading-none">Enable Countdown Timer</label>
-                </div>
             </div>
         </div>
 
+        <!-- TODO: The time on the cart, should have local storage based reservation system. So it will not reset on page refresh. -->
+
         <!-- Content Section -->
         <div class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-show="$store.admin.settings.enable_timer">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label for="timer_duration" class="text-sm font-medium">Timer Duration (Minutes)</label>
                     <input type="number" id="timer_duration" x-model.number="$store.admin.settings.timer_duration" min="1" max="60" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
@@ -32,7 +30,7 @@
             <div class="space-y-2">
                 <label for="announcement_text" class="text-sm font-medium">Announcement Message</label>
                 <textarea id="announcement_text" x-model="$store.admin.settings.announcement_text" rows="2" placeholder="Your products are reserved for {timer}!" class="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors"></textarea>
-                <p class="text-xs text-gray-400 mt-1">Use <strong>{timer}</strong> as a placeholder if you have the countdown timer enabled.</p>
+                <p class="text-xs text-gray-400 mt-1">Use <strong>{timer}</strong> as a placeholder to display a real-time countdown timer within your message.</p>
             </div>
         </div>
 

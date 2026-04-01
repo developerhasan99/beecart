@@ -37,7 +37,7 @@
                             color: $store.admin.settings.announcement_text_color || '#92400e',
                             fontSize: $store.admin.settings.announcement_font_size || '13px'
                         }"
-                    x-text="$store.admin.settings.announcement_text || 'Free shipping on orders over $50!'">
+                    x-html="($store.admin.settings.announcement_text || 'Your products are reserved for {timer}!').replace('{timer}', '<strong class=\'bc-timer-bold\'>15:00</strong>')">
                 </div>
             </template>
 

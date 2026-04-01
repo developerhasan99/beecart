@@ -48,26 +48,17 @@ $enable_timer = $settings['enable_timer'] ?? false;
             </button>
         </div>
 
-        <!-- Announcement and Timer -->
-        <?php if ($show_announcement || $enable_timer): ?>
+        <!-- Announcement Bar -->
+        <?php if ($show_announcement): 
+            $size_class = 'size-medium';
+            if ($announcement_bar_size === 'small') $size_class = 'size-small';
+            if ($announcement_bar_size === 'large') $size_class = 'size-large';
+        ?>
         <div class="bc-drawer-top-notices">
-            <?php if ($show_announcement): 
-                $size_class = 'size-medium';
-                if ($announcement_bar_size === 'small') $size_class = 'size-small';
-                if ($announcement_bar_size === 'large') $size_class = 'size-large';
-            ?>
             <div class="bc-announcement <?php echo esc_attr($size_class); ?>"
+                x-html="'<?php echo esc_js($announcement); ?>'.replace('{timer}', '<strong class=\'bc-timer-bold\'>' + formatTime(timerCount) + '</strong>')"
                 style="background-color: <?php echo esc_attr($announcement_bg); ?>; color: <?php echo esc_attr($announcement_text_color); ?>; font-size: <?php echo esc_attr($announcement_font_size); ?>;">
-                <?php echo esc_html($announcement); ?>
             </div>
-            <?php endif; ?>
-
-            <?php if ($enable_timer): ?>
-            <div class="bc-timer">
-                <?php echo BeeCart::get_svg_icon('clock', 'bc-timer-icon'); ?>
-                <span>Cart reserved for <span class="bc-timer-val" x-text="formatTime(timerCount)"></span> minutes!</span>
-            </div>
-            <?php endif; ?>
         </div>
         <?php endif; ?>
 
