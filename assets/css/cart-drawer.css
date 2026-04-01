@@ -773,12 +773,9 @@ body.wp-admin .bc-upsell-select {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.3s ease-in-out;
   text-decoration: none;
   line-height: 1;
-}
-.bc-checkout-btn:hover {
-  opacity: 0.9;
 }
 .bc-checkout-sep {
   margin: 0 8px;

@@ -11,10 +11,7 @@
                     <label for="cart_title" class="text-sm font-medium">Cart Title</label>
                     <input type="text" id="cart_title" x-model="$store.admin.settings.cart_title" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 </div>
-                <div class="space-y-2">
-                    <label for="trans_view_cart_btn" class="text-sm font-medium">View Cart Button</label>
-                    <input type="text" id="trans_view_cart_btn" x-model="$store.admin.settings.trans_view_cart_btn" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-                </div>
+
                 <div class="space-y-2">
                     <label for="trans_continue_shopping" class="text-sm font-medium">Continue Shopping</label>
                     <input type="text" id="trans_continue_shopping" x-model="$store.admin.settings.trans_continue_shopping" class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
