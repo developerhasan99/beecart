@@ -58,20 +58,10 @@
                     if (!is_wp_error($product_cats) && !empty($product_cats)):
                         foreach ($product_cats as $cat): ?>
                             <option value="<?php echo esc_attr($cat->slug); ?>"><?php echo esc_html($cat->name); ?> (<?php echo $cat->count; ?>)</option>
-                        <?php endforeach;
+                    <?php endforeach;
                     endif; ?>
                 </select>
                 <p class="text-xs text-gray-400">Show products only from this WooCommerce category.</p>
-            </div>
-
-            <div class="space-y-2">
-                <label for="upsell_layout" class="text-sm font-medium">Layout Style</label>
-                <select id="upsell_layout" x-model="$store.admin.settings.upsell_layout" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-                    <option value="list">Vertical List</option>
-                    <option value="grid">Grid View</option>
-                    <option value="slider">Horizontal Slider</option>
-                </select>
-                <p class="text-xs text-gray-400">Choose how the recommended products are presented.</p>
             </div>
 
             <div class="space-y-2">

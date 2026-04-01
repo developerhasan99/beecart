@@ -192,9 +192,27 @@ $show_upsells = $settings['show_upsells'] ?? true;
                 }
             endforeach; ?>
         </div>
+    <?php else: ?>
+        <div class="bc-empty-cart">
+            <svg class="bc-empty-cart-icon" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <p class="bc-empty-cart-text" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($settings['trans_empty_cart'] ?? 'Your cart is empty.'); ?></p>
+            <button class="bc-empty-cart-btn"
+                style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
+                @click.prevent="closeCart()">
+                <?php echo esc_html($settings['trans_continue_shopping'] ?? 'Return to shop'); ?>
+            </button>
+        </div>
+    <?php endif; ?>
 
-        <?php if ($show_upsells):
-            $upsell_title = $settings['upsell_title'] ?? 'Diese werden Sie lieben';
+    <?php 
+    $show_on_empty = $settings['show_upsells_on_empty'] ?? true;
+    if ($show_upsells && (!$is_empty || $show_on_empty)):
+    
+            $upsell_title = $settings['upsell_title'] ?? 'Product Recommendations';
             $upsell_max = $settings['upsell_max'] ?? 3;
             $upsell_source   = $settings['upsell_source'] ?? 'best_sellers';
             $upsell_category = $settings['upsell_category'] ?? '';
@@ -339,23 +357,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                         wp_reset_postdata(); ?>
                     </div>
                 </div>
-        <?php endif;
-        endif; ?>
-
-    <?php else: ?>
-        <div class="bc-empty-cart">
-            <svg class="bc-empty-cart-icon" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <p class="bc-empty-cart-text" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($settings['trans_empty_cart'] ?? 'Your cart is empty.'); ?></p>
-            <button class="bc-empty-cart-btn"
-                style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
-                @click.prevent="closeCart()">
-                <?php echo esc_html($settings['trans_continue_shopping'] ?? 'Return to shop'); ?>
-            </button>
-        </div>
+        <?php endif; ?>
     <?php endif; ?>
 
 </div><!-- end bc-cart-contents-scroll -->

@@ -57,7 +57,6 @@ document.addEventListener("alpine:init", () => {
       upsell_max: 3,
       upsell_source: "best_sellers",
       upsell_category: "",
-      upsell_layout: "list",
       upsell_btn_text: "Add to Cart",
       show_trust_badges: true,
       trust_badge_image: "",
