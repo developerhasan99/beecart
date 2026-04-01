@@ -45,7 +45,7 @@
                 <!-- Progress Bar Component -->
                 <!-- Progress Bar Component -->
                 <template x-for="(bar, barIndex) in $store.admin.settings.progress_bars" :key="barIndex">
-                    <div x-show="$store.admin.settings.enable_rewards_bar" class="bc-progress-wrap" style="margin-bottom: 20px;">
+                    <div x-show="$store.admin.settings.enable_rewards_bar" class="bc-progress-wrap">
                         <div class="bc-progress-text" :style="{ color: $store.admin.settings.text_color || '#000000' }">
                             <template x-if="barIndex === 0">
                                 <span x-html="(bar.away_text || 'You\'re only {amount} away from {goal}').replace('{amount}', '<strong>' + (bar.type === 'quantity' ? '2' : '$45.00') + '</strong>').replace('{goal}', '<strong>' + (bar.checkpoints && bar.checkpoints.length ? bar.checkpoints[0].label : 'Free Shipping') + '</strong>')"></span>

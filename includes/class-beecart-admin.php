@@ -76,6 +76,16 @@ class BeeCart_Admin
             'settings' => $settings,
             'menus'         => $formatted_menus,
             'default_badge' => BEECART_URL . 'assets/img/payment-badge.svg',
+            'icons' => array(
+                'truck' => 'Shipping Truck',
+                'tag'   => 'Discount Tag',
+                'gift'  => 'Gift Box',
+            ),
+            'icon_svgs' => array(
+                'truck' => BeeCart::get_svg_icon('truck', 'bc-checkpoint-icon'),
+                'tag'   => BeeCart::get_svg_icon('tag', 'bc-checkpoint-icon'),
+                'gift'  => BeeCart::get_svg_icon('gift', 'bc-checkpoint-icon'),
+            ),
         ));
     }
 

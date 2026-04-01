@@ -50,7 +50,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
 
             if (empty($goals)) continue;
     ?>
-            <div class="bc-progress-wrap" style="margin-bottom: 24px;">
+            <div class="bc-progress-wrap">
                 <div class="bc-progress-text" style="color: <?php echo esc_attr($text_color); ?>;">
                     <?php if ($next_goal):
                         $diff = (float)$next_goal['threshold'] - $current_val;

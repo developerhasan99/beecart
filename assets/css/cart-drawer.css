@@ -168,7 +168,8 @@ body.admin-bar .bc-drawer-panel {
   position: relative;
   height: 8px;
   border-radius: 99px;
-  margin: 8px 24px 24px;
+  margin-top: 8px;
+  margin-right: 14px;
 }
 .bc-progress-fill {
   position: absolute;
@@ -207,11 +208,12 @@ body.admin-bar .bc-drawer-panel {
   justify-content: center;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-.bc-checkpoint .dashicons {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
+.bc-checkpoint .bc-checkpoint-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
   line-height: 1;
+  display: block;
 }
 .bc-checkpoint-label {
   position: absolute;

@@ -45,19 +45,20 @@
             </div>
         </div>
 
-        <button @click="$store.admin.addProgressBar()" type="button" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-gray-300 bg-white hover:bg-gray-100 h-9 px-4 transition-colors cursor-pointer">
-            <span class="dashicons dashicons-plus mr-2 text-sm"></span> Add New Progress Bar
-        </button>
-
         <!-- Progress Bars Configuration -->
-        <div class="space-y-4 pt-6 border-t border-solid border-gray-100">
-            <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-400">Configuration</h3>
-            <div class="space-y-8">
+        <div>
+            <div class="flex items-center justify-between gap-4 flex-wrap">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-500 my-0">Progress Bars</h3>
+                <button @click="$store.admin.addProgressBar()" type="button" class="inline-flex items-center gap-1 justify-center whitespace-nowrap rounded-md text-sm font-medium border border-solid border-gray-300 bg-white hover:bg-gray-100 py-2 px-3 leading-none transition-colors cursor-pointer">
+                    <span class="dashicons dashicons-plus text-sm"></span> Add New Bar
+                </button>
+            </div>
+            <div class="space-y-4">
                 <template x-for="(bar, barIndex) in $store.admin.settings.progress_bars" :key="barIndex">
-                    <div class="space-y-6 relative pb-8 border-b border-solid border-gray-100 last:border-0 last:pb-0">
+                    <div class="space-y-6 relative p-4 border border-solid border-gray-300 rounded-md">
                         <div class="flex items-center justify-between">
-                            <h4 class="text-xs font-bold uppercase tracking-widest text-blue-500">Progress Bar #<span x-text="barIndex + 1"></span></h4>
-                            <button @click="$store.admin.removeProgressBar(barIndex)" x-show="$store.admin.settings.progress_bars.length > 1" type="button" class="text-red-500 hover:text-red-600 text-xs font-medium flex items-center gap-1 cursor-pointer">
+                            <h4 class="font-bold uppercase tracking-widest my-0">Progress Bar #<span x-text="barIndex + 1"></span></h4>
+                            <button @click="$store.admin.removeProgressBar(barIndex)" x-show="$store.admin.settings.progress_bars.length > 1" type="button" class="inline-flex items-center gap-1 justify-center whitespace-nowrap rounded-md text-sm font-medium border border-solid border-red-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-300 py-2 px-3 leading-none transition-colors cursor-pointer">
                                 <span class="dashicons dashicons-trash text-sm"></span> Remove
                             </button>
                         </div>
@@ -87,37 +88,38 @@
 
                             <!-- Right: Checkpoints -->
                             <div class="space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <label class="text-sm font-medium">Reward Levels</label>
-                                    <button @click="bar.checkpoints.push({ threshold: 0, label: 'Reward Name', icon: 'truck' })" type="button" class="text-xs text-blue-600 hover:text-blue-800 font-bold uppercase transition-colors pointer-cursor">+ Add Level</button>
-                                </div>
-
+                                <label class="text-sm font-medium">Reward Levels</label>
                                 <div class="space-y-3">
                                     <template x-for="(cp, cpIndex) in bar.checkpoints" :key="cpIndex">
-                                        <div class="flex items-start gap-2 p-3 rounded-md border border-solid border-gray-200 bg-gray-50/50 relative group">
-                                            <div class="grid grid-cols-2 gap-2 flex-grow">
+                                        <div class="p-3 rounded-md border border-solid border-gray-200 bg-gray-50/50 relative group">
+                                            <div class="space-y-2">
                                                 <div class="space-y-1">
-                                                    <label class="text-[10px] font-bold uppercase text-gray-400">Threshold Value</label>
-                                                    <input type="number" x-model.number="cp.threshold" class="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:ring-1 focus:ring-ring">
-                                                </div>
-                                                <div class="space-y-1">
-                                                    <label class="text-[10px] font-bold uppercase text-gray-400">Icon</label>
-                                                    <select x-model="cp.icon" class="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:ring-1 focus:ring-ring">
-                                                        <template x-for="(label, val) in beecartAdminData.icons" :key="val">
-                                                            <option :value="val" x-text="label"></option>
-                                                        </template>
-                                                    </select>
-                                                </div>
-                                                <div class="col-span-2 space-y-1">
                                                     <label class="text-[10px] font-bold uppercase text-gray-400">Reward Description (Label)</label>
                                                     <input type="text" x-model="cp.label" class="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:ring-1 focus:ring-ring">
                                                 </div>
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <div class="space-y-1">
+                                                        <label class="text-[10px] font-bold uppercase text-gray-400">Threshold Value</label>
+                                                        <input type="number" x-model.number="cp.threshold" class="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:ring-1 focus:ring-ring">
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <label class="text-[10px] font-bold uppercase text-gray-400">Icon</label>
+                                                        <select x-model="cp.icon" class="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:ring-1 focus:ring-ring">
+                                                            <template x-for="(label, val) in beecartAdminData.icons" :key="val">
+                                                                <option :value="val" x-text="label"></option>
+                                                            </template>
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <button @click="bar.checkpoints.splice(cpIndex, 1)" type="button" class="mt-4 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
-                                                <span class="dashicons dashicons-no-alt text-xs"></span>
+                                            <button @click="bar.checkpoints.splice(cpIndex, 1)" type="button" class="absolute top-1 right-1 size-6 border-0 rounded-full flex items-center justify-center bg-red-100  text-red-600 hover:text-white hover:bg-red-600 transition-colors cursor-pointer">
+                                                <span class="dashicons dashicons-no-alt text-sm"></span>
                                             </button>
                                         </div>
                                     </template>
+                                    <button @click="bar.checkpoints.push({ threshold: 0, label: 'Reward Name', icon: 'truck' })" type="button" class="w-full inline-flex items-center gap-1 justify-center whitespace-nowrap rounded-md text-sm font-medium border border-dashed border-gray-300 bg-white hover:bg-gray-50 py-2 px-3 leading-none transition-colors cursor-pointer">
+                                        <span class="dashicons dashicons-plus text-sm"></span> Add New Level
+                                    </button>
                                 </div>
                             </div>
                         </div>
