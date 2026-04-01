@@ -110,10 +110,16 @@ class BeeCart
             'enable_cart_drawer'          => true,
             'auto_open_cart'              => true,
             'menu_placement'              => 'bottom',
-            'progress_type'               => 'subtotal',
-            'goals'                       => array(
-                array('threshold' => 50, 'label' => 'Free Shipping', 'icon' => 'truck'),
-                array('threshold' => 100, 'label' => '20% Discount', 'icon' => 'tag'),
+            'progress_bars'               => array(
+                array(
+                    'type'           => 'subtotal',
+                    'away_text'      => "You're only {amount} away from {goal}",
+                    'completed_text' => '🎉 Congratulations! You have unlocked all rewards.',
+                    'checkpoints'    => array(
+                        array('threshold' => '50', 'label' => 'Free Shipping', 'icon' => 'truck'),
+                        array('threshold' => '100', 'label' => '10% Discount', 'icon' => 'tag'),
+                    ),
+                )
             ),
             'primary_color'               => '#000000',
             'enable_coupon'               => true,
@@ -124,7 +130,6 @@ class BeeCart
             'rewards_bar_fg'              => '#93D3FF',
             'rewards_complete_icon_color' => '#4D4949',
             'rewards_incomplete_icon_color' => '#4D4949',
-            'rewards_completed_text'      => '🎉 Congratulations! You have unlocked all rewards.',
             'inherit_fonts'               => true,
             'show_strikethrough'          => true,
             'enable_subtotal_line'        => true,
@@ -170,7 +175,6 @@ class BeeCart
             'trans_subtotal'              => 'Subtotal',
             'trans_coupon_placeholder'    => 'Coupon code',
             'trans_coupon_apply_btn'      => 'Apply',
-            'trans_rewards_away'          => "You're only {amount} away from {goal}",
             'trans_discounts'             => 'Discounts',
             'trans_coupon_accordion_title' => 'Have a Coupon?',
             'show_shipping_notice'        => true,
@@ -385,8 +389,8 @@ class BeeCart
                 $clean[$key] = absint($raw[$key]);
             } elseif (in_array($key, $url_keys, true)) {
                 $clean[$key] = esc_url_raw((string) $raw[$key]);
-            } elseif ($key === 'goals') {
-                $clean[$key] = $this->sanitize_goals($raw[$key]);
+            } elseif ($key === 'progress_bars') {
+                $clean[$key] = $this->sanitize_progress_bars($raw[$key]);
             } elseif ($key === 'custom_css') {
                 $safe = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', (string) $raw[$key]);
                 $clean[$key] = wp_strip_all_tags($safe);
@@ -398,25 +402,31 @@ class BeeCart
         return $clean;
     }
 
-    private function sanitize_goals($raw): array
+    private function sanitize_progress_bars($input): array
     {
-        if (! is_array($raw)) {
-            return array();
-        }
+        $sanitized = array();
+        if (is_array($input)) {
+            foreach ($input as $bar) {
+                $sanitized_bar = array(
+                    'type'           => isset($bar['type']) ? sanitize_text_field($bar['type']) : 'subtotal',
+                    'away_text'      => isset($bar['away_text']) ? sanitize_text_field($bar['away_text']) : '',
+                    'completed_text' => isset($bar['completed_text']) ? sanitize_text_field($bar['completed_text']) : '',
+                    'checkpoints'    => array()
+                );
 
-        $clean = array();
-        foreach ($raw as $goal) {
-            if (! is_array($goal)) {
-                continue;
+                if (isset($bar['checkpoints']) && is_array($bar['checkpoints'])) {
+                    foreach ($bar['checkpoints'] as $checkpoint) {
+                        $sanitized_bar['checkpoints'][] = array(
+                            'threshold' => isset($checkpoint['threshold']) ? sanitize_text_field($checkpoint['threshold']) : '0',
+                            'label'     => isset($checkpoint['label']) ? sanitize_text_field($checkpoint['label']) : '',
+                            'icon'      => isset($checkpoint['icon']) ? sanitize_text_field($checkpoint['icon']) : 'truck',
+                        );
+                    }
+                }
+                $sanitized[] = $sanitized_bar;
             }
-            $clean[] = array(
-                'threshold' => isset($goal['threshold']) ? floatval($goal['threshold']) : 0,
-                'label'     => isset($goal['label'])     ? sanitize_text_field($goal['label']) : '',
-                'icon'      => isset($goal['icon'])      ? sanitize_key($goal['icon'])         : 'truck',
-            );
         }
-
-        return $clean;
+        return $sanitized;
     }
 
     // -------------------------------------------------------------------------

@@ -10,58 +10,57 @@ $settings = $this->get_settings();
 
 $is_empty = $cart->is_empty();
 
-// Setup Progress Bar goals logic
-$current_val = ($settings['progress_type'] ?? 'subtotal') === 'quantity' ? $cart->get_cart_contents_count() : (float)$cart->get_subtotal();
-$goals = !empty($settings['goals']) ? $settings['goals'] : array();
-usort($goals, function ($a, $b) {
-    return (float)$a['threshold'] - (float)$b['threshold'];
-});
-$next_goal = null;
-foreach ($goals as $goal) {
-    if ($current_val < (float)$goal['threshold']) {
-        $next_goal = $goal;
-        break;
-    }
-}
-$max_threshold = !empty($goals) ? (float)end($goals)['threshold'] : 100;
-$percent = $max_threshold > 0 ? min(($current_val / $max_threshold) * 100, 100) : 100;
-
-// Setup generic settings
-$text_color = $settings['text_color'] ?? '#000000';
-$bg_color = $settings['bg_color'] ?? '#FFFFFF';
-$accent_color = $settings['accent_color'] ?? '#f6f6f7';
-$btn_color = $settings['btn_color'] ?? '#000000';
-$btn_text_color = $settings['btn_text_color'] ?? '#FFFFFF';
-$btn_hover_color = $settings['btn_hover_color'] ?? '#333333';
-$btn_hover_text_color = $settings['btn_hover_text_color'] ?? '#e9e9e9';
-$btn_radius = $settings['btn_radius'] ?? '4px';
-
 $enable_rewards_bar = $settings['enable_rewards_bar'] ?? true;
-$show_savings = $settings['show_savings'] ?? true;
-$savings_prefix = $settings['trans_savings_prefix'] ?? 'Save';
+$text_color = $settings['text_color'] ?? '#000000';
 $show_item_images = $settings['show_item_images'] ?? true;
 $show_strikethrough = $settings['show_strikethrough'] ?? true;
-$savings_color = $settings['savings_text_color'] ?? '#2ea818';
-$enable_coupon = $settings['enable_coupon'] ?? true;
-$enable_subtotal_line = $settings['enable_subtotal_line'] ?? true;
-$show_trust_badges = $settings['show_trust_badges'] ?? true;
+$show_savings = $settings['show_savings'] ?? true;
+$savings_color = $settings['savings_text_color'] ?? '#1DC200';
+$savings_prefix = $settings['trans_savings_prefix'] ?? 'Save';
+$btn_color = $settings['btn_color'] ?? '#000000';
+$btn_text_color = $settings['btn_text_color'] ?? '#FFFFFF';
+$btn_radius = $settings['btn_radius'] ?? '4px';
 $show_upsells = $settings['show_upsells'] ?? true;
 ?>
 
 <div class="bc-cart-contents-scroll">
-    <!-- Scrollable Inner Content Area -->
-    <?php if ($enable_rewards_bar && (!$is_empty || ($settings['show_rewards_on_empty'] ?? true))): ?>
-        <?php if (!empty($goals)): ?>
-            <div class="bc-progress-wrap">
+    <?php
+    $progress_bars = $settings['progress_bars'] ?? array();
+    if ($enable_rewards_bar && !empty($progress_bars) && (!$is_empty || ($settings['show_rewards_on_empty'] ?? true))):
+        foreach ($progress_bars as $bar):
+            $type = $bar['type'] ?? 'subtotal';
+            $current_val = ($type === 'quantity') ? $cart->get_cart_contents_count() : (float)$cart->get_subtotal();
+            $goals = !empty($bar['checkpoints']) ? $bar['checkpoints'] : array();
+
+            // Sort goals by threshold
+            usort($goals, function ($a, $b) {
+                return (float)$a['threshold'] - (float)$b['threshold'];
+            });
+
+            $next_goal = null;
+            foreach ($goals as $goal) {
+                if ($current_val < (float)$goal['threshold']) {
+                    $next_goal = $goal;
+                    break;
+                }
+            }
+
+            $max_threshold = !empty($goals) ? (float)end($goals)['threshold'] : 100;
+            $percent = $max_threshold > 0 ? min(($current_val / $max_threshold) * 100, 100) : 100;
+
+            if (empty($goals)) continue;
+    ?>
+            <div class="bc-progress-wrap" style="margin-bottom: 24px;">
                 <div class="bc-progress-text" style="color: <?php echo esc_attr($text_color); ?>;">
                     <?php if ($next_goal):
-                        $amount_text = ($settings['progress_type'] ?? 'subtotal') === 'subtotal' ? wc_price((float)$next_goal['threshold'] - $current_val) : (int)((float)$next_goal['threshold'] - $current_val);
-                        $msg = $settings['trans_rewards_away'] ?? "You're only {amount} away from {goal}";
+                        $diff = (float)$next_goal['threshold'] - $current_val;
+                        $amount_text = ($type === 'subtotal') ? wc_price($diff) : (int)$diff;
+                        $msg = $bar['away_text'] ?? "You're only {amount} away from {goal}";
                         $msg = str_replace('{amount}', '<strong>' . $amount_text . '</strong>', $msg);
                         $msg = str_replace('{goal}', '<strong>' . esc_html($next_goal['label']) . '</strong>', $msg);
                         echo $msg;
                     else: ?>
-                        <?php echo esc_html($settings['rewards_completed_text'] ?? '🎉 Congratulations! You have unlocked all rewards.'); ?>
+                        <?php echo esc_html($bar['completed_text'] ?? '🎉 Congratulations! You have unlocked all rewards.'); ?>
                     <?php endif; ?>
                 </div>
 
@@ -88,7 +87,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                     </div>
                 </div>
             </div>
-        <?php endif; ?>
+        <?php endforeach; ?>
     <?php endif; ?>
 
     <?php if (!$is_empty): ?>
@@ -208,155 +207,155 @@ $show_upsells = $settings['show_upsells'] ?? true;
         </div>
     <?php endif; ?>
 
-    <?php 
+    <?php
     $show_on_empty = $settings['show_upsells_on_empty'] ?? true;
     if ($show_upsells && (!$is_empty || $show_on_empty)):
-    
-            $upsell_title = $settings['upsell_title'] ?? 'Product Recommendations';
-            $upsell_max = $settings['upsell_max'] ?? 3;
-            $upsell_source   = $settings['upsell_source'] ?? 'best_sellers';
-            $upsell_category = $settings['upsell_category'] ?? '';
-            $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'post_status' => 'publish');
 
-            if ($upsell_source === 'best_sellers') {
-                $args['meta_key'] = 'total_sales';
-                $args['orderby']  = 'meta_value_num';
-                $args['order']    = 'DESC';
-            } elseif ($upsell_source === 'newest') {
-                $args['orderby'] = 'date';
-                $args['order']   = 'DESC';
-            } elseif ($upsell_source === 'category' && !empty($upsell_category)) {
-                $args['orderby'] = 'date';
-                $args['order']   = 'DESC';
-                $args['tax_query'] = array(array(
-                    'taxonomy' => 'product_cat',
-                    'field'    => 'slug',
-                    'terms'    => $upsell_category,
-                ));
-            } elseif ($upsell_source === 'upsells') {
-                // Collect WC upsell product IDs from cart items
-                $upsell_ids = array();
-                foreach (WC()->cart->get_cart() as $cart_item) {
-                    $_p = $cart_item['data'];
-                    if ($_p) {
-                        $upsell_ids = array_merge($upsell_ids, $_p->get_upsell_ids());
-                    }
+        $upsell_title = $settings['upsell_title'] ?? 'Product Recommendations';
+        $upsell_max = $settings['upsell_max'] ?? 3;
+        $upsell_source   = $settings['upsell_source'] ?? 'best_sellers';
+        $upsell_category = $settings['upsell_category'] ?? '';
+        $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'post_status' => 'publish');
+
+        if ($upsell_source === 'best_sellers') {
+            $args['meta_key'] = 'total_sales';
+            $args['orderby']  = 'meta_value_num';
+            $args['order']    = 'DESC';
+        } elseif ($upsell_source === 'newest') {
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+        } elseif ($upsell_source === 'category' && !empty($upsell_category)) {
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+            $args['tax_query'] = array(array(
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $upsell_category,
+            ));
+        } elseif ($upsell_source === 'upsells') {
+            // Collect WC upsell product IDs from cart items
+            $upsell_ids = array();
+            foreach (WC()->cart->get_cart() as $cart_item) {
+                $_p = $cart_item['data'];
+                if ($_p) {
+                    $upsell_ids = array_merge($upsell_ids, $_p->get_upsell_ids());
                 }
-                $upsell_ids = array_unique($upsell_ids);
-                if (!empty($upsell_ids)) {
-                    $args['post__in'] = $upsell_ids;
-                    $args['orderby']  = 'post__in';
-                } else {
-                    // Fallback to best sellers if no upsells defined
-                    $args['meta_key'] = 'total_sales';
-                    $args['orderby']  = 'meta_value_num';
-                    $args['order']    = 'DESC';
-                }
-            } elseif ($upsell_source === 'cross_sells') {
-                $cross_sell_ids = array();
-                foreach (WC()->cart->get_cart() as $cart_item) {
-                    $_p = $cart_item['data'];
-                    if ($_p) {
-                        $cross_sell_ids = array_merge($cross_sell_ids, $_p->get_cross_sell_ids());
-                    }
-                }
-                $cross_sell_ids = array_unique($cross_sell_ids);
-                if (!empty($cross_sell_ids)) {
-                    $args['post__in'] = $cross_sell_ids;
-                    $args['orderby']  = 'post__in';
-                } else {
-                    $args['meta_key'] = 'total_sales';
-                    $args['orderby']  = 'meta_value_num';
-                    $args['order']    = 'DESC';
-                }
-            } elseif ($upsell_source === 'related') {
-                $related_ids = array();
-                foreach (WC()->cart->get_cart() as $cart_item) {
-                    $related_ids = array_merge($related_ids, wc_get_related_products($cart_item['product_id'], $upsell_max));
-                }
-                $related_ids = array_unique($related_ids);
-                if (!empty($related_ids)) {
-                    $args['post__in'] = array_slice($related_ids, 0, $upsell_max);
-                    $args['orderby']  = 'post__in';
-                } else {
-                    $args['meta_key'] = 'total_sales';
-                    $args['orderby']  = 'meta_value_num';
-                    $args['order']    = 'DESC';
-                }
+            }
+            $upsell_ids = array_unique($upsell_ids);
+            if (!empty($upsell_ids)) {
+                $args['post__in'] = $upsell_ids;
+                $args['orderby']  = 'post__in';
             } else {
-                // Default fallback
+                // Fallback to best sellers if no upsells defined
                 $args['meta_key'] = 'total_sales';
                 $args['orderby']  = 'meta_value_num';
                 $args['order']    = 'DESC';
             }
-            $upsell_query = new WP_Query($args);
-            if ($upsell_query->have_posts()):
-        ?>
-                <div class="bc-upsells" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
-                    <h3 class="bc-upsells-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($upsell_title); ?></h3>
+        } elseif ($upsell_source === 'cross_sells') {
+            $cross_sell_ids = array();
+            foreach (WC()->cart->get_cart() as $cart_item) {
+                $_p = $cart_item['data'];
+                if ($_p) {
+                    $cross_sell_ids = array_merge($cross_sell_ids, $_p->get_cross_sell_ids());
+                }
+            }
+            $cross_sell_ids = array_unique($cross_sell_ids);
+            if (!empty($cross_sell_ids)) {
+                $args['post__in'] = $cross_sell_ids;
+                $args['orderby']  = 'post__in';
+            } else {
+                $args['meta_key'] = 'total_sales';
+                $args['orderby']  = 'meta_value_num';
+                $args['order']    = 'DESC';
+            }
+        } elseif ($upsell_source === 'related') {
+            $related_ids = array();
+            foreach (WC()->cart->get_cart() as $cart_item) {
+                $related_ids = array_merge($related_ids, wc_get_related_products($cart_item['product_id'], $upsell_max));
+            }
+            $related_ids = array_unique($related_ids);
+            if (!empty($related_ids)) {
+                $args['post__in'] = array_slice($related_ids, 0, $upsell_max);
+                $args['orderby']  = 'post__in';
+            } else {
+                $args['meta_key'] = 'total_sales';
+                $args['orderby']  = 'meta_value_num';
+                $args['order']    = 'DESC';
+            }
+        } else {
+            // Default fallback
+            $args['meta_key'] = 'total_sales';
+            $args['orderby']  = 'meta_value_num';
+            $args['order']    = 'DESC';
+        }
+        $upsell_query = new WP_Query($args);
+        if ($upsell_query->have_posts()):
+    ?>
+            <div class="bc-upsells" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
+                <h3 class="bc-upsells-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($upsell_title); ?></h3>
 
-                    <div class="bc-upsells-list">
-                        <?php while ($upsell_query->have_posts()): $upsell_query->the_post();
-                            global $product;
-                            $img = wp_get_attachment_image_url($product->get_image_id(), 'thumbnail');
+                <div class="bc-upsells-list">
+                    <?php while ($upsell_query->have_posts()): $upsell_query->the_post();
+                        global $product;
+                        $img = wp_get_attachment_image_url($product->get_image_id(), 'thumbnail');
 
-                            $prices_json = '';
-                            if ($product->is_type('variable')) {
-                                $p_map = array();
-                                foreach ($product->get_available_variations() as $v) {
-                                    $p_map[$v['variation_id']] = strip_tags(wc_price($v['display_price']));
-                                }
-                                $prices_json = esc_attr(json_encode($p_map));
+                        $prices_json = '';
+                        if ($product->is_type('variable')) {
+                            $p_map = array();
+                            foreach ($product->get_available_variations() as $v) {
+                                $p_map[$v['variation_id']] = strip_tags(wc_price($v['display_price']));
                             }
-                        ?>
-                            <div class="bc-upsell-item" <?php if ($prices_json) echo 'x-init="upsellPrices[' . get_the_ID() . '] = ' . $prices_json . '"'; ?>>
-                                <div class="bc-upsell-img-wrap">
-                                    <?php if ($img): ?>
-                                        <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
-                                    <?php else: ?>
-                                        <?php echo BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon'); ?>
-                                    <?php endif; ?>
+                            $prices_json = esc_attr(json_encode($p_map));
+                        }
+                    ?>
+                        <div class="bc-upsell-item" <?php if ($prices_json) echo 'x-init="upsellPrices[' . get_the_ID() . '] = ' . $prices_json . '"'; ?>>
+                            <div class="bc-upsell-img-wrap">
+                                <?php if ($img): ?>
+                                    <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
+                                <?php else: ?>
+                                    <?php echo BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon'); ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="bc-upsell-details">
+                                <h5 class="bc-upsell-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php the_title(); ?></h5>
+                                <div class="bc-upsell-prices">
+                                    <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;" x-text="upsellPrices[<?php echo get_the_ID(); ?>] && selectedVariations[<?php echo get_the_ID(); ?>] ? upsellPrices[<?php echo get_the_ID(); ?>][selectedVariations[<?php echo get_the_ID(); ?>]] : '<?php echo esc_js(strip_tags($product->get_price_html())); ?>'">
+                                        <?php echo $product->get_price_html(); ?>
+                                    </span>
                                 </div>
-                                <div class="bc-upsell-details">
-                                    <h5 class="bc-upsell-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php the_title(); ?></h5>
-                                    <div class="bc-upsell-prices">
-                                        <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;" x-text="upsellPrices[<?php echo get_the_ID(); ?>] && selectedVariations[<?php echo get_the_ID(); ?>] ? upsellPrices[<?php echo get_the_ID(); ?>][selectedVariations[<?php echo get_the_ID(); ?>]] : '<?php echo esc_js(strip_tags($product->get_price_html())); ?>'">
-                                            <?php echo $product->get_price_html(); ?>
-                                        </span>
-                                    </div>
-                                    <div class="bc-upsell-actions">
-                                        <?php if ($product->is_type('variable')):
-                                            $product_variations = $product->get_available_variations();
-                                            if (!empty($product_variations)):
-                                        ?>
-                                                <div class="bc-upsell-select-wrap" x-init="selectedVariations[<?php echo get_the_ID(); ?>] = '<?php echo $product_variations[0]['variation_id']; ?>'">
-                                                    <select x-model="selectedVariations[<?php echo get_the_ID(); ?>]" class="bc-upsell-select">
-                                                        <?php foreach ($product_variations as $v): ?>
-                                                            <option value="<?php echo esc_attr($v['variation_id']); ?>">
-                                                                <?php echo esc_html(implode(' / ', array_values($v['attributes']))); ?>
-                                                            </option>
-                                                        <?php endforeach; ?>
-                                                    </select>
-                                                    <span class="bc-upsell-select-icon">
-                                                        <?php echo BeeCart::get_svg_icon('chevron-down'); ?>
-                                                    </span>
-                                                </div>
-                                        <?php endif;
-                                        endif; ?>
-                                        <button class="bc-upsell-add"
-                                            @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
-                                            @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
-                                            style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
-                                            @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">
-                                            <?php echo esc_html($settings['upsell_btn_text'] ?? 'Add'); ?>
-                                        </button>
-                                    </div>
+                                <div class="bc-upsell-actions">
+                                    <?php if ($product->is_type('variable')):
+                                        $product_variations = $product->get_available_variations();
+                                        if (!empty($product_variations)):
+                                    ?>
+                                            <div class="bc-upsell-select-wrap" x-init="selectedVariations[<?php echo get_the_ID(); ?>] = '<?php echo $product_variations[0]['variation_id']; ?>'">
+                                                <select x-model="selectedVariations[<?php echo get_the_ID(); ?>]" class="bc-upsell-select">
+                                                    <?php foreach ($product_variations as $v): ?>
+                                                        <option value="<?php echo esc_attr($v['variation_id']); ?>">
+                                                            <?php echo esc_html(implode(' / ', array_values($v['attributes']))); ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="bc-upsell-select-icon">
+                                                    <?php echo BeeCart::get_svg_icon('chevron-down'); ?>
+                                                </span>
+                                            </div>
+                                    <?php endif;
+                                    endif; ?>
+                                    <button class="bc-upsell-add"
+                                        @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
+                                        @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
+                                        style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
+                                        @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">
+                                        <?php echo esc_html($settings['upsell_btn_text'] ?? 'Add'); ?>
+                                    </button>
                                 </div>
                             </div>
-                        <?php endwhile;
-                        wp_reset_postdata(); ?>
-                    </div>
+                        </div>
+                    <?php endwhile;
+                    wp_reset_postdata(); ?>
                 </div>
+            </div>
         <?php endif; ?>
     <?php endif; ?>
 

@@ -319,6 +319,7 @@ body.admin-bar .bc-drawer-panel {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+  font-weight: 500;
 }
 .bc-item-old-price {
   font-size: 13px;

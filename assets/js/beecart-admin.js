@@ -6,10 +6,16 @@ document.addEventListener("alpine:init", () => {
       enable_cart_drawer: true,
       auto_open_cart: true,
       menu_placement: "bottom",
-      progress_type: "subtotal",
-      goals: [
-        { threshold: 50, label: "Free Shipping", icon: "truck" },
-        { threshold: 100, label: "20% Discount", icon: "tag" },
+      progress_bars: [
+        {
+          type: "subtotal",
+          away_text: "You're only {amount} away from {goal}",
+          completed_text: "🎉 Congratulations! You have unlocked all rewards.",
+          checkpoints: [
+            { threshold: 50, label: "Free Shipping", icon: "truck" },
+            { threshold: 100, label: "10% Discount", icon: "tag" },
+          ],
+        },
       ],
       primary_color: "#000000",
       enable_coupon: true,
@@ -20,8 +26,6 @@ document.addEventListener("alpine:init", () => {
       rewards_bar_fg: "#93D3FF",
       rewards_complete_icon_color: "#4D4949",
       rewards_incomplete_icon_color: "#4D4949",
-      rewards_completed_text:
-        "🎉 Congratulations! You have unlocked all rewards.",
       inherit_fonts: true,
       show_strikethrough: true,
       enable_subtotal_line: true,
@@ -67,7 +71,6 @@ document.addEventListener("alpine:init", () => {
       trans_subtotal: "Subtotal",
       trans_coupon_placeholder: "Coupon code",
       trans_coupon_apply_btn: "Apply",
-      trans_rewards_away: "You're only {amount} away from {goal}",
       trans_discounts: "Discounts",
       trans_coupon_accordion_title: "Have a Coupon?",
       show_shipping_notice: true,
@@ -78,6 +81,21 @@ document.addEventListener("alpine:init", () => {
       ...(Array.isArray(beecartAdminData.settings)
         ? {}
         : beecartAdminData.settings),
+    },
+    addProgressBar() {
+      this.settings.progress_bars.push({
+        type: "subtotal",
+        away_text: "You're only {amount} away from {goal}",
+        completed_text: "🎉 Congratulations! You have unlocked all rewards.",
+        checkpoints: [
+          { threshold: 50, label: "Free Shipping", icon: "truck" },
+        ],
+      });
+    },
+    removeProgressBar(index) {
+      if (this.settings.progress_bars.length > 1) {
+        this.settings.progress_bars.splice(index, 1);
+      }
     },
     isSaving: false,
     isDirty: false,
