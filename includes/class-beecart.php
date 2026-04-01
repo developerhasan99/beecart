@@ -131,6 +131,7 @@ class BeeCart
             'rewards_bar_fg'              => '#93D3FF',
             'rewards_complete_icon_color' => '#4D4949',
             'rewards_incomplete_icon_color' => '#4D4949',
+            'rewards_bars_layout'         => 'column',
             'inherit_fonts'               => true,
             'show_strikethrough'          => true,
             'enable_subtotal_line'        => true,
@@ -395,6 +396,9 @@ class BeeCart
             } elseif ($key === 'custom_css') {
                 $safe = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', (string) $raw[$key]);
                 $clean[$key] = wp_strip_all_tags($safe);
+            } elseif ($key === 'rewards_bars_layout') {
+                $layout = (string)$raw[$key];
+                $clean[$key] = in_array($layout, ['row', 'column'], true) ? $layout : 'column';
             } else {
                 $clean[$key] = sanitize_text_field((string) $raw[$key]);
             }

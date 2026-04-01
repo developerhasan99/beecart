@@ -43,41 +43,43 @@
 
             <div class="bc-cart-contents-scroll">
                 <!-- Progress Bar Component -->
-                <template x-for="(bar, barIndex) in $store.admin.settings.progress_bars" :key="barIndex">
-                    <div x-show="$store.admin.settings.enable_rewards_bar" class="bc-progress-wrap">
-                        <div class="bc-progress-text" :style="{ color: $store.admin.settings.text_color || '#000000' }">
-                            <template x-if="barIndex === 0">
-                                <span x-html="(bar.away_text || 'You\'re only {amount} away from {goal}').replace('{amount}', '<strong>' + (bar.type === 'quantity' ? '2' : '$45.00') + '</strong>').replace('{goal}', '<strong>' + (bar.checkpoints && bar.checkpoints.length ? bar.checkpoints[0].label : 'Free Shipping') + '</strong>')"></span>
-                            </template>
-                            <template x-if="barIndex > 0">
-                                <span x-html="(bar.away_text || 'You\'re only {amount} away from {goal}').replace('{amount}', '<strong>' + (bar.type === 'quantity' ? '5' : '$120.00') + '</strong>').replace('{goal}', '<strong>' + (bar.checkpoints && bar.checkpoints.length ? bar.checkpoints[0].label : 'Next Reward') + '</strong>')"></span>
-                            </template>
-                        </div>
-
-                        <div class="bc-progress-bar" :style="{ 
-                            backgroundColor: $store.admin.settings.rewards_bar_bg || '#E2E2E2',
-                            marginBottom: (bar.show_labels !== false) ? '24px' : '0px'
-                         }">
-                            <div class="bc-progress-fill" :style="{ width: (barIndex === 0 ? '65%' : '35%'), backgroundColor: $store.admin.settings.rewards_bar_fg || '#93D3FF' }"></div>
-
-                            <div class="bc-checkpoints">
-                                <template x-for="(cp, cpIndex) in bar.checkpoints" :key="cpIndex">
-                                    <div class="bc-checkpoint shadow-sm"
-                                        :style="{
-                                            left: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) + '%',
-                                            backgroundColor: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) <= (barIndex === 0 ? 65 : 35) ? ($store.admin.settings.rewards_bar_fg || '#93D3FF') : ($store.admin.settings.rewards_bar_bg || '#E2E2E2'),
-                                            color: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) <= (barIndex === 0 ? 65 : 35) ? ($store.admin.settings.rewards_complete_icon_color || '#4D4949') : ($store.admin.settings.rewards_incomplete_icon_color || '#4D4949')
-                                        }">
-                                        <span x-html="beecartAdminData.icon_svgs[cp.icon || 'truck'] || ''"></span>
-                                        <template x-if="bar.show_labels !== false">
-                                            <div class="bc-checkpoint-label" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="cp.label"></div>
-                                        </template>
-                                    </div>
+                <div x-show="$store.admin.settings.enable_rewards_bar" class="bc-rewards-bars-wrap" :style="{ flexDirection: $store.admin.settings.rewards_bars_layout || 'column' }">
+                    <template x-for="(bar, barIndex) in $store.admin.settings.progress_bars" :key="barIndex">
+                        <div class="bc-progress-wrap">
+                            <div class="bc-progress-text" :style="{ color: $store.admin.settings.text_color || '#000000' }">
+                                <template x-if="barIndex === 0">
+                                    <span x-html="(bar.away_text || 'You\'re only {amount} away from {goal}').replace('{amount}', '<strong>' + (bar.type === 'quantity' ? '2' : '$45.00') + '</strong>').replace('{goal}', '<strong>' + (bar.checkpoints && bar.checkpoints.length ? bar.checkpoints[0].label : 'Free Shipping') + '</strong>')"></span>
+                                </template>
+                                <template x-if="barIndex > 0">
+                                    <span x-html="(bar.away_text || 'You\'re only {amount} away from {goal}').replace('{amount}', '<strong>' + (bar.type === 'quantity' ? '5' : '$120.00') + '</strong>').replace('{goal}', '<strong>' + (bar.checkpoints && bar.checkpoints.length ? bar.checkpoints[0].label : 'Next Reward') + '</strong>')"></span>
                                 </template>
                             </div>
+
+                            <div class="bc-progress-bar" :style="{ 
+                                backgroundColor: $store.admin.settings.rewards_bar_bg || '#E2E2E2',
+                                marginBottom: (bar.show_labels !== false) ? '24px' : '0px'
+                             }">
+                                <div class="bc-progress-fill" :style="{ width: (barIndex === 0 ? '65%' : '35%'), backgroundColor: $store.admin.settings.rewards_bar_fg || '#93D3FF' }"></div>
+
+                                <div class="bc-checkpoints">
+                                    <template x-for="(cp, cpIndex) in bar.checkpoints" :key="cpIndex">
+                                        <div class="bc-checkpoint shadow-sm"
+                                            :style="{
+                                                left: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) + '%',
+                                                backgroundColor: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) <= (barIndex === 0 ? 65 : 35) ? ($store.admin.settings.rewards_bar_fg || '#93D3FF') : ($store.admin.settings.rewards_bar_bg || '#E2E2E2'),
+                                                color: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) <= (barIndex === 0 ? 65 : 35) ? ($store.admin.settings.rewards_complete_icon_color || '#4D4949') : ($store.admin.settings.rewards_incomplete_icon_color || '#4D4949')
+                                            }">
+                                            <span x-html="beecartAdminData.icon_svgs[cp.icon || 'truck'] || ''"></span>
+                                            <template x-if="bar.show_labels !== false">
+                                                <div class="bc-checkpoint-label" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="cp.label"></div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </template>
+                    </template>
+                </div>
 
                 <!-- Dummy Item List -->
                 <div class="bc-item-list">

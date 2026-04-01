@@ -31,7 +31,7 @@
                         <input type="text" id="rewards_bar_bg" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                     </div>
                 </div>
-                <!-- Cart accent color -->
+                <!-- Foreground color -->
                 <div class="space-y-2" x-data="colorPicker('rewards_bar_fg')">
                     <label for="rewards_bar_fg" class="text-sm font-medium">Progress Color (Fill)</label>
                     <div class="flex items-center gap-2">
@@ -40,6 +40,14 @@
                         </label>
                         <input type="text" id="rewards_bar_fg" :value="color" @input="updateInput" :class="!isValid ? 'border-red-500 ring-red-200' : 'border-gray-300'" class="flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors" maxlength="7">
                     </div>
+                </div>
+                <!-- Stacking Direction -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">Bars Stacking Logic</label>
+                    <select x-model="$store.admin.settings.rewards_bars_layout" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+                        <option value="column">Stacked (Rows)</option>
+                        <option value="row">Side-by-side (Columns)</option>
+                    </select>
                 </div>
 
             </div>

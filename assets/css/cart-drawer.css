@@ -151,9 +151,15 @@ body.admin-bar .bc-drawer-panel {
 }
 
 /* Progress Bar */
-.bc-progress-wrap {
+.bc-rewards-bars-wrap {
   padding: 16px 24px;
-  flex-shrink: 0;
+  display: flex;
+  column-gap: 8px;
+  row-gap: 32px;
+}
+.bc-progress-wrap {
+  padding-right: 12px;
+  flex: 1;
 }
 .bc-progress-text {
   font-size: 15.5px;
@@ -169,7 +175,6 @@ body.admin-bar .bc-drawer-panel {
   height: 8px;
   border-radius: 99px;
   margin-top: 8px;
-  margin-right: 14px;
 }
 .bc-progress-fill {
   position: absolute;
@@ -199,8 +204,8 @@ body.admin-bar .bc-drawer-panel {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   padding: 5px;
   border-radius: 50%;
   display: flex;
@@ -230,8 +235,9 @@ body.admin-bar .bc-drawer-panel {
 .bc-item-list {
   display: flex;
   flex-direction: column;
-  padding-top: 8px;
+  margin-top: 8px;
   flex-shrink: 0;
+  border-top: 1px solid #e5e7eb;
 }
 .bc-item {
   display: flex;

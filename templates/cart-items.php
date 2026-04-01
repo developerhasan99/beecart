@@ -27,69 +27,72 @@ $show_upsells = $settings['show_upsells'] ?? true;
     <?php
     $progress_bars = $settings['progress_bars'] ?? array();
     if ($enable_rewards_bar && !empty($progress_bars) && (!$is_empty || ($settings['show_rewards_on_empty'] ?? true))):
-        foreach ($progress_bars as $bar):
-            $type = $bar['type'] ?? 'subtotal';
-            $current_val = ($type === 'quantity') ? $cart->get_cart_contents_count() : (float)$cart->get_subtotal();
-            $goals = !empty($bar['checkpoints']) ? $bar['checkpoints'] : array();
-
-            // Sort goals by threshold
-            usort($goals, function ($a, $b) {
-                return (float)$a['threshold'] - (float)$b['threshold'];
-            });
-
-            $next_goal = null;
-            foreach ($goals as $goal) {
-                if ($current_val < (float)$goal['threshold']) {
-                    $next_goal = $goal;
-                    break;
-                }
-            }
-
-            $max_threshold = !empty($goals) ? (float)end($goals)['threshold'] : 100;
-            $percent = $max_threshold > 0 ? min(($current_val / $max_threshold) * 100, 100) : 100;
-
-            if (empty($goals)) continue;
     ?>
-            <div class="bc-progress-wrap">
-                <div class="bc-progress-text" style="color: <?php echo esc_attr($text_color); ?>;">
-                    <?php if ($next_goal):
-                        $diff = (float)$next_goal['threshold'] - $current_val;
-                        $amount_text = ($type === 'subtotal') ? wc_price($diff) : (int)$diff;
-                        $msg = $bar['away_text'] ?? "You're only {amount} away from {goal}";
-                        $msg = str_replace('{amount}', '<strong>' . $amount_text . '</strong>', $msg);
-                        $msg = str_replace('{goal}', '<strong>' . esc_html($next_goal['label']) . '</strong>', $msg);
-                        echo $msg;
-                    else: ?>
-                        <?php echo esc_html($bar['completed_text'] ?? '🎉 Congratulations! You have unlocked all rewards.'); ?>
-                    <?php endif; ?>
-                </div>
+        <div class="bc-rewards-bars-wrap" style="flex-direction: <?php echo esc_attr($settings['rewards_bars_layout'] ?? 'column'); ?>;">
+            <?php foreach ($progress_bars as $bar):
+                $type = $bar['type'] ?? 'subtotal';
+                $current_val = ($type === 'quantity') ? $cart->get_cart_contents_count() : (float)$cart->get_subtotal();
+                $goals = !empty($bar['checkpoints']) ? $bar['checkpoints'] : array();
 
-                <div class="bc-progress-bar" style="background-color: <?php echo esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>; margin-bottom: <?php echo ($bar['show_labels'] ?? true) ? '24px' : '0'; ?>;">
-                    <div class="bc-progress-fill" style="width: <?php echo esc_attr($percent); ?>%; background-color: <?php echo esc_attr($settings['rewards_bar_fg'] ?? '#93D3FF'); ?>;"></div>
+                // Sort goals by threshold
+                usort($goals, function ($a, $b) {
+                    return (float)$a['threshold'] - (float)$b['threshold'];
+                });
 
-                    <div class="bc-checkpoints">
-                        <?php foreach ($goals as $goal):
-                            $goal_val = (float)$goal['threshold'];
-                            $reached = $current_val >= $goal_val;
-                            $pos = ($goal_val / $max_threshold) * 100;
-                            $icon_key = $goal['icon'] ?? 'truck';
-                        ?>
-                            <div class="bc-checkpoint <?php echo $reached ? 'is-reached' : ''; ?>"
-                                style="left: <?php echo esc_attr($pos); ?>%; 
-                                   background-color: <?php echo $reached ? esc_attr($settings['rewards_bar_fg'] ?? '#93D3FF') : esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>;
-                                   color: <?php echo $reached ? esc_attr($settings['rewards_complete_icon_color'] ?? '#4D4949') : esc_attr($settings['rewards_incomplete_icon_color'] ?? '#4D4949'); ?>;">
-                                <?php echo BeeCart::get_svg_icon($icon_key, 'bc-checkpoint-icon'); ?>
-                                <?php if ($bar['show_labels'] ?? true): ?>
-                                    <div class="bc-checkpoint-label" style="color: <?php echo esc_attr($text_color); ?>;">
-                                        <?php echo esc_html($goal['label']); ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        <?php endforeach; ?>
+                $next_goal = null;
+                foreach ($goals as $goal) {
+                    if ($current_val < (float)$goal['threshold']) {
+                        $next_goal = $goal;
+                        break;
+                    }
+                }
+
+                $max_threshold = !empty($goals) ? (float)end($goals)['threshold'] : 100;
+                $percent = $max_threshold > 0 ? min(($current_val / $max_threshold) * 100, 100) : 100;
+
+                if (empty($goals)) continue;
+            ?>
+                <div class="bc-progress-wrap">
+                    <div class="bc-progress-text" style="color: <?php echo esc_attr($text_color); ?>;">
+                        <?php if ($next_goal):
+                            $diff = (float)$next_goal['threshold'] - $current_val;
+                            $amount_text = ($type === 'subtotal') ? wc_price($diff) : (int)$diff;
+                            $msg = $bar['away_text'] ?? "You're only {amount} away from {goal}";
+                            $msg = str_replace('{amount}', '<strong>' . $amount_text . '</strong>', $msg);
+                            $msg = str_replace('{goal}', '<strong>' . esc_html($next_goal['label']) . '</strong>', $msg);
+                            echo $msg;
+                        else: ?>
+                            <?php echo esc_html($bar['completed_text'] ?? '🎉 Congratulations! You have unlocked all rewards.'); ?>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="bc-progress-bar" style="background-color: <?php echo esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>; margin-bottom: <?php echo ($bar['show_labels'] ?? true) ? '24px' : '0'; ?>;">
+                        <div class="bc-progress-fill" style="width: <?php echo esc_attr($percent); ?>%; background-color: <?php echo esc_attr($settings['rewards_bar_fg'] ?? '#93D3FF'); ?>;"></div>
+
+                        <div class="bc-checkpoints">
+                            <?php foreach ($goals as $goal):
+                                $goal_val = (float)$goal['threshold'];
+                                $reached = $current_val >= $goal_val;
+                                $pos = ($goal_val / $max_threshold) * 100;
+                                $icon_key = $goal['icon'] ?? 'truck';
+                            ?>
+                                <div class="bc-checkpoint <?php echo $reached ? 'is-reached' : ''; ?>"
+                                    style="left: <?php echo esc_attr($pos); ?>%; 
+                                       background-color: <?php echo $reached ? esc_attr($settings['rewards_bar_fg'] ?? '#93D3FF') : esc_attr($settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>;
+                                       color: <?php echo $reached ? esc_attr($settings['rewards_complete_icon_color'] ?? '#4D4949') : esc_attr($settings['rewards_incomplete_icon_color'] ?? '#4D4949'); ?>;">
+                                    <?php echo BeeCart::get_svg_icon($icon_key, 'bc-checkpoint-icon'); ?>
+                                    <?php if ($bar['show_labels'] ?? true): ?>
+                                        <div class="bc-checkpoint-label" style="color: <?php echo esc_attr($text_color); ?>;">
+                                            <?php echo esc_html($goal['label']); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
 
     <?php if (!$is_empty): ?>

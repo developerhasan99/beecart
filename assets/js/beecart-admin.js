@@ -27,6 +27,7 @@ document.addEventListener("alpine:init", () => {
       rewards_bar_fg: "#93D3FF",
       rewards_complete_icon_color: "#4D4949",
       rewards_incomplete_icon_color: "#4D4949",
+      rewards_bars_layout: "column",
       inherit_fonts: true,
       show_strikethrough: true,
       enable_subtotal_line: true,
