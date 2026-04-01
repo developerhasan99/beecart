@@ -74,8 +74,8 @@ class BeeCart_Admin
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('beecart-admin-nonce'),
             'settings' => $settings,
-            'menus'    => $formatted_menus,
-            // 'badges' array removed since we now use a single custom image uploader
+            'menus'         => $formatted_menus,
+            'default_badge' => BEECART_URL . 'assets/img/payment-badge.svg',
         ));
     }
 

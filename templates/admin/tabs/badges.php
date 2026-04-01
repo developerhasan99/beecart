@@ -37,9 +37,9 @@
                             Select Image
                         </button>
                         <template x-if="$store.admin.settings.trust_badge_image">
-                            <button type="button" class="px-4 py-2 text-sm font-medium text-red-600 rounded-md border border-solid border-red-200 bg-red-50 hover:bg-red-100 cursor-pointer"
-                                @click.prevent="$store.admin.settings.trust_badge_image = ''">
-                                Remove
+                            <button type="button" class="px-4 py-2 text-sm font-medium text-gray-600 rounded-md border border-solid border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                                @click.prevent="$store.admin.settings.trust_badge_image = beecartAdminData.default_badge">
+                                Reset to Default
                             </button>
                         </template>
                     </div>
