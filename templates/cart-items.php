@@ -6,6 +6,9 @@ if (! defined('ABSPATH')) {
 $cart = WC()->cart;
 if (!$cart) return;
 
+// Ensure totals are calculated so discounts and subtotals are accurate
+$cart->calculate_totals();
+
 $settings = $this->get_settings();
 
 $is_empty = $cart->is_empty();
@@ -232,7 +235,7 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
         // Since AJAX runs in its own thread, we use a simple transient or session-based cache key
         $cart_ids_hash = md5(json_encode(array_keys(WC()->cart->get_cart())));
         $cache_key = 'bc_upsells_' . $cart_ids_hash . '_' . $upsell_source . '_' . $upsell_max;
-        
+
         $upsell_query_ids = get_transient($cache_key);
 
         if (false === $upsell_query_ids) {
@@ -243,9 +246,9 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
             $excluded_ids = array_filter(array_unique($excluded_ids));
 
             $args = array(
-                'post_type'      => 'product', 
-                'posts_per_page' => $upsell_max, 
-                'post_status'    => 'publish', 
+                'post_type'      => 'product',
+                'posts_per_page' => $upsell_max,
+                'post_status'    => 'publish',
                 'fields'         => 'ids',
                 'post__not_in'   => $excluded_ids
             );
@@ -323,7 +326,7 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
             $upsell_query_ids = $query->posts;
             set_transient($cache_key, $upsell_query_ids, 600); // 10 minutes cache
         }
-        
+
         $upsell_query = new WP_Query(array(
             'post_type' => 'product',
             'post__in'  => !empty($upsell_query_ids) ? $upsell_query_ids : array(0),
@@ -419,8 +422,7 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
                     <div class="bc-coupon-wrap">
                         <input type="text" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bc-coupon-input">
                         <button class="bc-coupon-btn"
-                            style="background-color: <?php echo esc_attr($accent_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>"
-                            >
+                            style="background-color: <?php echo esc_attr($accent_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>">
                             <?php echo esc_html($settings['trans_coupon_apply_btn'] ?? 'Apply'); ?>
                         </button>
                     </div>
@@ -435,7 +437,7 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
             </div>
         <?php endif; ?>
 
-        <?php if ($cart->get_total_discount() > 0): ?>
+        <?php if ($cart->get_discount_total() > 0): ?>
             <div class="bc-summary-row" style="color: <?php echo esc_attr($text_color); ?>;">
                 <div class="label-wrap">
                     <span><?php echo esc_html(($settings['trans_discounts'] ?? 'Discounts') . ':'); ?></span>
@@ -453,7 +455,7 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-                <span class="val-wrap bc-discount-val">- <?php echo wc_price($cart->get_total_discount()); ?></span>
+                <span class="val-wrap bc-discount-val">- <?php echo wc_price($cart->get_discount_total()); ?></span>
             </div>
         <?php endif; ?>
 
