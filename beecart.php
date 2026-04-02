@@ -4,7 +4,8 @@
  * Plugin Name: BeeCart – AOV Booster, Cart Drawer & Upsell Suite
  * Description: A premium WooCommerce side cart plugin featuring AOV Booster, Cart Drawer, Upsell, Cart Progress.
  * Version: 1.0.0
- * Author: Your Name
+ * Author: Mehedi Hasan
+ * Author URI: https://developerhasan99.github.io/
  * Text Domain: beecart
  */
 
@@ -34,4 +35,3 @@ function run_beecart()
     }
 }
 add_action('plugins_loaded', 'run_beecart');
-
