@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, upsell, cart drawer
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,15 @@ See the **Changelog** section below or check the `readme.txt` file in the plugin
 5. Upsells Tab — configure product recommendation source and display options.
 
 == Changelog ==
+
+= 1.1.0 =
+* Performance Overhaul: Refactored frontend logic from Alpine.js to Vanilla JavaScript for faster loading and better compatibility.
+* Optimized AJAX: Improved cart drawer update speed by removing redundant server-side calls.
+* Enhanced Recommendations: Products already in the cart are now automatically excluded from the "You might also like" section.
+* Admin Fixes: Improved select dropdown initialization in the admin panel; previously selected options now correctly show as active.
+* Asset Management: Consolidated CSS files (merged cart-drawer.css into beecart.css) to reduce HTTP requests.
+* UI improvements: Fixed the close button on the empty cart "Return to Shop" button and refined the checkout footer layout.
+* Bug fixes: Resolved an issue where coupon forms, subtotals, and trust badges were not rendering on the frontend.
 
 = 1.0.0 =
 * Initial release.
