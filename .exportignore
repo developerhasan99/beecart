@@ -1,0 +1,13 @@
+.git
+.gitignore
+.vscode
+.DS_Store
+node_modules
+package.json
+package-lock.json
+tailwind.config.js
+assets/css/admin-tailwind.css
+export.sh
+.exportignore
+export/
+*.log
