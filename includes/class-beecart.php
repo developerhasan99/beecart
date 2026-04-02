@@ -90,12 +90,11 @@ class BeeCart
 
         // Native / Frontend CSS
         wp_enqueue_style('beecart-style', BEECART_URL . 'assets/css/beecart.css', array(), BEECART_VERSION);
-
-        // The newly created Vanilla CSS classes for the generic layout
-        wp_enqueue_style('beecart-drawer-style', BEECART_URL . 'assets/css/cart-drawer.css', array(), BEECART_VERSION);
-        wp_enqueue_script('beecart-script', BEECART_URL . 'assets/js/beecart.js', array('jquery'), BEECART_VERSION, true);
-        wp_enqueue_script('alpine-collapse', 'https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js', array('beecart-script'), null, true);
-        wp_enqueue_script('alpine-js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js', array('alpine-collapse'), null, true);
+        
+        // Priority loading: Enqueue in header with defer strategy for best performance
+        wp_enqueue_script('beecart-script', BEECART_URL . 'assets/js/beecart.js', array('jquery'), BEECART_VERSION, array(
+            'strategy' => 'defer',
+        ));
 
         wp_localize_script('beecart-script', 'beecartData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -244,8 +243,14 @@ class BeeCart
     public function ajax_update_item()
     {
         check_ajax_referer('beecart-nonce', 'security');
+        
         $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
         $quantity      = isset($_POST['quantity']) ? absint($_POST['quantity']) : 0;
+        
+        // Ensure cart is loaded
+        if (!WC()->cart) {
+            wp_send_json_error();
+        }
 
         if ($quantity == 0) {
             WC()->cart->remove_cart_item($cart_item_key);

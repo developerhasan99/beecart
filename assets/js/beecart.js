@@ -1,257 +1,412 @@
-const initBeeCartJS = () => {
-  Alpine.data("beecart", (initialMinutes = 15) => ({
-    isOpen: false,
-    isLoading: false,
-    cartHtml: "",
-    cartCount: 0,
-    timerCount: initialMinutes * 60,
-    timerInterval: null,
+(function() {
+    'use strict';
 
-    init() {
-      const settings = beecartData.settings || {};
-      const enableDrawer = settings.enable_cart_drawer !== undefined ? settings.enable_cart_drawer : true;
-      const autoOpen = settings.auto_open_cart !== undefined ? settings.auto_open_cart : true;
+    const BeeCart = {
+        isOpen: false,
+        isLoading: false,
+        cartCount: 0,
+        timerCount: 0,
+        timerInterval: null,
+        debounceTimer: null,
+        refreshTimer: null,
+        selectedVariations: {},
+        upsellPrices: {},
 
-      // Bind WooCommerce added to cart event
-      if (typeof jQuery !== "undefined") {
-        jQuery(document.body).on("added_to_cart", () => {
-          if (enableDrawer && autoOpen) {
-            this.openCart();
-          } else {
-            this.getCart(); // Still fetch fresh data silently
-          }
-        });
+        init() {
+            const settings = beecartData.settings || {};
+            const initialMinutes = parseInt(settings.timer_duration) || 15;
+            this.timerCount = initialMinutes * 60;
+            
+            this.cacheDOM();
+            this.bindEvents();
+            this.initWooCommerceEvents();
+            this.initDynamicItems();
+        },
 
-        // AJAX Add to Cart for Single Product Forms
-        jQuery(document).on("submit", "form.cart", (e) => {
-          if (!enableDrawer) return; // Allow default behavior if drawer is disabled
+        cacheDOM() {
+            this.drawerWrap = document.querySelector('.bc-drawer-wrap');
+            this.drawerBody = document.querySelector('.bc-drawer-body');
+            this.cartHtmlContainer = document.querySelector('.bc-cart-html-container');
+            this.loadingOverlay = document.querySelector('.bc-loading-overlay');
+            this.countBubbles = document.querySelectorAll('.beecart-count-bubble');
+            this.cartCountDisplay = document.querySelector('.bc-cart-count-display');
+            this.announcementBar = document.querySelector('.bc-announcement');
+        },
 
-          const $form = jQuery(e.target);
-          if ($form.closest(".product-type-external").length) return;
+        bindEvents() {
+            // Open cart event
+            window.addEventListener('open-beecart', () => this.openCart());
 
-          e.preventDefault();
-          this.isLoading = true;
-          
-          if (autoOpen) {
-            this.isOpen = true; // Open immediately to show loading spinner
-            document.body.style.overflow = "hidden";
-          }
-
-          const formData = new FormData(e.target);
-          formData.append("action", "beecart_add_to_cart");
-          formData.append("security", beecartData.nonce);
-
-          fetch(beecartData.ajax_url, {
-            method: "POST",
-            body: formData,
-          })
-            .then((res) => res.json())
-            .then((res) => {
-              if (res.success) {
-                this.cartHtml = res.data.html;
-                this.cartCount = res.data.count;
-                this.updateHeaderBubble();
-                jQuery(document.body).trigger("wc_fragment_refresh");
-                if (!this.timerInterval) this.startTimer();
-              } else {
-                // Fallback to strict JS submission
-                $form.unbind("submit").submit();
-              }
-            })
-            .catch(() => {
-              $form.unbind("submit").submit();
-            })
-            .finally(() => {
-              this.isLoading = false;
+            // Close icons/overlay
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.bc-drawer-close') || e.target.closest('.bc-empty-cart-btn') || e.target.classList.contains('bc-overlay')) {
+                    this.closeCart();
+                }
             });
-        });
-      }
-    },
 
-    openCart() {
-      this.isOpen = true;
-      document.body.style.overflow = "hidden";
-      this.getCart();
-      if (!this.timerInterval) this.startTimer();
-    },
+            // Delegate actions inside drawer
+            if (this.drawerWrap) {
+                this.drawerWrap.addEventListener('click', (e) => {
+                    const target = e.target;
 
-    closeCart() {
-      this.isOpen = false;
-      document.body.style.overflow = "";
-    },
+                    // Remove item or update qty
+                    if (target.closest('.bc-item-remove')) {
+                        const btn = target.closest('.bc-item-remove');
+                        this.updateItem(btn.dataset.key, 0);
+                    }
+                    if (target.closest('.bc-qty-btn')) {
+                        const btn = target.closest('.bc-qty-btn');
+                        const key = btn.dataset.key;
+                        const qty = parseInt(btn.dataset.qty);
+                        this.updateItem(key, qty);
+                    }
 
-    async getCart() {
-      this.isLoading = true;
-      try {
-        const formData = new FormData();
-        formData.append("action", "beecart_get_cart");
-        formData.append("security", beecartData.nonce);
+                    // Apply coupon
+                    if (target.closest('.bc-coupon-btn')) {
+                        const input = this.drawerWrap.querySelector('.bc-coupon-input');
+                        if (input) this.applyCoupon(input.value);
+                    }
 
-        const response = await fetch(beecartData.ajax_url, {
-          method: "POST",
-          body: formData,
-        });
-        const res = await response.json();
-        if (res.success) {
-          this.cartHtml = res.data.html;
-          this.cartCount = res.data.count;
-          this.updateHeaderBubble();
+                    // Remove coupon
+                    if (target.closest('.bc-badge-remove')) {
+                        const btn = target.closest('.bc-badge-remove');
+                        this.removeCoupon(btn.dataset.code);
+                    }
+
+                    // Add upsell
+                    if (target.closest('.bc-upsell-add')) {
+                        const btn = target.closest('.bc-upsell-add');
+                        this.addUpsell(btn.dataset.id);
+                    }
+
+                    // Coupon accordion toggle
+                    if (target.closest('.bc-coupon-toggle')) {
+                        const accordion = target.closest('.bc-coupon-accordion');
+                        const content = accordion.querySelector('.bc-coupon-accordion-content');
+                        const icon = accordion.querySelector('.bc-coupon-toggle-icon');
+                        
+                        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                            content.style.maxHeight = '0px';
+                            icon.classList.remove('is-open');
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                            icon.classList.add('is-open');
+                        }
+                    }
+                });
+
+                // Variation select change
+                this.drawerWrap.addEventListener('change', (e) => {
+                    if (e.target.classList.contains('bc-upsell-select')) {
+                        const select = e.target;
+                        const productId = select.dataset.productId;
+                        this.selectedVariations[productId] = select.value;
+                        
+                        // Update price display if needed
+                        const priceDisplay = select.closest('.bc-upsell-item').querySelector('.bc-upsell-price');
+                        if (priceDisplay && this.upsellPrices[productId] && this.upsellPrices[productId][select.value]) {
+                            priceDisplay.innerHTML = this.upsellPrices[productId][select.value];
+                        }
+                    }
+                });
+            }
+
+            // Global trigger icons
+            document.querySelectorAll('.bc-icon-trigger').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.openCart();
+                });
+            });
+        },
+
+        initWooCommerceEvents() {
+            if (typeof jQuery !== 'undefined') {
+                const $ = jQuery;
+                $(document.body).on('added_to_cart', () => {
+                    const settings = beecartData.settings || {};
+                    if (settings.enable_cart_drawer && settings.auto_open_cart) {
+                        this.openCart();
+                    } else {
+                        this.getCart();
+                    }
+                });
+
+                // AJAX Add to Cart for Single Product Forms
+                $(document).on('submit', 'form.cart', (e) => {
+                    const settings = beecartData.settings || {};
+                    if (!settings.enable_cart_drawer) return;
+
+                    const $form = $(e.target);
+                    if ($form.closest('.product-type-external').length) return;
+
+                    e.preventDefault();
+                    
+                    if (settings.auto_open_cart) {
+                        this.openCart(true); 
+                    }
+
+                    const formData = new FormData(e.target);
+                    formData.append('action', 'beecart_add_to_cart');
+                    formData.append('security', beecartData.nonce);
+
+                    this.setLoading(true);
+
+                    fetch(beecartData.ajax_url, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.success) {
+                            this.updateCartUI(res.data);
+                            this.triggerGlobalRefresh(true);
+                            this.startTimer();
+                        } else {
+                            $form.unbind('submit').submit();
+                        }
+                    })
+                    .catch(() => {
+                        $form.unbind('submit').submit();
+                    })
+                    .finally(() => {
+                        this.setLoading(false);
+                    });
+                });
+            }
+        },
+
+        openCart(loadingOnly = false) {
+            this.isOpen = true;
+            if (this.drawerWrap) this.drawerWrap.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+            if (!loadingOnly) {
+                this.getCart();
+            }
+            this.startTimer();
+        },
+
+        closeCart() {
+            this.isOpen = false;
+            if (this.drawerWrap) this.drawerWrap.classList.remove('is-open');
+            document.body.style.overflow = '';
+        },
+
+        setLoading(loading) {
+            this.isLoading = loading;
+            if (this.drawerBody) {
+                if (loading) this.drawerBody.classList.add('is-loading');
+                else this.drawerBody.classList.remove('is-loading');
+            }
+            if (this.loadingOverlay) {
+                this.loadingOverlay.style.display = loading ? 'flex' : 'none';
+            }
+        },
+
+        async getCart() {
+            this.setLoading(true);
+            try {
+                const formData = new FormData();
+                formData.append('action', 'beecart_get_cart');
+                formData.append('security', beecartData.nonce);
+
+                const response = await fetch(beecartData.ajax_url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const res = await response.json();
+                if (res.success) {
+                    this.updateCartUI(res.data);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+            }
+        },
+
+        updateCartUI(data) {
+            if (this.cartHtmlContainer) {
+                this.cartHtmlContainer.innerHTML = data.html;
+            }
+            this.cartCount = data.count;
+            this.updateHeaderBubble();
+            this.initDynamicItems();
+            this.triggerGlobalRefresh();
+        },
+
+        triggerGlobalRefresh(immediate = false) {
+            if (typeof jQuery !== 'undefined') {
+                if (this.refreshTimer) clearTimeout(this.refreshTimer);
+                if (immediate) {
+                    jQuery(document.body).trigger('wc_fragment_refresh');
+                } else {
+                    this.refreshTimer = setTimeout(() => {
+                        jQuery(document.body).trigger('wc_fragment_refresh');
+                    }, 2000);
+                }
+            }
+        },
+
+        initDynamicItems() {
+            const upsellItems = document.querySelectorAll('.bc-upsell-item[data-prices]');
+            upsellItems.forEach(item => {
+                const id = item.dataset.id;
+                try {
+                    this.upsellPrices[id] = JSON.parse(item.dataset.prices);
+                    const variationSelect = item.querySelector('.bc-upsell-select');
+                    if (variationSelect) {
+                        this.selectedVariations[id] = variationSelect.value;
+                    }
+                } catch(e) {}
+            });
+        },
+
+        async updateItem(key, qty) {
+            if (qty < 0) return;
+            this.setLoading(true);
+            try {
+                const formData = new FormData();
+                formData.append('action', 'beecart_update_item');
+                formData.append('security', beecartData.nonce);
+                formData.append('cart_item_key', key);
+                formData.append('quantity', qty);
+
+                const response = await fetch(beecartData.ajax_url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const res = await response.json();
+                if (res.success) {
+                    this.updateCartUI(res.data);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+            }
+        },
+
+        async addUpsell(id) {
+            this.setLoading(true);
+            try {
+                const formData = new FormData();
+                formData.append('action', 'beecart_add_to_cart');
+                formData.append('security', beecartData.nonce);
+                formData.append('product_id', id);
+                formData.append('quantity', 1);
+
+                if (this.selectedVariations[id]) {
+                    formData.append('variation_id', this.selectedVariations[id]);
+                }
+
+                const response = await fetch(beecartData.ajax_url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const res = await response.json();
+                if (res.success) {
+                    this.updateCartUI(res.data);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+            }
+        },
+
+        async applyCoupon(code) {
+            if (!code) return;
+            this.setLoading(true);
+            try {
+                const formData = new FormData();
+                formData.append('action', 'beecart_apply_coupon');
+                formData.append('security', beecartData.nonce);
+                formData.append('coupon', code);
+
+                const response = await fetch(beecartData.ajax_url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const res = await response.json();
+                if (res.success) {
+                    this.updateCartUI(res.data);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+            }
+        },
+
+        async removeCoupon(code) {
+            if (!code) return;
+            this.setLoading(true);
+            try {
+                const formData = new FormData();
+                formData.append('action', 'beecart_remove_coupon');
+                formData.append('security', beecartData.nonce);
+                formData.append('coupon', code);
+
+                const response = await fetch(beecartData.ajax_url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const res = await response.json();
+                if (res.success) {
+                    this.updateCartUI(res.data);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.setLoading(false);
+            }
+        },
+
+        updateHeaderBubble() {
+            this.countBubbles.forEach(b => {
+                const count = parseInt(this.cartCount) || 0;
+                b.textContent = count;
+                b.style.display = (count > 0) ? 'flex' : 'none';
+            });
+            if (this.cartCountDisplay) {
+                this.cartCountDisplay.textContent = this.cartCount;
+            }
+        },
+
+        startTimer() {
+            if (this.timerInterval) return;
+            this.timerInterval = setInterval(() => {
+                if (this.timerCount > 0) {
+                    this.timerCount--;
+                    this.updateTimerDisplay();
+                } else {
+                    this.stopTimer();
+                }
+            }, 1000);
+        },
+
+        stopTimer() {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        },
+
+        updateTimerDisplay() {
+            if (this.announcementBar) {
+                const timerStrong = this.announcementBar.querySelector('.bc-timer-bold');
+                if (timerStrong) {
+                    timerStrong.textContent = this.formatTime(this.timerCount);
+                }
+            }
+        },
+
+        formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
+    };
 
-    async updateItem(key, qty) {
-      if (qty < 0) return;
-      this.isLoading = true;
-      try {
-        const formData = new FormData();
-        formData.append("action", "beecart_update_item");
-        formData.append("security", beecartData.nonce);
-        formData.append("cart_item_key", key);
-        formData.append("quantity", qty);
+    document.addEventListener('DOMContentLoaded', () => BeeCart.init());
 
-        const response = await fetch(beecartData.ajax_url, {
-          method: "POST",
-          body: formData,
-        });
-        const res = await response.json();
-        if (res.success) {
-          this.cartHtml = res.data.html;
-          this.cartCount = res.data.count;
-          this.updateHeaderBubble();
-          // Update standard WooCommerce fragments globally outside cart
-          if (typeof jQuery !== "undefined") {
-            jQuery(document.body).trigger("wc_fragment_refresh");
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-
-    selectedVariations: {},
-    upsellPrices: {},
-
-    async addUpsell(id) {
-      this.isLoading = true;
-      try {
-        const formData = new FormData();
-        formData.append("action", "beecart_add_to_cart");
-        formData.append("security", beecartData.nonce);
-        formData.append("product_id", id);
-        formData.append("quantity", 1);
-
-        // check if has selected variation
-        if (this.selectedVariations[id]) {
-          formData.append("variation_id", this.selectedVariations[id]);
-        }
-
-        const response = await fetch(beecartData.ajax_url, {
-          method: "POST",
-          body: formData,
-        });
-        const res = await response.json();
-        if (res.success) {
-          this.cartHtml = res.data.html;
-          this.cartCount = res.data.count;
-          this.updateHeaderBubble();
-          if (typeof jQuery !== "undefined") {
-            jQuery(document.body).trigger("wc_fragment_refresh");
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-
-    async applyCoupon(code) {
-      if (!code) return;
-      this.isLoading = true;
-      try {
-        const formData = new FormData();
-        formData.append("action", "beecart_apply_coupon");
-        formData.append("security", beecartData.nonce);
-        formData.append("coupon", code);
-
-        const response = await fetch(beecartData.ajax_url, {
-          method: "POST",
-          body: formData,
-        });
-        const res = await response.json();
-        if (res.success) {
-          this.cartHtml = res.data.html;
-          this.cartCount = res.data.count;
-          this.updateHeaderBubble();
-          if (typeof jQuery !== "undefined") {
-            jQuery(document.body).trigger("wc_fragment_refresh");
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-
-    async removeCoupon(code) {
-      if (!code) return;
-      this.isLoading = true;
-      try {
-        const formData = new FormData();
-        formData.append("action", "beecart_remove_coupon");
-        formData.append("security", beecartData.nonce);
-        formData.append("coupon", code);
-
-        const response = await fetch(beecartData.ajax_url, {
-          method: "POST",
-          body: formData,
-        });
-        const res = await response.json();
-        if (res.success) {
-          this.cartHtml = res.data.html;
-          this.cartCount = res.data.count;
-          this.updateHeaderBubble();
-          if (typeof jQuery !== "undefined") {
-            jQuery(document.body).trigger("wc_fragment_refresh");
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-
-    updateHeaderBubble() {
-      document.querySelectorAll(".beecart-count-bubble").forEach((b) => {
-        b.textContent = this.cartCount;
-      });
-    },
-
-    startTimer() {
-      this.timerInterval = setInterval(() => {
-        if (this.timerCount > 0) {
-          this.timerCount--;
-        } else {
-          clearInterval(this.timerInterval);
-        }
-      }, 1000);
-    },
-
-    formatTime(seconds) {
-      const m = Math.floor(seconds / 60);
-      const s = seconds % 60;
-      return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-    },
-  }));
-};
-document.addEventListener("alpine:init", initBeeCartJS);
-if (window.Alpine) initBeeCartJS();
+})();

@@ -10,17 +10,25 @@ $settings = $this->get_settings();
 
 $is_empty = $cart->is_empty();
 
-$enable_rewards_bar = $settings['enable_rewards_bar'] ?? true;
-$text_color = $settings['text_color'] ?? '#000000';
-$show_item_images = $settings['show_item_images'] ?? true;
-$show_strikethrough = $settings['show_strikethrough'] ?? true;
-$show_savings = $settings['show_savings'] ?? true;
-$savings_color = $settings['savings_text_color'] ?? '#1DC200';
-$savings_prefix = $settings['trans_savings_prefix'] ?? 'Save';
-$btn_color = $settings['btn_color'] ?? '#000000';
-$btn_text_color = $settings['btn_text_color'] ?? '#FFFFFF';
-$btn_radius = $settings['btn_radius'] ?? '4px';
-$show_upsells = $settings['show_upsells'] ?? true;
+$enable_rewards_bar   = $settings['enable_rewards_bar'] ?? true;
+$text_color           = $settings['text_color'] ?? '#000000';
+$show_item_images      = $settings['show_item_images'] ?? true;
+$show_strikethrough    = $settings['show_strikethrough'] ?? true;
+$show_savings          = $settings['show_savings'] ?? true;
+$savings_color         = $settings['savings_text_color'] ?? '#1DC200';
+$savings_prefix        = $settings['trans_savings_prefix'] ?? 'Save';
+$btn_color             = $settings['btn_color'] ?? '#000000';
+$btn_text_color        = $settings['btn_text_color'] ?? '#FFFFFF';
+$btn_radius            = $settings['btn_radius'] ?? '4px';
+$show_upsells          = $settings['show_upsells'] ?? true;
+
+$enable_coupon          = $settings['enable_coupon'] ?? true;
+$enable_subtotal_line   = $settings['enable_subtotal_line'] ?? true;
+$accent_color           = $settings['accent_color'] ?? '#f6f6f7';
+$btn_hover_color        = $settings['btn_hover_color'] ?? '#333333';
+$btn_hover_text_color   = $settings['btn_hover_text_color'] ?? '#FFFFFF';
+$bg_color               = $settings['bg_color'] ?? '#FFFFFF';
+$show_trust_badges      = $settings['show_trust_badges'] ?? true;
 ?>
 
 <div class="bc-cart-contents-scroll">
@@ -125,7 +133,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                         <?php endif; ?>
 
                         <div class="bc-item-details">
-                            <button class="bc-item-remove" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', 0)">
+                            <button class="bc-item-remove" data-key="<?php echo esc_attr($cart_item_key); ?>">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash">
                                     <path d="M3 6h18"></path>
                                     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
@@ -172,9 +180,9 @@ $show_upsells = $settings['show_upsells'] ?? true;
 
                             <div class="bc-item-bottom">
                                 <div class="bc-qty-wrap">
-                                    <button class="bc-qty-btn minus" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', <?php echo (int) $cart_item['quantity'] - 1; ?>)">-</button>
+                                    <button class="bc-qty-btn minus" data-key="<?php echo esc_attr($cart_item_key); ?>" data-qty="<?php echo (int) $cart_item['quantity'] - 1; ?>">-</button>
                                     <span class="bc-qty-val"><?php echo esc_html($cart_item['quantity']); ?></span>
-                                    <button class="bc-qty-btn plus" @click.prevent="updateItem('<?php echo esc_attr($cart_item_key); ?>', <?php echo (int) $cart_item['quantity'] + 1; ?>)">+</button>
+                                    <button class="bc-qty-btn plus" data-key="<?php echo esc_attr($cart_item_key); ?>" data-qty="<?php echo (int) $cart_item['quantity'] + 1; ?>">+</button>
                                 </div>
 
                                 <?php
@@ -205,8 +213,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
             </svg>
             <p class="bc-empty-cart-text" style="color: <?php echo esc_attr($text_color); ?>;"><?php echo esc_html($settings['trans_empty_cart'] ?? 'Your cart is empty.'); ?></p>
             <button class="bc-empty-cart-btn"
-                style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
-                @click.prevent="closeCart()">
+                style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;">
                 <?php echo esc_html($settings['trans_continue_shopping'] ?? 'Return to shop'); ?>
             </button>
         </div>
@@ -220,80 +227,98 @@ $show_upsells = $settings['show_upsells'] ?? true;
         $upsell_max = $settings['upsell_max'] ?? 3;
         $upsell_source   = $settings['upsell_source'] ?? 'best_sellers';
         $upsell_category = $settings['upsell_category'] ?? '';
-        $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'post_status' => 'publish');
 
-        if ($upsell_source === 'best_sellers') {
-            $args['meta_key'] = 'total_sales';
-            $args['orderby']  = 'meta_value_num';
-            $args['order']    = 'DESC';
-        } elseif ($upsell_source === 'newest') {
-            $args['orderby'] = 'date';
-            $args['order']   = 'DESC';
-        } elseif ($upsell_source === 'category' && !empty($upsell_category)) {
-            $args['orderby'] = 'date';
-            $args['order']   = 'DESC';
-            $args['tax_query'] = array(array(
-                'taxonomy' => 'product_cat',
-                'field'    => 'slug',
-                'terms'    => $upsell_category,
-            ));
-        } elseif ($upsell_source === 'upsells') {
-            // Collect WC upsell product IDs from cart items
-            $upsell_ids = array();
-            foreach (WC()->cart->get_cart() as $cart_item) {
-                $_p = $cart_item['data'];
-                if ($_p) {
-                    $upsell_ids = array_merge($upsell_ids, $_p->get_upsell_ids());
+        // Simple cache: Cache the query ID list for this session/request
+        // Since AJAX runs in its own thread, we use a simple transient or session-based cache key
+        $cart_ids_hash = md5(json_encode(array_keys(WC()->cart->get_cart())));
+        $cache_key = 'bc_upsells_' . $cart_ids_hash . '_' . $upsell_source . '_' . $upsell_max;
+        
+        $upsell_query_ids = get_transient($cache_key);
+
+        if (false === $upsell_query_ids) {
+            $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'post_status' => 'publish', 'fields' => 'ids');
+
+            if ($upsell_source === 'best_sellers') {
+                $args['meta_key'] = 'total_sales';
+                $args['orderby']  = 'meta_value_num';
+                $args['order']    = 'DESC';
+            } elseif ($upsell_source === 'newest') {
+                $args['orderby'] = 'date';
+                $args['order']   = 'DESC';
+            } elseif ($upsell_source === 'category' && !empty($upsell_category)) {
+                $args['orderby'] = 'date';
+                $args['order']   = 'DESC';
+                $args['tax_query'] = array(array(
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $upsell_category,
+                ));
+            } elseif ($upsell_source === 'upsells') {
+                $upsell_ids = array();
+                foreach (WC()->cart->get_cart() as $cart_item) {
+                    $_p = $cart_item['data'];
+                    if ($_p) {
+                        $upsell_ids = array_merge($upsell_ids, $_p->get_upsell_ids());
+                    }
                 }
-            }
-            $upsell_ids = array_unique($upsell_ids);
-            if (!empty($upsell_ids)) {
-                $args['post__in'] = $upsell_ids;
-                $args['orderby']  = 'post__in';
-            } else {
-                // Fallback to best sellers if no upsells defined
-                $args['meta_key'] = 'total_sales';
-                $args['orderby']  = 'meta_value_num';
-                $args['order']    = 'DESC';
-            }
-        } elseif ($upsell_source === 'cross_sells') {
-            $cross_sell_ids = array();
-            foreach (WC()->cart->get_cart() as $cart_item) {
-                $_p = $cart_item['data'];
-                if ($_p) {
-                    $cross_sell_ids = array_merge($cross_sell_ids, $_p->get_cross_sell_ids());
+                $upsell_ids = array_unique($upsell_ids);
+                if (!empty($upsell_ids)) {
+                    $args['post__in'] = $upsell_ids;
+                    $args['orderby']  = 'post__in';
+                } else {
+                    $args['meta_key'] = 'total_sales';
+                    $args['orderby']  = 'meta_value_num';
+                    $args['order']    = 'DESC';
                 }
-            }
-            $cross_sell_ids = array_unique($cross_sell_ids);
-            if (!empty($cross_sell_ids)) {
-                $args['post__in'] = $cross_sell_ids;
-                $args['orderby']  = 'post__in';
+            } elseif ($upsell_source === 'cross_sells') {
+                $cross_sell_ids = array();
+                foreach (WC()->cart->get_cart() as $cart_item) {
+                    $_p = $cart_item['data'];
+                    if ($_p) {
+                        $cross_sell_ids = array_merge($cross_sell_ids, $_p->get_cross_sell_ids());
+                    }
+                }
+                $cross_sell_ids = array_unique($cross_sell_ids);
+                if (!empty($cross_sell_ids)) {
+                    $args['post__in'] = $cross_sell_ids;
+                    $args['orderby']  = 'post__in';
+                } else {
+                    $args['meta_key'] = 'total_sales';
+                    $args['orderby']  = 'meta_value_num';
+                    $args['order']    = 'DESC';
+                }
+            } elseif ($upsell_source === 'related') {
+                $related_ids = array();
+                foreach (WC()->cart->get_cart() as $cart_item) {
+                    $related_ids = array_merge($related_ids, wc_get_related_products($cart_item['product_id'], $upsell_max));
+                }
+                $related_ids = array_unique($related_ids);
+                if (!empty($related_ids)) {
+                    $args['post__in'] = array_slice($related_ids, 0, $upsell_max);
+                    $args['orderby']  = 'post__in';
+                } else {
+                    $args['meta_key'] = 'total_sales';
+                    $args['orderby']  = 'meta_value_num';
+                    $args['order']    = 'DESC';
+                }
             } else {
                 $args['meta_key'] = 'total_sales';
                 $args['orderby']  = 'meta_value_num';
                 $args['order']    = 'DESC';
             }
-        } elseif ($upsell_source === 'related') {
-            $related_ids = array();
-            foreach (WC()->cart->get_cart() as $cart_item) {
-                $related_ids = array_merge($related_ids, wc_get_related_products($cart_item['product_id'], $upsell_max));
-            }
-            $related_ids = array_unique($related_ids);
-            if (!empty($related_ids)) {
-                $args['post__in'] = array_slice($related_ids, 0, $upsell_max);
-                $args['orderby']  = 'post__in';
-            } else {
-                $args['meta_key'] = 'total_sales';
-                $args['orderby']  = 'meta_value_num';
-                $args['order']    = 'DESC';
-            }
-        } else {
-            // Default fallback
-            $args['meta_key'] = 'total_sales';
-            $args['orderby']  = 'meta_value_num';
-            $args['order']    = 'DESC';
+
+            $query = new WP_Query($args);
+            $upsell_query_ids = $query->posts;
+            set_transient($cache_key, $upsell_query_ids, 600); // 10 minutes cache
         }
-        $upsell_query = new WP_Query($args);
+        
+        $upsell_query = new WP_Query(array(
+            'post_type' => 'product',
+            'post__in'  => !empty($upsell_query_ids) ? $upsell_query_ids : array(0),
+            'orderby'   => 'post__in',
+            'posts_per_page' => $upsell_max,
+        ));
+
         if ($upsell_query->have_posts()):
     ?>
             <div class="bc-upsells" style="background-color: <?php echo esc_attr($settings['accent_color'] ?? '#f9fafb'); ?>;">
@@ -313,7 +338,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                             $prices_json = esc_attr(json_encode($p_map));
                         }
                     ?>
-                        <div class="bc-upsell-item" <?php if ($prices_json) echo 'x-init="upsellPrices[' . get_the_ID() . '] = ' . $prices_json . '"'; ?>>
+                        <div class="bc-upsell-item" data-id="<?php echo get_the_ID(); ?>" <?php if ($prices_json) echo 'data-prices="' . $prices_json . '"'; ?>>
                             <div class="bc-upsell-img-wrap">
                                 <?php if ($img): ?>
                                     <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
@@ -324,7 +349,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                             <div class="bc-upsell-details">
                                 <h5 class="bc-upsell-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php the_title(); ?></h5>
                                 <div class="bc-upsell-prices">
-                                    <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;" x-text="upsellPrices[<?php echo get_the_ID(); ?>] && selectedVariations[<?php echo get_the_ID(); ?>] ? upsellPrices[<?php echo get_the_ID(); ?>][selectedVariations[<?php echo get_the_ID(); ?>]] : '<?php echo esc_js(strip_tags($product->get_price_html())); ?>'">
+                                    <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;">
                                         <?php echo $product->get_price_html(); ?>
                                     </span>
                                 </div>
@@ -333,8 +358,8 @@ $show_upsells = $settings['show_upsells'] ?? true;
                                         $product_variations = $product->get_available_variations();
                                         if (!empty($product_variations)):
                                     ?>
-                                            <div class="bc-upsell-select-wrap" x-init="selectedVariations[<?php echo get_the_ID(); ?>] = '<?php echo $product_variations[0]['variation_id']; ?>'">
-                                                <select x-model="selectedVariations[<?php echo get_the_ID(); ?>]" class="bc-upsell-select">
+                                            <div class="bc-upsell-select-wrap">
+                                                <select class="bc-upsell-select" data-product-id="<?php echo get_the_ID(); ?>">
                                                     <?php foreach ($product_variations as $v): ?>
                                                         <option value="<?php echo esc_attr($v['variation_id']); ?>">
                                                             <?php echo esc_html(implode(' / ', array_values($v['attributes']))); ?>
@@ -348,10 +373,10 @@ $show_upsells = $settings['show_upsells'] ?? true;
                                     <?php endif;
                                     endif; ?>
                                     <button class="bc-upsell-add"
-                                        @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
-                                        @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
+                                        onmouseenter="this.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; this.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
+                                        onmouseleave="this.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; this.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
                                         style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;"
-                                        @click.prevent="addUpsell(<?php echo get_the_ID(); ?>)">
+                                        data-id="<?php echo get_the_ID(); ?>">
                                         <?php echo esc_html($settings['upsell_btn_text'] ?? 'Add'); ?>
                                     </button>
                                 </div>
@@ -368,24 +393,22 @@ $show_upsells = $settings['show_upsells'] ?? true;
 <!-- Fixed Footer Area -->
 <?php if (!$is_empty): ?>
     <div class="bc-drawer-footer" style="background-color: <?php echo esc_attr($bg_color); ?>; margin-top: auto;">
-
         <?php if ($enable_coupon): ?>
-            <div class="bc-coupon-accordion" x-data="{ open: false }">
-                <button type="button" @click="open = !open" class="bc-coupon-toggle" style="color: <?php echo esc_attr($text_color); ?>;">
+            <div class="bc-coupon-accordion">
+                <button type="button" class="bc-coupon-toggle" style="color: <?php echo esc_attr($text_color); ?>;">
                     <span><?php echo esc_html($settings['trans_coupon_accordion_title'] ?? 'Have a Coupon?'); ?></span>
-                    <span class="bc-coupon-toggle-icon" :class="{ 'is-open': open }">
+                    <span class="bc-coupon-toggle-icon">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
                             <path d="m6 9 6 6 6-6"></path>
                         </svg>
                     </span>
                 </button>
-                <div x-show="open" x-collapse
-                    class="bc-coupon-accordion-content">
+                <div class="bc-coupon-accordion-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
                     <div class="bc-coupon-wrap">
-                        <input type="text" x-ref="couponCode" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bc-coupon-input">
+                        <input type="text" placeholder="<?php echo esc_attr($settings['trans_coupon_placeholder'] ?? 'Coupon code'); ?>" class="bc-coupon-input">
                         <button class="bc-coupon-btn"
                             style="background-color: <?php echo esc_attr($accent_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>"
-                            @click.prevent="applyCoupon($refs.couponCode.value)">
+                            >
                             <?php echo esc_html($settings['trans_coupon_apply_btn'] ?? 'Apply'); ?>
                         </button>
                     </div>
@@ -408,7 +431,7 @@ $show_upsells = $settings['show_upsells'] ?? true;
                         <?php foreach ($applied_coupons as $coupon_code): ?>
                             <div class="bc-summary-discount-badge">
                                 <span class="bc-summary-badge-text"><?php echo esc_html(strtoupper($coupon_code)); ?></span>
-                                <span class="bc-badge-remove" @click.prevent="removeCoupon('<?php echo esc_js($coupon_code); ?>')">
+                                <span class="bc-badge-remove" data-code="<?php echo esc_js($coupon_code); ?>">
                                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M18 6 6 18" />
                                         <path d="m6 6 12 12" />
@@ -437,8 +460,8 @@ $show_upsells = $settings['show_upsells'] ?? true;
 
         <div class="bc-checkout-btn-wrap">
             <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="bc-checkout-btn"
-                @mouseenter="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
-                @mouseleave="$event.target.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; $event.target.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
+                onmouseenter="this.style.backgroundColor = '<?php echo esc_attr($btn_hover_color); ?>'; this.style.color = '<?php echo esc_attr($btn_hover_text_color); ?>'"
+                onmouseleave="this.style.backgroundColor = '<?php echo esc_attr($btn_color); ?>'; this.style.color = '<?php echo esc_attr($btn_text_color); ?>'"
                 style="background-color: <?php echo esc_attr($btn_color); ?>; color: <?php echo esc_attr($btn_text_color); ?>; border-radius: <?php echo esc_attr($btn_radius); ?>;">
                 <span><?php echo esc_html($settings['trans_checkout_btn'] ?? 'Zur Kasse'); ?></span>
                 <?php if ($settings['show_subtotal_on_checkout'] ?? true): ?>
