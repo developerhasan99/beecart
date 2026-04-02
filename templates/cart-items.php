@@ -236,7 +236,19 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
         $upsell_query_ids = get_transient($cache_key);
 
         if (false === $upsell_query_ids) {
-            $args = array('post_type' => 'product', 'posts_per_page' => $upsell_max, 'post_status' => 'publish', 'fields' => 'ids');
+            $excluded_ids = array();
+            foreach (WC()->cart->get_cart() as $cart_item) {
+                $excluded_ids[] = $cart_item['product_id'];
+            }
+            $excluded_ids = array_filter(array_unique($excluded_ids));
+
+            $args = array(
+                'post_type'      => 'product', 
+                'posts_per_page' => $upsell_max, 
+                'post_status'    => 'publish', 
+                'fields'         => 'ids',
+                'post__not_in'   => $excluded_ids
+            );
 
             if ($upsell_source === 'best_sellers') {
                 $args['meta_key'] = 'total_sales';
