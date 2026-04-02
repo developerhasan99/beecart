@@ -11,9 +11,7 @@ class BeeCart_Admin
         add_action('admin_menu', array($this, 'register_menus'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('admin_head', array($this, 'output_global_admin_css'));
-
-        // Handle AJAX save settings (Disabled for now)
-        // add_action('wp_ajax_beecart_save_settings', array($this, 'ajax_save_settings'));
+        add_action('admin_notices', array($this, 'maybe_display_disabled_notice'));
     }
 
     public function register_menus()
@@ -108,5 +106,29 @@ class BeeCart_Admin
             }
         </style>
 <?php
+    }
+
+    public function maybe_display_disabled_notice()
+    {
+        // Don't show on our own settings page as we already have a banner there
+        $screen = get_current_screen();
+        if ($screen && strpos($screen->id, 'beecart') !== false) {
+            return;
+        }
+
+        $plugin = new BeeCart();
+        $settings = $plugin->get_settings();
+
+        if (! ($settings['enable_cart_drawer'] ?? false)) {
+            $settings_url = admin_url('admin.php?page=beecart');
+?>
+            <div class="notice notice-warning is-dismissible">
+                <p>
+                    <strong>BeeCart:</strong> The cart drawer is currently disabled.
+                    <a href="<?php echo esc_url($settings_url); ?>">Enable it now</a> to show the drawer on your storefront.
+                </p>
+            </div>
+<?php
+        }
     }
 }

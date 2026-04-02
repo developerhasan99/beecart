@@ -3,7 +3,7 @@ document.addEventListener("alpine:init", () => {
     activeTab: "placement",
     preview: window.innerWidth >= 991,
     settings: {
-      enable_cart_drawer: true,
+      enable_cart_drawer: false,
       auto_open_cart: true,
       menu_placement: "bottom",
       progress_bars: [

@@ -6,7 +6,7 @@ if (! defined('ABSPATH')) {
 $settings = isset($this) ? $this->get_settings() : (new BeeCart())->get_settings();
 $cart_url = wc_get_cart_url();
 $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
-$enable_drawer = isset($settings['enable_cart_drawer']) ? (bool)$settings['enable_cart_drawer'] : true;
+$enable_drawer = isset($settings['enable_cart_drawer']) ? (bool)$settings['enable_cart_drawer'] : false;
 
 $icon_type = $settings['cart_icon_type'] ?? 'bag-1';
 $icon_color = $settings['cart_icon_color'] ?? '#000000';

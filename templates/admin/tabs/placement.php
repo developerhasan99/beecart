@@ -1,7 +1,23 @@
 <?php if (! defined('ABSPATH')) exit; ?>
 <div x-show="$store.admin.activeTab === 'placement'" class="tab-pane p-6" style="display: none;">
-    <h2 class="text-lg font-semibold mt-0 mb-6 flex items-center gap-2"><span class="dashicons dashicons-layout"></span> Placement</h2>
+    <h2 class="text-lg font-semibold mt-0 mb-0 flex items-center gap-2"><span class="dashicons dashicons-layout"></span> Placement</h2>
     <p class="text-sm text-gray-500 mb-6">Manage how and where the cart drawer appears on your site.</p>
+
+    <div x-show="!$store.admin.settings.enable_cart_drawer" x-collapse>
+        <div class="mb-6 p-3 bg-gradient-to-r from-amber-50 to-white border border-solid border-amber-200 rounded-xl flex items-center gap-3 text-amber-900 text-sm shadow-sm" x-cloak>
+            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                    <path d="M12 9v4" />
+                    <path d="M12 17h.01" />
+                </svg>
+            </div>
+            <p class="m-0 leading-snug">
+                <span class="font-bold">Cart Drawer Disabled:</span>
+                <span class="text-amber-800/80 ml-1">The drawer will not be visible on your site until you enable it below.</span>
+            </p>
+        </div>
+    </div>
 
     <div class="space-y-6">
         <div class="flex items-center space-x-2">
@@ -22,9 +38,9 @@
             <label for="menu_placement" class="text-sm font-medium">Show Cart icon on menu</label>
             <select id="menu_placement" x-model="$store.admin.settings.menu_placement" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
                 <option value="none">None</option>
-                <?php 
+                <?php
                 $menus = get_terms('nav_menu', array('hide_empty' => false));
-                foreach ($menus as $menu) : 
+                foreach ($menus as $menu) :
                 ?>
                     <option value="<?php echo esc_attr($menu->slug); ?>"><?php echo esc_html($menu->name); ?></option>
                 <?php endforeach; ?>

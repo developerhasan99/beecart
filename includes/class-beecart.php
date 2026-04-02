@@ -107,7 +107,7 @@ class BeeCart
     public static function get_default_settings()
     {
         return array(
-            'enable_cart_drawer'          => true,
+            'enable_cart_drawer'          => false,
             'auto_open_cart'              => true,
             'menu_placement'              => 'bottom',
             'progress_bars'               => array(
@@ -218,7 +218,7 @@ class BeeCart
     public function output_cart_drawer()
     {
         $settings = $this->get_settings();
-        if (! ($settings['enable_cart_drawer'] ?? true)) {
+        if (! ($settings['enable_cart_drawer'] ?? false)) {
             return;
         }
 
