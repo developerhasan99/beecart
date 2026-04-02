@@ -2,6 +2,21 @@
 
 All notable changes to **BeeCart** will be documented in this file.
 
+## [1.1.1] - 2026-04-02
+
+### Added
+- **Pre-rendering**: The cart drawer is now pre-rendered on the server for an instant first-open experience on page load.
+- **Enhanced Sync**: Improved synchronization with WooCommerce events (`removed_from_cart`, `updated_cart_totals`) for better drawer accuracy.
+
+### Changed
+- **Optimized AJAX**: Reduced the number of AJAX requests by 75% for the add-to-cart flow by eliminating redundant drawer refreshes.
+- **Improved Loading State**: Centralized the "isUpdatingUI" flag to prevent redundant UI fetches during internal operations.
+
+### Fixed
+- **Double-Add Bug**: Resolved an issue where multiple handlers could cause a product to be added twice on some themes.
+- **Cart Bubble Count**: Fixed a bug where the cart item count wouldn't update if WooCommerce replaced the header fragments via AJAX.
+- **Discount Display**: Fixed an issue where coupon discounts were showing as 0.00 even when a valid coupon was applied.
+
 ## [1.1.0] - 2026-04-02
 
 ### Added

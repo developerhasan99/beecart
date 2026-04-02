@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, upsell, cart drawer
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,14 @@ See the **Changelog** section below or check the `readme.txt` file in the plugin
 5. Upsells Tab — configure product recommendation source and display options.
 
 == Changelog ==
+
+= 1.1.1 =
+* Performance Optimization: Pre-rendered cart content on page load for instant drawer opening.
+* AJAX Logic: Removed redundant AJAX calls; the cart now only refreshes on item changes.
+* Event Handling: Improved synchronization with WooCommerce events (`added_to_cart`, `removed_from_cart`).
+* Bug fixes: Resolved "Quantity 2" issue when adding products from some themes.
+* Bug fixes: Fixed cart bubble count not updating when WooCommerce fragments are replaced.
+* Bug fixes: Fixed discount total display issue in the cart summary footer.
 
 = 1.1.0 =
 * Performance Overhaul: Refactored frontend logic from Alpine.js to Vanilla JavaScript for faster loading and better compatibility.
