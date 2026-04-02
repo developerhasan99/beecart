@@ -9,6 +9,7 @@
         timerInterval: null,
         debounceTimer: null,
         refreshTimer: null,
+        isUpdatingUI: false,
         selectedVariations: {},
         upsellPrices: {},
 
@@ -18,9 +19,11 @@
             this.timerCount = initialMinutes * 60;
             
             this.cacheDOM();
+            this.cartCount = parseInt(this.cartCountDisplay?.textContent || 0);
             this.bindEvents();
             this.initWooCommerceEvents();
             this.initDynamicItems();
+            this.updateHeaderBubble();
         },
 
         cacheDOM() {
@@ -123,56 +126,18 @@
         initWooCommerceEvents() {
             if (typeof jQuery !== 'undefined') {
                 const $ = jQuery;
-                $(document.body).on('added_to_cart', () => {
+                $(document.body).on('added_to_cart removed_from_cart updated_cart_totals', (event) => {
+                    if (this.isUpdatingUI) return;
                     const settings = beecartData.settings || {};
-                    if (settings.enable_cart_drawer && settings.auto_open_cart) {
-                        this.openCart();
+                    if (this.isOpen) {
+                        this.getCart();
+                    } else if (settings.enable_cart_drawer && settings.auto_open_cart && event.type === 'added_to_cart') {
+                        this.openCart(true);
                     } else {
                         this.getCart();
                     }
                 });
 
-                // AJAX Add to Cart for Single Product Forms
-                $(document).on('submit', 'form.cart', (e) => {
-                    const settings = beecartData.settings || {};
-                    if (!settings.enable_cart_drawer) return;
-
-                    const $form = $(e.target);
-                    if ($form.closest('.product-type-external').length) return;
-
-                    e.preventDefault();
-                    
-                    if (settings.auto_open_cart) {
-                        this.openCart(true); 
-                    }
-
-                    const formData = new FormData(e.target);
-                    formData.append('action', 'beecart_add_to_cart');
-                    formData.append('security', beecartData.nonce);
-
-                    this.setLoading(true);
-
-                    fetch(beecartData.ajax_url, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res.success) {
-                            this.updateCartUI(res.data);
-                            this.triggerGlobalRefresh(true);
-                            this.startTimer();
-                        } else {
-                            $form.unbind('submit').submit();
-                        }
-                    })
-                    .catch(() => {
-                        $form.unbind('submit').submit();
-                    })
-                    .finally(() => {
-                        this.setLoading(false);
-                    });
-                });
             }
         },
 
@@ -180,9 +145,13 @@
             this.isOpen = true;
             if (this.drawerWrap) this.drawerWrap.classList.add('is-open');
             document.body.style.overflow = 'hidden';
-            if (!loadingOnly) {
+            
+            // If it's already rendered (pre-rendered or previous sync), we don't need getCart()
+            // unless we specifically want to force a refresh (e.g. loadingOnly is true)
+            if (loadingOnly) {
                 this.getCart();
             }
+            
             this.startTimer();
         },
 
@@ -226,13 +195,15 @@
         },
 
         updateCartUI(data) {
+            this.isUpdatingUI = true;
             if (this.cartHtmlContainer) {
                 this.cartHtmlContainer.innerHTML = data.html;
             }
             this.cartCount = data.count;
             this.updateHeaderBubble();
             this.initDynamicItems();
-            this.triggerGlobalRefresh();
+            this.triggerGlobalRefresh(true); // Always immediate for better responsiveness
+            setTimeout(() => { this.isUpdatingUI = false; }, 1000);
         },
 
         triggerGlobalRefresh(immediate = false) {
@@ -288,6 +259,7 @@
         },
 
         async addUpsell(id) {
+            if (this.isLoading) return;
             this.setLoading(true);
             try {
                 const formData = new FormData();
@@ -364,13 +336,19 @@
         },
 
         updateHeaderBubble() {
-            this.countBubbles.forEach(b => {
-                const count = parseInt(this.cartCount) || 0;
+            const count = parseInt(this.cartCount) || 0;
+            
+            // Re-query bubbles in case WooCommerce fragments replaced them
+            const bubbles = document.querySelectorAll('.beecart-count-bubble');
+            bubbles.forEach(b => {
                 b.textContent = count;
                 b.style.display = (count > 0) ? 'flex' : 'none';
             });
-            if (this.cartCountDisplay) {
-                this.cartCountDisplay.textContent = this.cartCount;
+
+            // Re-query the drawer-specific count display
+            const countDisplay = document.querySelector('.bc-cart-count-display');
+            if (countDisplay) {
+                countDisplay.textContent = count;
             }
         },
 

@@ -36,7 +36,7 @@ $enable_timer = $settings['enable_timer'] ?? false;
             <h2 class="bc-drawer-title" style="color: <?php echo esc_attr($text_color); ?>;">
                 <span><?php echo esc_html($heading); ?></span>
                 <?php if ($show_cart_count): ?>
-                <span><span class="bc-drawer-title-sep">•</span> <span class="bc-cart-count-display"></span></span>
+                <span><span class="bc-drawer-title-sep">•</span> <span class="bc-cart-count-display"><?php echo WC()->cart->get_cart_contents_count(); ?></span></span>
                 <?php endif; ?>
             </h2>
             <button title="Close Cart" class="bc-drawer-close" style="background-color: <?php echo esc_attr($accent_color); ?>;">
@@ -63,7 +63,9 @@ $enable_timer = $settings['enable_timer'] ?? false;
 
         <!-- Cart AJAX Content Area -->
         <div class="bc-drawer-body">
-            <div class="bc-cart-html-container" style="display: contents;"></div>
+            <div class="bc-cart-html-container" style="display: contents;">
+                <?php $this->render_cart_content(); ?>
+            </div>
             
             <!-- Loading indicator -->
             <div class="bc-loading-overlay" style="display: none;">
