@@ -36,12 +36,12 @@
             <div class="space-y-2">
                 <label for="upsell_source" class="text-sm font-medium">Recommendation Source</label>
                 <select id="upsell_source" x-model="$store.admin.settings.upsell_source" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-                    <option value="best_sellers">Best Sellers</option>
-                    <option value="newest">Newest Arrivals</option>
-                    <option value="upsells">WooCommerce Upsells</option>
-                    <option value="cross_sells">WooCommerce Cross-sells</option>
-                    <option value="related">Related Products</option>
-                    <option value="category">From a Category</option>
+                    <option value="best_sellers" :selected="$store.admin.settings.upsell_source == 'best_sellers'">Best Sellers</option>
+                    <option value="newest" :selected="$store.admin.settings.upsell_source == 'newest'">Newest Arrivals</option>
+                    <option value="upsells" :selected="$store.admin.settings.upsell_source == 'upsells'">WooCommerce Upsells</option>
+                    <option value="cross_sells" :selected="$store.admin.settings.upsell_source == 'cross_sells'">WooCommerce Cross-sells</option>
+                    <option value="related" :selected="$store.admin.settings.upsell_source == 'related'">Related Products</option>
+                    <option value="category" :selected="$store.admin.settings.upsell_source == 'category'">From a Category</option>
                 </select>
                 <p class="text-xs text-gray-400">How should we pick the products to recommend?</p>
             </div>
@@ -49,15 +49,16 @@
             <div class="space-y-2" x-show="$store.admin.settings.upsell_source === 'category'" x-transition style="display: none;">
                 <label for="upsell_category" class="text-sm font-medium">Select Category</label>
                 <select id="upsell_category" x-model="$store.admin.settings.upsell_category" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-                    <option value="">— Select a category —</option>
+                    <option value="" :selected="$store.admin.settings.upsell_category == ''">— Select a category —</option>
                     <?php
                     $product_cats = get_terms(array(
                         'taxonomy'   => 'product_cat',
                         'hide_empty' => false,
                     ));
                     if (!is_wp_error($product_cats) && !empty($product_cats)):
-                        foreach ($product_cats as $cat): ?>
-                            <option value="<?php echo esc_attr($cat->slug); ?>"><?php echo esc_html($cat->name); ?> (<?php echo $cat->count; ?>)</option>
+                        foreach ($product_cats as $cat): 
+                           $slug = esc_attr($cat->slug); ?>
+                            <option value="<?php echo $slug; ?>" :selected="$store.admin.settings.upsell_category == '<?php echo $slug; ?>'"><?php echo esc_html($cat->name); ?> (<?php echo $cat->count; ?>)</option>
                     <?php endforeach;
                     endif; ?>
                 </select>

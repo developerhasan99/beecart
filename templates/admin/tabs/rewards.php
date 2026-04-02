@@ -83,8 +83,8 @@
                                 <div class="space-y-2">
                                     <label class="text-sm font-medium">Threshold Basis</label>
                                     <select x-model="bar.type" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-                                        <option value="subtotal">Cart Subtotal ($)</option>
-                                        <option value="quantity">Total Item Quantity</option>
+                                        <option value="subtotal" :selected="bar.type == 'subtotal'">Cart Subtotal ($)</option>
+                                        <option value="quantity" :selected="bar.type == 'quantity'">Total Item Quantity</option>
                                     </select>
                                 </div>
 
@@ -124,7 +124,7 @@
                                                         <label class="text-[10px] font-bold uppercase text-gray-400">Icon</label>
                                                         <select x-model="cp.icon" class="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:ring-1 focus:ring-ring">
                                                             <template x-for="(label, val) in beecartAdminData.icons" :key="val">
-                                                                <option :value="val" x-text="label"></option>
+                                                                <option :value="val" x-text="label" :selected="cp.icon == val"></option>
                                                             </template>
                                                         </select>
                                                     </div>

@@ -37,12 +37,13 @@
         <div class="space-y-2">
             <label for="menu_placement" class="text-sm font-medium">Show Cart icon on menu</label>
             <select id="menu_placement" x-model="$store.admin.settings.menu_placement" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
-                <option value="none">None</option>
+                <option value="none" :selected="$store.admin.settings.menu_placement == 'none'">None</option>
                 <?php
                 $menus = get_terms('nav_menu', array('hide_empty' => false));
                 foreach ($menus as $menu) :
+                    $slug = esc_attr($menu->slug);
                 ?>
-                    <option value="<?php echo esc_attr($menu->slug); ?>"><?php echo esc_html($menu->name); ?></option>
+                    <option value="<?php echo $slug; ?>" :selected="$store.admin.settings.menu_placement == '<?php echo $slug; ?>'"><?php echo esc_html($menu->name); ?></option>
                 <?php endforeach; ?>
             </select>
             <p class="text-xs text-gray-500 mt-1">Select a menu to automatically append the cart icon.</p>

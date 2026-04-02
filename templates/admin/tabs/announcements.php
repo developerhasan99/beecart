@@ -67,9 +67,9 @@
                 <div class="space-y-2">
                     <label for="announcement_bar_size" class="text-sm font-medium">Bar Size</label>
                     <select id="announcement_bar_size" x-model="$store.admin.settings.announcement_bar_size" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
-                        <option value="small">Small</option>
-                        <option value="medium">Medium</option>
-                        <option value="large">Large</option>
+                        <option value="small" :selected="$store.admin.settings.announcement_bar_size == 'small'">Small</option>
+                        <option value="medium" :selected="$store.admin.settings.announcement_bar_size == 'medium'">Medium</option>
+                        <option value="large" :selected="$store.admin.settings.announcement_bar_size == 'large'">Large</option>
                     </select>
                     <p class="text-xs text-gray-400 mt-1">Adjust the overall height and font size of the bar.</p>
                 </div>
