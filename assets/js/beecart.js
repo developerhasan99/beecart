@@ -24,6 +24,17 @@
             this.initWooCommerceEvents();
             this.initDynamicItems();
             this.updateHeaderBubble();
+
+            // Auto-open on page load if a product was just added (for non-AJAX themes/refreshes)
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('beecart_just_added='))) {
+                // Clear the cookie immediately
+                document.cookie = "beecart_just_added=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                
+                // Only open if the setting allows
+                if (settings.enable_cart_drawer && settings.auto_open_cart) {
+                    this.openCart(true); 
+                }
+            }
         },
 
         cacheDOM() {

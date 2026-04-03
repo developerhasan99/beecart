@@ -36,6 +36,13 @@ class BeeCart
 
         add_filter('woocommerce_add_to_cart_fragments', array($this, 'cart_bubble_fragment'));
         add_filter('wp_nav_menu_items', array($this, 'append_cart_icon_to_menu'), 10, 2);
+        add_action('woocommerce_add_to_cart', array($this, 'set_just_added_cookie'), 10, 6);
+    }
+
+    public function set_just_added_cookie() {
+        if (!headers_sent()) {
+            setcookie('beecart_just_added', '1', time() + 30, COOKIEPATH, COOKIE_DOMAIN);
+        }
     }
 
     public function append_cart_icon_to_menu($items, $args)
@@ -68,10 +75,18 @@ class BeeCart
 
     public function cart_bubble_fragment($fragments)
     {
+        // 1. Icon bubble
         ob_start();
         $this->cart_icon_shortcode_output();
         $iconHtml = ob_get_clean();
         $fragments['.beecart-icon-wrapper'] = $iconHtml;
+
+        // 2. Main cart contents (Handles caching issues)
+        ob_start();
+        $this->render_cart_content();
+        $cartHtml = ob_get_clean();
+        $fragments['#beecart-cart-items'] = $cartHtml;
+
         return $fragments;
     }
 

@@ -355,14 +355,20 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
                     ?>
                         <div class="bc-upsell-item" data-id="<?php echo get_the_ID(); ?>" <?php if ($prices_json) echo 'data-prices="' . $prices_json . '"'; ?>>
                             <div class="bc-upsell-img-wrap">
-                                <?php if ($img): ?>
-                                    <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
-                                <?php else: ?>
-                                    <?php echo BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon'); ?>
-                                <?php endif; ?>
+                                <a href="<?php echo esc_url(get_permalink()); ?>" class="bc-upsell-link">
+                                    <?php if ($img): ?>
+                                        <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
+                                    <?php else: ?>
+                                        <?php echo BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon'); ?>
+                                    <?php endif; ?>
+                                </a>
                             </div>
                             <div class="bc-upsell-details">
-                                <h5 class="bc-upsell-title" style="color: <?php echo esc_attr($text_color); ?>;"><?php the_title(); ?></h5>
+                                <h5 class="bc-upsell-title">
+                                    <a href="<?php echo esc_url(get_permalink()); ?>" style="color: <?php echo esc_attr($text_color); ?>; text-decoration: none;">
+                                        <?php the_title(); ?>
+                                    </a>
+                                </h5>
                                 <div class="bc-upsell-prices">
                                     <span class="bc-upsell-price" style="color: <?php echo esc_attr($text_color); ?>;">
                                         <?php echo $product->get_price_html(); ?>
