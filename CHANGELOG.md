@@ -2,6 +2,19 @@
 
 All notable changes to **BeeCart** will be documented in this file.
 
+## [1.1.2] - 2026-04-03
+
+### Added
+- **Ultimate Compatibility**: Implemented a "Just Added" detection system (cookie-based) that automatically opens the cart drawer for themes that don't use AJAX for Single Product Pages.
+- **Cache-Proof Sync**: Fully integrated the drawer contents with WooCommerce Fragments. This ensures 100% accurate cart data even when using rigorous caching plugins like LiteSpeed Cache (LSWC) or WP Rocket.
+
+### Changed
+- **Navigation Improvement**: Upsell products now feature clickable titles and images that link directly to their respective product pages.
+- **Clean UI**: The cart bubble now automatically hides when the cart count is zero for a cleaner header experience.
+
+### Fixed
+- **Performance**: Removed redundant CSS enqueues and streamlined the WooCommerce fragment processing logic.
+
 ## [1.1.1] - 2026-04-02
 
 ### Added
