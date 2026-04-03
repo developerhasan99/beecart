@@ -2,6 +2,18 @@
 
 All notable changes to **BeeCart** will be documented in this file.
 
+## [1.1.3] - 2026-04-03
+
+### Added
+- **Pull-on-Init AJAX**: Switched to a client-side initial fetch strategy for ultimate cache-busting on static sites.
+- **Race Condition Prevention**: Implemented `isLoading` guards to prevent multiple simultaneous AJAX calls on initial page load.
+
+### Changed
+- **UI Refinement**: The cart bubble is now initially hidden on page load to prevent showing stale cached counts. It only appears once fresh data arrives.
+
+### Fixed
+- **Navigation Compatibility**: Refined the "auto-open" cookie logic to only trigger on true page refreshes, preventing unwanted drawer opening after manual navigation.
+
 ## [1.1.2] - 2026-04-03
 
 ### Added

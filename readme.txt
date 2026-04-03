@@ -4,7 +4,7 @@ Tags: woocommerce, cart, side cart, upsell, cart drawer
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,6 +103,12 @@ See the **Changelog** section below or check the `readme.txt` file in the plugin
 5. Upsells Tab — configure product recommendation source and display options.
 
 == Changelog ==
+
+= 1.1.3 =
+* Performance: Implemented a "Pull-on-Init" AJAX strategy for the most reliable cache-busting on static sites.
+* UI Fixes: Cleaned up the cart bubble logic—it is now hidden by default on page load to prevent showing stale cached counts.
+* Stability: Added AJAX guards to prevent race conditions during page initialization.
+* Bug Fixes: Refined the "auto-open" cookie logic to only trigger on true page refreshes, preventing unwanted drawer opening after manual navigation.
 
 = 1.1.2 =
 * Compatibility: Added a "Just Added" detection system to auto-open the drawer for themes that do not use AJAX on single product pages.
