@@ -40,7 +40,7 @@ class BeeCart
     }
 
     public function set_just_added_cookie() {
-        if (!headers_sent()) {
+        if (!wp_doing_ajax() && !headers_sent()) {
             setcookie('beecart_just_added', '1', time() + 30, COOKIEPATH, COOKIE_DOMAIN);
         }
     }
