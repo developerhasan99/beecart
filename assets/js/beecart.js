@@ -34,7 +34,7 @@
                 
                 // Only open if the setting allows
                 if (settings.enable_cart_drawer && settings.auto_open_cart) {
-                    this.openCart(); // Already called getCart inside init, so pass true or false accordingly
+                    this.openCart(true); 
                 }
             }
         },
@@ -159,10 +159,17 @@
             }
         },
 
-        openCart() {
+        openCart(forceRefresh = false) {
+            if (this.isOpen && !forceRefresh) return;
+            
             this.isOpen = true;
             if (this.drawerWrap) this.drawerWrap.classList.add('is-open');
             document.body.style.overflow = 'hidden';
+            
+            if (forceRefresh) {
+                this.getCart();
+            }
+            
             this.startTimer();
         },
 
@@ -184,6 +191,7 @@
         },
 
         async getCart() {
+            if (this.isLoading) return;
             this.setLoading(true);
             try {
                 const formData = new FormData();
