@@ -138,6 +138,11 @@
             if (typeof jQuery !== 'undefined') {
                 const $ = jQuery;
                 $(document.body).on('added_to_cart removed_from_cart updated_cart_totals', (event) => {
+                    // Clear any "just added" cookie if an AJAX add-to-cart just happened
+                    if (event.type === 'added_to_cart') {
+                        document.cookie = "beecart_just_added=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    }
+
                     if (this.isUpdatingUI) return;
                     const settings = beecartData.settings || {};
                     if (this.isOpen) {
