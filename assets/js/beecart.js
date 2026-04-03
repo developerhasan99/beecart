@@ -19,11 +19,13 @@
             this.timerCount = initialMinutes * 60;
             
             this.cacheDOM();
-            this.cartCount = parseInt(this.cartCountDisplay?.textContent || 0);
             this.bindEvents();
             this.initWooCommerceEvents();
             this.initDynamicItems();
             this.updateHeaderBubble();
+
+            // Fetch fresh data immediately on page load to bypass caching
+            this.getCart();
 
             // Auto-open on page load if a product was just added (for non-AJAX themes/refreshes)
             if (document.cookie.split(';').some((item) => item.trim().startsWith('beecart_just_added='))) {
@@ -32,7 +34,7 @@
                 
                 // Only open if the setting allows
                 if (settings.enable_cart_drawer && settings.auto_open_cart) {
-                    this.openCart(true); 
+                    this.openCart(); // Already called getCart inside init, so pass true or false accordingly
                 }
             }
         },
@@ -157,17 +159,10 @@
             }
         },
 
-        openCart(loadingOnly = false) {
+        openCart() {
             this.isOpen = true;
             if (this.drawerWrap) this.drawerWrap.classList.add('is-open');
             document.body.style.overflow = 'hidden';
-            
-            // If it's already rendered (pre-rendered or previous sync), we don't need getCart()
-            // unless we specifically want to force a refresh (e.g. loadingOnly is true)
-            if (loadingOnly) {
-                this.getCart();
-            }
-            
             this.startTimer();
         },
 

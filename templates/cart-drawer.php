@@ -63,7 +63,7 @@ $enable_timer = $settings['enable_timer'] ?? false;
 
         <!-- Cart AJAX Content Area -->
         <div class="bc-drawer-body">
-            <div id="beecart-cart-items" class="bc-cart-html-container nocache" data-nocache="1" style="display: contents;">
+            <div class="bc-cart-html-container" style="display: contents;">
                 <?php $this->render_cart_content(); ?>
             </div>
             

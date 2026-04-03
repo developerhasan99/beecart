@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 
 $settings = isset($this) ? $this->get_settings() : (new BeeCart())->get_settings();
 $cart_url = wc_get_cart_url();
-$cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+// Initial count will be fetched via AJAX in JS to bypass caching
 $enable_drawer = isset($settings['enable_cart_drawer']) ? (bool)$settings['enable_cart_drawer'] : false;
 
 $icon_type = $settings['cart_icon_type'] ?? 'bag-1';
@@ -16,28 +16,24 @@ $bubble_text = $settings['cart_bubble_text'] ?? '#ffffff';
 ?>
 
 <?php if ($enable_drawer) : ?>
-    <div class="beecart-icon-wrapper bc-icon-trigger nocache" 
-        data-nocache="1" 
+    <div class="beecart-icon-wrapper bc-icon-trigger" 
         onclick="window.dispatchEvent(new CustomEvent('open-beecart'))"
         style="position: relative; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: <?php echo esc_attr($icon_size); ?>px; height: <?php echo esc_attr($icon_size); ?>px; color: <?php echo esc_attr($icon_color); ?>;">
         <?php echo BeeCart::get_svg_icon($icon_type); ?>
         <?php if ($settings['show_cart_count'] ?? true) : ?>
             <span class="beecart-count-bubble"
-                style="position: absolute; top: -8px; right: -8px; background: <?php echo esc_attr($bubble_bg); ?>; color: <?php echo esc_attr($bubble_text); ?>; border-radius: 50%; padding: 2px; min-width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: <?php echo ($cart_count > 0) ? 'flex' : 'none'; ?>; align-items: center; justify-content: center; line-height: 1;">
-                <?php echo esc_html($cart_count); ?>
+                style="position: absolute; top: -8px; right: -8px; background: <?php echo esc_attr($bubble_bg); ?>; color: <?php echo esc_attr($bubble_text); ?>; border-radius: 50%; padding: 2px; min-width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: none; align-items: center; justify-content: center; line-height: 1;">
             </span>
         <?php endif; ?>
     </div>
 <?php else : ?>
     <a href="<?php echo esc_url($cart_url); ?>" 
-        class="beecart-icon-wrapper nocache" 
-        data-nocache="1" 
+        class="beecart-icon-wrapper" 
         style="position: relative; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: <?php echo esc_attr($icon_size); ?>px; height: <?php echo esc_attr($icon_size); ?>px; color: <?php echo esc_attr($icon_color); ?>;">
         <?php echo BeeCart::get_svg_icon($icon_type); ?>
         <?php if ($settings['show_cart_count'] ?? true) : ?>
             <span class="beecart-count-bubble"
-                style="position: absolute; top: -8px; right: -8px; background: <?php echo esc_attr($bubble_bg); ?>; color: <?php echo esc_attr($bubble_text); ?>; border-radius: 50%; padding: 2px; min-width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: <?php echo ($cart_count > 0) ? 'flex' : 'none'; ?>; align-items: center; justify-content: center; line-height: 1;">
-                <?php echo esc_html($cart_count); ?>
+                style="position: absolute; top: -8px; right: -8px; background: <?php echo esc_attr($bubble_bg); ?>; color: <?php echo esc_attr($bubble_text); ?>; border-radius: 50%; padding: 2px; min-width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: none; align-items: center; justify-content: center; line-height: 1;">
             </span>
         <?php endif; ?>
     </a>
