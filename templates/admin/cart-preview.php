@@ -118,7 +118,11 @@
                                     <button class="bc-qty-btn plus">+</button>
                                 </div>
                                 <div class="bc-item-discount-badge">
-                                    <?php echo BeeCart::kses_svg(BeeCart::get_svg_icon('tag', 'bc-badge-icon')); ?>
+                                    <?php 
+                                    $beecart_icon_name = 'tag';
+                                    $beecart_icon_class = 'bc-badge-icon';
+                                    include BEECART_PATH . 'templates/icons.php'; 
+                                    ?>
                                     <span class="bc-badge-text">AUTO 5</span>
                                 </div>
                             </div>
@@ -178,7 +182,11 @@
                                             <option>Nutmeg</option>
                                         </select>
                                         <span class="bc-upsell-select-icon">
-                                            <?php echo BeeCart::kses_svg(BeeCart::get_svg_icon('chevron-down')); ?>
+                                            <?php 
+                                            $beecart_icon_name = 'chevron-down';
+                                            $beecart_icon_class = '';
+                                            include BEECART_PATH . 'templates/icons.php'; 
+                                            ?>
                                         </span>
                                     </div>
                                     <button class="bc-upsell-add"

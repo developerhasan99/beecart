@@ -92,7 +92,11 @@ $beecart_show_trust_badges      = $beecart_settings['show_trust_badges'] ?? true
                                     style="left: <?php echo esc_attr($beecart_pos); ?>%; 
                                        background-color: <?php echo $beecart_reached ? esc_attr($beecart_settings['rewards_bar_fg'] ?? '#93D3FF') : esc_attr($beecart_settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>;
                                        color: <?php echo $beecart_reached ? esc_attr($beecart_settings['rewards_complete_icon_color'] ?? '#4D4949') : esc_attr($beecart_settings['rewards_incomplete_icon_color'] ?? '#4D4949'); ?>;">
-                                    <?php echo BeeCart::kses_svg(BeeCart::get_svg_icon($beecart_icon_key, 'bc-checkpoint-icon')); ?>
+                                    <?php 
+                                    $beecart_icon_name = $beecart_icon_key;
+                                    $beecart_icon_class = 'bc-checkpoint-icon';
+                                    include BEECART_PATH . 'templates/icons.php'; 
+                                    ?>
                                     <?php if ($beecart_bar['show_labels'] ?? true): ?>
                                         <div class="bc-checkpoint-label" style="color: <?php echo esc_attr($beecart_text_color); ?>;">
                                             <?php echo esc_html($beecart_goal['label']); ?>
@@ -131,7 +135,11 @@ $beecart_show_trust_badges      = $beecart_settings['show_trust_badges'] ?? true
                                 <?php if ($beecart_thumbnail_url): ?>
                                     <img src="<?php echo esc_url($beecart_thumbnail_url); ?>" alt="<?php echo esc_attr($beecart_product_name); ?>" />
                                 <?php else: ?>
-                                    <?php echo BeeCart::kses_svg(BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon')); ?>
+                                    <?php 
+                                    $beecart_icon_name = 'format-image';
+                                    $beecart_icon_class = 'bc-placeholder-icon';
+                                    include BEECART_PATH . 'templates/icons.php'; 
+                                    ?>
                                 <?php endif; ?>
                             </a>
                         <?php endif; ?>
@@ -195,7 +203,11 @@ $beecart_show_trust_badges      = $beecart_settings['show_trust_badges'] ?? true
                                     <div class="bc-item-coupons">
                                         <?php foreach ($beecart_applied_coupons as $beecart_coupon_code): ?>
                                             <div class="bc-item-discount-badge">
-                                                <?php echo BeeCart::kses_svg(BeeCart::get_svg_icon('tag', 'bc-badge-icon')); ?>
+                                                <?php 
+                                                $beecart_icon_name = 'tag';
+                                                $beecart_icon_class = 'bc-badge-icon';
+                                                include BEECART_PATH . 'templates/icons.php'; 
+                                                ?>
                                                 <span class="bc-badge-text"><?php echo esc_html(strtoupper($beecart_coupon_code)); ?></span>
                                             </div>
                                         <?php endforeach; ?>
@@ -273,7 +285,11 @@ $beecart_show_trust_badges      = $beecart_settings['show_trust_badges'] ?? true
                                     <?php if ($beecart_upsell_img): ?>
                                         <img src="<?php echo esc_url($beecart_upsell_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
                                     <?php else: ?>
-                                        <?php echo BeeCart::kses_svg(BeeCart::get_svg_icon('format-image', 'bc-placeholder-icon')); ?>
+                                        <?php 
+                                        $beecart_icon_name = 'format-image';
+                                        $beecart_icon_class = 'bc-placeholder-icon';
+                                        include BEECART_PATH . 'templates/icons.php'; 
+                                        ?>
                                     <?php endif; ?>
                                 </a>
                             </div>
@@ -301,7 +317,11 @@ $beecart_show_trust_badges      = $beecart_settings['show_trust_badges'] ?? true
                                                     <?php endforeach; ?>
                                                 </select>
                                                 <span class="bc-upsell-select-icon">
-                                                    <?php echo BeeCart::kses_svg(BeeCart::get_svg_icon('chevron-down')); ?>
+                                                    <?php 
+                                                    $beecart_icon_name = 'chevron-down';
+                                                    $beecart_icon_class = '';
+                                                    include BEECART_PATH . 'templates/icons.php'; 
+                                                    ?>
                                                 </span>
                                             </div>
                                     <?php endif;
