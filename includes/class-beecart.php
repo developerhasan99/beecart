@@ -231,6 +231,7 @@ class BeeCart
         ob_start();
         $this->render_cart_content();
         $html = ob_get_clean();
+
         wp_send_json_success(array(
             'html' => $html,
             'count' => WC()->cart->get_cart_contents_count(),
@@ -436,6 +437,173 @@ class BeeCart
             }
         }
         return $sanitized;
+    }
+
+    private function get_cart_upsell_cache_key(array $cart_items, string $upsell_source, int $upsell_max, string $upsell_category): string
+    {
+        $cart_signature = array();
+
+        foreach ($cart_items as $cart_item) {
+            $product_id = isset($cart_item['product_id']) ? (int) $cart_item['product_id'] : 0;
+            $variation_id = isset($cart_item['variation_id']) ? (int) $cart_item['variation_id'] : 0;
+            $cart_signature[] = $product_id . ':' . $variation_id;
+        }
+
+        sort($cart_signature, SORT_STRING);
+
+        return 'bc_upsells_' . md5(wp_json_encode(array(
+            'cart' => $cart_signature,
+            'source' => $upsell_source,
+            'max' => $upsell_max,
+            'category' => $upsell_category,
+        )));
+    }
+
+    private function collect_product_relation_ids(array $cart_items, string $relation): array
+    {
+        $collected_ids = array();
+
+        foreach ($cart_items as $cart_item) {
+            if (empty($cart_item['data']) || ! is_object($cart_item['data'])) {
+                continue;
+            }
+
+            $product = $cart_item['data'];
+            $relation_ids = array();
+
+            if ($relation === 'upsells') {
+                $relation_ids = $product->get_upsell_ids();
+            } elseif ($relation === 'cross_sells') {
+                $relation_ids = $product->get_cross_sell_ids();
+            }
+
+            foreach ($relation_ids as $relation_id) {
+                $relation_id = (int) $relation_id;
+                if ($relation_id > 0) {
+                    $collected_ids[$relation_id] = $relation_id;
+                }
+            }
+        }
+
+        return array_values($collected_ids);
+    }
+
+    private function collect_related_product_ids(array $cart_items, int $limit): array
+    {
+        $related_ids = array();
+
+        foreach ($cart_items as $cart_item) {
+            $product_id = isset($cart_item['product_id']) ? (int) $cart_item['product_id'] : 0;
+            if ($product_id <= 0) {
+                continue;
+            }
+
+            $product_related_ids = wc_get_related_products($product_id, $limit);
+            foreach ($product_related_ids as $related_id) {
+                $related_id = (int) $related_id;
+                if ($related_id > 0) {
+                    $related_ids[$related_id] = $related_id;
+                }
+            }
+        }
+
+        return array_values($related_ids);
+    }
+
+    public function get_upsell_query_ids(array $cart_items, string $upsell_source, int $upsell_max, string $upsell_category = ''): array
+    {
+        if ($upsell_max < 1) {
+            return array();
+        }
+
+        $cache_key = $this->get_cart_upsell_cache_key($cart_items, $upsell_source, $upsell_max, $upsell_category);
+        $upsell_query_ids = get_transient($cache_key);
+
+        if (false !== $upsell_query_ids && is_array($upsell_query_ids)) {
+            return $upsell_query_ids;
+        }
+
+        $excluded_ids = array();
+        foreach ($cart_items as $cart_item) {
+            $product_id = isset($cart_item['product_id']) ? (int) $cart_item['product_id'] : 0;
+            if ($product_id > 0) {
+                $excluded_ids[$product_id] = $product_id;
+            }
+        }
+        $excluded_ids = array_values($excluded_ids);
+
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => $upsell_max,
+            'post_status' => 'publish',
+            'fields' => 'ids',
+            'post__not_in' => $excluded_ids,
+            'no_found_rows' => true,
+            'ignore_sticky_posts' => true,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+            'cache_results' => true,
+        );
+
+        if ($upsell_source === 'best_sellers') {
+            $args['meta_key'] = 'total_sales';
+            $args['orderby'] = 'meta_value_num';
+            $args['order'] = 'DESC';
+        } elseif ($upsell_source === 'newest') {
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+        } elseif ($upsell_source === 'category' && ! empty($upsell_category)) {
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+            $args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'product_cat',
+                    'field' => 'slug',
+                    'terms' => $upsell_category,
+                ),
+            );
+        } elseif ($upsell_source === 'upsells') {
+            $upsell_ids = $this->collect_product_relation_ids($cart_items, 'upsells');
+            if (! empty($upsell_ids)) {
+                $args['post__in'] = $upsell_ids;
+                $args['orderby'] = 'post__in';
+            } else {
+                $args['meta_key'] = 'total_sales';
+                $args['orderby'] = 'meta_value_num';
+                $args['order'] = 'DESC';
+            }
+        } elseif ($upsell_source === 'cross_sells') {
+            $cross_sell_ids = $this->collect_product_relation_ids($cart_items, 'cross_sells');
+            if (! empty($cross_sell_ids)) {
+                $args['post__in'] = $cross_sell_ids;
+                $args['orderby'] = 'post__in';
+            } else {
+                $args['meta_key'] = 'total_sales';
+                $args['orderby'] = 'meta_value_num';
+                $args['order'] = 'DESC';
+            }
+        } elseif ($upsell_source === 'related') {
+            $related_ids = array_slice($this->collect_related_product_ids($cart_items, $upsell_max), 0, $upsell_max);
+            if (! empty($related_ids)) {
+                $args['post__in'] = $related_ids;
+                $args['orderby'] = 'post__in';
+            } else {
+                $args['meta_key'] = 'total_sales';
+                $args['orderby'] = 'meta_value_num';
+                $args['order'] = 'DESC';
+            }
+        } else {
+            $args['meta_key'] = 'total_sales';
+            $args['orderby'] = 'meta_value_num';
+            $args['order'] = 'DESC';
+        }
+
+        $query = new WP_Query($args);
+        $upsell_query_ids = is_array($query->posts) ? $query->posts : array();
+
+        set_transient($cache_key, $upsell_query_ids, 600);
+
+        return $upsell_query_ids;
     }
 
     // -------------------------------------------------------------------------

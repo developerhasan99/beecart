@@ -12,6 +12,7 @@ $cart->calculate_totals();
 $settings = $this->get_settings();
 
 $is_empty = $cart->is_empty();
+$cart_items = $cart->get_cart();
 
 $enable_rewards_bar   = $settings['enable_rewards_bar'] ?? true;
 $text_color           = $settings['text_color'] ?? '#000000';
@@ -225,113 +226,24 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
     <?php
     $show_on_empty = $settings['show_upsells_on_empty'] ?? true;
     if ($show_upsells && (!$is_empty || $show_on_empty)):
-
         $upsell_title = $settings['upsell_title'] ?? 'Product Recommendations';
-        $upsell_max = $settings['upsell_max'] ?? 3;
+        $upsell_max = max(1, (int) ($settings['upsell_max'] ?? 3));
         $upsell_source   = $settings['upsell_source'] ?? 'best_sellers';
         $upsell_category = $settings['upsell_category'] ?? '';
-
-        // Simple cache: Cache the query ID list for this session/request
-        // Since AJAX runs in its own thread, we use a simple transient or session-based cache key
-        $cart_ids_hash = md5(json_encode(array_keys(WC()->cart->get_cart())));
-        $cache_key = 'bc_upsells_' . $cart_ids_hash . '_' . $upsell_source . '_' . $upsell_max;
-
-        $upsell_query_ids = get_transient($cache_key);
-
-        if (false === $upsell_query_ids) {
-            $excluded_ids = array();
-            foreach (WC()->cart->get_cart() as $cart_item) {
-                $excluded_ids[] = $cart_item['product_id'];
-            }
-            $excluded_ids = array_filter(array_unique($excluded_ids));
-
-            $args = array(
-                'post_type'      => 'product',
-                'posts_per_page' => $upsell_max,
-                'post_status'    => 'publish',
-                'fields'         => 'ids',
-                'post__not_in'   => $excluded_ids
-            );
-
-            if ($upsell_source === 'best_sellers') {
-                $args['meta_key'] = 'total_sales';
-                $args['orderby']  = 'meta_value_num';
-                $args['order']    = 'DESC';
-            } elseif ($upsell_source === 'newest') {
-                $args['orderby'] = 'date';
-                $args['order']   = 'DESC';
-            } elseif ($upsell_source === 'category' && !empty($upsell_category)) {
-                $args['orderby'] = 'date';
-                $args['order']   = 'DESC';
-                $args['tax_query'] = array(array(
-                    'taxonomy' => 'product_cat',
-                    'field'    => 'slug',
-                    'terms'    => $upsell_category,
-                ));
-            } elseif ($upsell_source === 'upsells') {
-                $upsell_ids = array();
-                foreach (WC()->cart->get_cart() as $cart_item) {
-                    $_p = $cart_item['data'];
-                    if ($_p) {
-                        $upsell_ids = array_merge($upsell_ids, $_p->get_upsell_ids());
-                    }
-                }
-                $upsell_ids = array_unique($upsell_ids);
-                if (!empty($upsell_ids)) {
-                    $args['post__in'] = $upsell_ids;
-                    $args['orderby']  = 'post__in';
-                } else {
-                    $args['meta_key'] = 'total_sales';
-                    $args['orderby']  = 'meta_value_num';
-                    $args['order']    = 'DESC';
-                }
-            } elseif ($upsell_source === 'cross_sells') {
-                $cross_sell_ids = array();
-                foreach (WC()->cart->get_cart() as $cart_item) {
-                    $_p = $cart_item['data'];
-                    if ($_p) {
-                        $cross_sell_ids = array_merge($cross_sell_ids, $_p->get_cross_sell_ids());
-                    }
-                }
-                $cross_sell_ids = array_unique($cross_sell_ids);
-                if (!empty($cross_sell_ids)) {
-                    $args['post__in'] = $cross_sell_ids;
-                    $args['orderby']  = 'post__in';
-                } else {
-                    $args['meta_key'] = 'total_sales';
-                    $args['orderby']  = 'meta_value_num';
-                    $args['order']    = 'DESC';
-                }
-            } elseif ($upsell_source === 'related') {
-                $related_ids = array();
-                foreach (WC()->cart->get_cart() as $cart_item) {
-                    $related_ids = array_merge($related_ids, wc_get_related_products($cart_item['product_id'], $upsell_max));
-                }
-                $related_ids = array_unique($related_ids);
-                if (!empty($related_ids)) {
-                    $args['post__in'] = array_slice($related_ids, 0, $upsell_max);
-                    $args['orderby']  = 'post__in';
-                } else {
-                    $args['meta_key'] = 'total_sales';
-                    $args['orderby']  = 'meta_value_num';
-                    $args['order']    = 'DESC';
-                }
-            } else {
-                $args['meta_key'] = 'total_sales';
-                $args['orderby']  = 'meta_value_num';
-                $args['order']    = 'DESC';
-            }
-
-            $query = new WP_Query($args);
-            $upsell_query_ids = $query->posts;
-            set_transient($cache_key, $upsell_query_ids, 600); // 10 minutes cache
-        }
+        $upsell_query_ids = $this->get_upsell_query_ids(
+            is_array($cart_items) ? $cart_items : array(),
+            $upsell_source,
+            $upsell_max,
+            $upsell_category
+        );
 
         $upsell_query = new WP_Query(array(
             'post_type' => 'product',
             'post__in'  => !empty($upsell_query_ids) ? $upsell_query_ids : array(0),
             'orderby'   => 'post__in',
             'posts_per_page' => $upsell_max,
+            'no_found_rows' => true,
+            'ignore_sticky_posts' => true,
         ));
 
         if ($upsell_query->have_posts()):
@@ -345,12 +257,14 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
                         $img = wp_get_attachment_image_url($product->get_image_id(), 'thumbnail');
 
                         $prices_json = '';
+                        $product_variations = array();
                         if ($product->is_type('variable')) {
                             $p_map = array();
-                            foreach ($product->get_available_variations() as $v) {
+                            $product_variations = $product->get_available_variations();
+                            foreach ($product_variations as $v) {
                                 $p_map[$v['variation_id']] = strip_tags(wc_price($v['display_price']));
                             }
-                            $prices_json = esc_attr(json_encode($p_map));
+                            $prices_json = esc_attr(wp_json_encode($p_map));
                         }
                     ?>
                         <div class="bc-upsell-item" data-id="<?php echo get_the_ID(); ?>" <?php if ($prices_json) echo 'data-prices="' . $prices_json . '"'; ?>>
@@ -376,7 +290,6 @@ $show_trust_badges      = $settings['show_trust_badges'] ?? true;
                                 </div>
                                 <div class="bc-upsell-actions">
                                     <?php if ($product->is_type('variable')):
-                                        $product_variations = $product->get_available_variations();
                                         if (!empty($product_variations)):
                                     ?>
                                             <div class="bc-upsell-select-wrap">

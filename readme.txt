@@ -1,6 +1,7 @@
 === BeeCart – AOV Booster, Side Cart & WooCommerce Upsell Suite ===
 Contributors: developerhasan99
 Tags: woocommerce, cart, side cart, upsell, cart drawer
+Requires Plugins: woocommerce
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -90,10 +91,6 @@ Yes. BeeCart intercepts standard WooCommerce add-to-cart form submissions and ha
 
 Yes! BeeCart supports multiple reward progress bars per cart. Each bar can have its own thresholds, type (subtotal or quantity), and reward checkpoints.
 
-= Where do I find the changelog? =
-
-See the **Changelog** section below or check the `readme.txt` file in the plugin folder.
-
 == Screenshots ==
 
 1. Cart Drawer — frontend slide-in cart with rewards progress bar, items, upsells, and checkout footer.
@@ -102,51 +99,7 @@ See the **Changelog** section below or check the `readme.txt` file in the plugin
 4. Design Tab — full color, icon, and styling customization with a live preview.
 5. Upsells Tab — configure product recommendation source and display options.
 
-== Changelog ==
-
-= 1.1.3 =
-* Performance: Implemented a "Pull-on-Init" AJAX strategy for the most reliable cache-busting on static sites.
-* UI Fixes: Cleaned up the cart bubble logic—it is now hidden by default on page load to prevent showing stale cached counts.
-* Stability: Added AJAX guards to prevent race conditions during page initialization.
-* Bug Fixes: Refined the "auto-open" cookie logic to only trigger on true page refreshes, preventing unwanted drawer opening after manual navigation.
-
-= 1.1.2 =
-* Compatibility: Added a "Just Added" detection system to auto-open the drawer for themes that do not use AJAX on single product pages.
-* Caching: Integrated with WooCommerce Fragments (AJAX re-sync) for 100% accuracy with caching plugins like LiteSpeed Cache and WP Rocket.
-* UI Improvements: Added product links to upsell titles and images for better navigation.
-* UI Improvements: Updated the cart bubble to automatically hide when the cart is empty.
-* UI Fixes: Cleaned up duplicate CSS enqueues and improved fragment synchronization performance.
-
-= 1.1.1 =
-* Performance Optimization: Pre-rendered cart content on page load for instant drawer opening.
-* AJAX Logic: Removed redundant AJAX calls; the cart now only refreshes on item changes.
-* Event Handling: Improved synchronization with WooCommerce events (`added_to_cart`, `removed_from_cart`).
-* Bug fixes: Resolved "Quantity 2" issue when adding products from some themes.
-* Bug fixes: Fixed cart bubble count not updating when WooCommerce fragments are replaced.
-* Bug fixes: Fixed discount total display issue in the cart summary footer.
-
-= 1.1.0 =
-* Performance Overhaul: Refactored frontend logic from Alpine.js to Vanilla JavaScript for faster loading and better compatibility.
-* Optimized AJAX: Improved cart drawer update speed by removing redundant server-side calls.
-* Enhanced Recommendations: Products already in the cart are now automatically excluded from the "You might also like" section.
-* Admin Fixes: Improved select dropdown initialization in the admin panel; previously selected options now correctly show as active.
-* Asset Management: Consolidated CSS files (merged cart-drawer.css into beecart.css) to reduce HTTP requests.
-* UI improvements: Fixed the close button on the empty cart "Return to Shop" button and refined the checkout footer layout.
-* Bug fixes: Resolved an issue where coupon forms, subtotals, and trust badges were not rendering on the frontend.
-
-= 1.0.0 =
-* Initial release.
-* Side-cart drawer with AJAX add-to-cart integration.
-* Multi-bar rewards progress system.
-* Upsell recommendations with variable product support.
-* Announcement bar with countdown timer.
-* Coupon/discount accordion.
-* Trust badge image upload.
-* Full design customization panel.
-* Cart icon shortcode and menu injection.
-* Translation-ready (text domain: `beecart`).
-
 == Upgrade Notice ==
 
-= 1.0.0 =
-Initial release. No upgrade steps required.
+= 1.1.3 =
+This release includes reliability and performance improvements for cart refresh behavior.
