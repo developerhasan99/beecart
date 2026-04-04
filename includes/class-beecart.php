@@ -307,12 +307,12 @@ class BeeCart
             }
         }
 
-        $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variation);
+        $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variation); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
         if ($passed_validation && WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation)) {
             if (isset($_POST['add-to-cart'])) {
                 // If it came from a standard form, we might need to trigger this to help other plugins
-                do_action('woocommerce_ajax_added_to_cart', $product_id);
+                do_action('woocommerce_ajax_added_to_cart', $product_id); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
             }
             $this->ajax_get_cart();
         } else {
