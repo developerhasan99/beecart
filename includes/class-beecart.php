@@ -642,4 +642,84 @@ class BeeCart
 
         return isset($icons[$name]) ? $icons[$name] : '';
     }
+
+    /**
+     * Specialized KSES wrapper for SVGs.
+     * This allows SVG tags that would otherwise be stripped by wp_kses_post.
+     */
+    public static function kses_svg($svg)
+    {
+        $allowed_html = array(
+            'svg' => array(
+                'xmlns'       => true,
+                'width'       => true,
+                'height'      => true,
+                'viewbox'     => true,
+                'fill'        => true,
+                'stroke'      => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+                'stroke-linejoin' => true,
+                'class'       => true,
+                'style'       => true,
+            ),
+            'path' => array(
+                'd'          => true,
+                'fill'       => true,
+                'fill-rule'  => true,
+                'clip-rule'  => true,
+                'stroke'     => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+                'stroke-linejoin' => true,
+            ),
+            'circle' => array(
+                'cx' => true,
+                'cy' => true,
+                'r'  => true,
+                'fill' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+            ),
+            'rect' => array(
+                'x'      => true,
+                'y'      => true,
+                'width'  => true,
+                'height' => true,
+                'rx'     => true,
+                'ry'     => true,
+                'fill'   => true,
+                'stroke' => true,
+                'stroke-width' => true,
+            ),
+            'line' => array(
+                'x1' => true,
+                'y1' => true,
+                'x2' => true,
+                'y2' => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+                'stroke-linejoin' => true,
+            ),
+            'polyline' => array(
+                'points' => true,
+                'fill'   => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+                'stroke-linejoin' => true,
+            ),
+            'polygon' => array(
+                'points' => true,
+                'fill'   => true,
+                'stroke' => true,
+                'stroke-width' => true,
+                'stroke-linecap' => true,
+                'stroke-linejoin' => true,
+            ),
+        );
+
+        return wp_kses($svg, $allowed_html);
+    }
 }
