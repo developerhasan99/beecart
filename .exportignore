@@ -11,3 +11,4 @@ export.sh
 .exportignore
 export/
 *.log
+plugin-check-report.md

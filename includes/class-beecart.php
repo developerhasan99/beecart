@@ -208,7 +208,7 @@ class BeeCart
             // Strip any attempt to break out of the <style> block (XSS prevention)
             $safe_css = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', $custom_css);
             $safe_css = wp_strip_all_tags($safe_css);
-            echo '<style id="beecart-custom-css">' . $safe_css . '</style>';
+            echo '<style id="beecart-custom-css">' . $safe_css . '</style>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }
 
@@ -243,8 +243,12 @@ class BeeCart
     {
         check_ajax_referer('beecart-nonce', 'security');
         
-        $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
-        $quantity      = isset($_POST['quantity']) ? absint($_POST['quantity']) : 0;
+        if (! isset($_POST['cart_item_key'])) {
+            wp_send_json_error();
+        }
+
+        $cart_item_key = sanitize_text_field(wp_unslash($_POST['cart_item_key']));
+        $quantity      = isset($_POST['quantity']) ? absint(wp_unslash($_POST['quantity'])) : 0;
         
         // Ensure cart is loaded
         if (!WC()->cart) {
@@ -265,10 +269,10 @@ class BeeCart
     public function ajax_apply_coupon()
     {
         check_ajax_referer('beecart-nonce', 'security');
-        $coupon_code = sanitize_text_field($_POST['coupon']);
+        $coupon_code = isset($_POST['coupon']) ? sanitize_text_field(wp_unslash($_POST['coupon'])) : '';
 
         if (! empty($coupon_code)) {
-            WC()->cart->add_discount($coupon_code);
+            WC()->cart->apply_coupon($coupon_code);
         }
 
         WC()->cart->calculate_totals();
@@ -278,7 +282,7 @@ class BeeCart
     public function ajax_remove_coupon()
     {
         check_ajax_referer('beecart-nonce', 'security');
-        $coupon_code = sanitize_text_field($_POST['coupon']);
+        $coupon_code = isset($_POST['coupon']) ? sanitize_text_field(wp_unslash($_POST['coupon'])) : '';
 
         if (! empty($coupon_code)) {
             WC()->cart->remove_coupon($coupon_code);
@@ -292,8 +296,8 @@ class BeeCart
     {
         check_ajax_referer('beecart-nonce', 'security');
 
-        $product_id = isset($_POST['product_id']) ? absint($_POST['product_id']) : (isset($_POST['add-to-cart']) ? absint($_POST['add-to-cart']) : 0);
-        $quantity   = empty($_POST['quantity']) ? 1 : wc_stock_amount(wp_unslash($_POST['quantity']));
+        $product_id   = isset($_POST['product_id']) ? absint(wp_unslash($_POST['product_id'])) : (isset($_POST['add-to-cart']) ? absint(wp_unslash($_POST['add-to-cart'])) : 0);
+        $quantity     = empty($_POST['quantity']) ? 1 : wc_stock_amount(wp_unslash($_POST['quantity']));
         $variation_id = isset($_POST['variation_id']) ? absint($_POST['variation_id']) : '';
 
         $variation = array();
@@ -331,7 +335,7 @@ class BeeCart
         }
 
         // 3. Decode JSON payload from JS
-        $raw = isset($_POST['settings']) ? stripslashes($_POST['settings']) : '{}';
+        $raw = isset($_POST['settings']) ? wp_unslash($_POST['settings']) : '{}'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $data = json_decode($raw, true);
 
         if (! is_array($data)) {

@@ -1,6 +1,6 @@
 <?php if (! defined('ABSPATH')) exit;
 
-$sidebar_sections = array(
+$beecart_sidebar_sections = array(
     array(
         'title' => 'General',
         'tabs' => array(
@@ -63,13 +63,13 @@ $sidebar_sections = array(
     <div class="grid grid-cols-4 gap-5">
         <!-- Navigation Sidebar (Left) -->
         <div class="col-span-4 md:col-span-1 flex flex-col gap-3">
-            <?php foreach ($sidebar_sections as $section) : ?>
+            <?php foreach ($beecart_sidebar_sections as $beecart_section) : ?>
                 <div>
-                    <h3 class="text-xs uppercase tracking-wider mt-0 mb-2 px-3"><?php echo $section['title']; ?></h3>
+                    <h3 class="text-xs uppercase tracking-wider mt-0 mb-2 px-3"><?php echo esc_html($beecart_section['title']); ?></h3>
                     <div class="space-y-1">
-                        <?php foreach ($section['tabs'] as $tab) : ?>
-                            <button @click="$store.admin.setTab('<?php echo $tab['handle']; ?>')" :class="$store.admin.activeTab === '<?php echo $tab['handle']; ?>' ? 'bg-white text-gray-900' : 'bg-transparent text-gray-700 hover:bg-white/50'" class="w-full text-left px-3 py-2 text-sm rounded-full font-medium border-0 transition-all cursor-pointer">
-                                <span class="flex items-center gap-2"><span class="dashicons <?php echo $tab['icon']; ?>"></span> <?php echo $tab['title']; ?></span>
+                        <?php foreach ($beecart_section['tabs'] as $beecart_tab) : ?>
+                            <button @click="$store.admin.setTab('<?php echo esc_attr($beecart_tab['handle']); ?>')" :class="$store.admin.activeTab === '<?php echo esc_attr($beecart_tab['handle']); ?>' ? 'bg-white text-gray-900' : 'bg-transparent text-gray-700 hover:bg-white/50'" class="w-full text-left px-3 py-2 text-sm rounded-full font-medium border-0 transition-all cursor-pointer">
+                                <span class="flex items-center gap-2"><span class="dashicons <?php echo esc_attr($beecart_tab['icon']); ?>"></span> <?php echo esc_html($beecart_tab['title']); ?></span>
                             </button>
                         <?php endforeach; ?>
                     </div>

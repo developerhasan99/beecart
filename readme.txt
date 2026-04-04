@@ -1,9 +1,9 @@
-=== BeeCart – AOV Booster, Side Cart & WooCommerce Upsell Suite ===
+=== BeeCart – AOV Booster, Cart Drawer & Upsell Suite for WooCommerce ===
 Contributors: developerhasan99
 Tags: woocommerce, cart, side cart, upsell, cart drawer
 Requires Plugins: woocommerce
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 1.1.3
 License: GPLv2 or later

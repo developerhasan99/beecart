@@ -1,3 +1,4 @@
+<?php if (! defined('ABSPATH')) exit; ?>
 <div x-show="$store.admin.activeTab === 'badges'" class="tab-pane p-6" style="display: none;"
     x-data="{
         openMediaUploader() {
