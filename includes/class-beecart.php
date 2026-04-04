@@ -536,74 +536,71 @@ class BeeCart
         }
         $excluded_ids = array_values($excluded_ids);
 
-        $args = array(
-            'post_type' => 'product',
-            'posts_per_page' => $upsell_max,
-            'post_status' => 'publish',
-            'fields' => 'ids',
-            'post__not_in' => $excluded_ids,
-            'no_found_rows' => true,
-            'ignore_sticky_posts' => true,
-            'update_post_meta_cache' => false,
-            'update_post_term_cache' => false,
-            'cache_results' => true,
+        $query_args = array(
+            'limit' => $upsell_max + count($excluded_ids),
+            'status' => 'publish',
+            'return' => 'ids',
         );
 
         if ($upsell_source === 'best_sellers') {
-            $args['meta_key'] = 'total_sales';
-            $args['orderby'] = 'meta_value_num';
-            $args['order'] = 'DESC';
+            $query_args['orderby'] = 'popularity';
+            $query_args['order'] = 'DESC';
         } elseif ($upsell_source === 'newest') {
-            $args['orderby'] = 'date';
-            $args['order'] = 'DESC';
+            $query_args['orderby'] = 'date';
+            $query_args['order'] = 'DESC';
         } elseif ($upsell_source === 'category' && ! empty($upsell_category)) {
-            $args['orderby'] = 'date';
-            $args['order'] = 'DESC';
-            $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'product_cat',
-                    'field' => 'slug',
-                    'terms' => $upsell_category,
-                ),
-            );
+            $query_args['category'] = array($upsell_category);
+            $query_args['orderby'] = 'date';
+            $query_args['order'] = 'DESC';
         } elseif ($upsell_source === 'upsells') {
             $upsell_ids = $this->collect_product_relation_ids($cart_items, 'upsells');
             if (! empty($upsell_ids)) {
-                $args['post__in'] = $upsell_ids;
-                $args['orderby'] = 'post__in';
+                $query_args['include'] = array_diff($upsell_ids, $excluded_ids);
+                if (empty($query_args['include'])) {
+                    // Fallback to popularity if no specific upsells found
+                    unset($query_args['include']);
+                    $query_args['orderby'] = 'popularity';
+                } else {
+                    $query_args['orderby'] = 'include';
+                }
             } else {
-                $args['meta_key'] = 'total_sales';
-                $args['orderby'] = 'meta_value_num';
-                $args['order'] = 'DESC';
+                $query_args['orderby'] = 'popularity';
             }
         } elseif ($upsell_source === 'cross_sells') {
             $cross_sell_ids = $this->collect_product_relation_ids($cart_items, 'cross_sells');
             if (! empty($cross_sell_ids)) {
-                $args['post__in'] = $cross_sell_ids;
-                $args['orderby'] = 'post__in';
+                $query_args['include'] = array_diff($cross_sell_ids, $excluded_ids);
+                if (empty($query_args['include'])) {
+                    unset($query_args['include']);
+                    $query_args['orderby'] = 'popularity';
+                } else {
+                    $query_args['orderby'] = 'include';
+                }
             } else {
-                $args['meta_key'] = 'total_sales';
-                $args['orderby'] = 'meta_value_num';
-                $args['order'] = 'DESC';
+                $query_args['orderby'] = 'popularity';
             }
         } elseif ($upsell_source === 'related') {
-            $related_ids = array_slice($this->collect_related_product_ids($cart_items, $upsell_max), 0, $upsell_max);
+            $related_ids = $this->collect_related_product_ids($cart_items, $upsell_max + count($excluded_ids));
             if (! empty($related_ids)) {
-                $args['post__in'] = $related_ids;
-                $args['orderby'] = 'post__in';
+                $query_args['include'] = array_diff($related_ids, $excluded_ids);
+                if (empty($query_args['include'])) {
+                    unset($query_args['include']);
+                    $query_args['orderby'] = 'popularity';
+                } else {
+                    $query_args['orderby'] = 'include';
+                }
             } else {
-                $args['meta_key'] = 'total_sales';
-                $args['orderby'] = 'meta_value_num';
-                $args['order'] = 'DESC';
+                $query_args['orderby'] = 'popularity';
             }
         } else {
-            $args['meta_key'] = 'total_sales';
-            $args['orderby'] = 'meta_value_num';
-            $args['order'] = 'DESC';
+            $query_args['orderby'] = 'popularity';
         }
 
-        $query = new WP_Query($args);
-        $upsell_query_ids = is_array($query->posts) ? $query->posts : array();
+        $ids = wc_get_products($query_args);
+
+        // Filter out excluded IDs (items already in cart) and slice to max
+        $filtered_ids = array_diff($ids, $excluded_ids);
+        $upsell_query_ids = array_slice($filtered_ids, 0, $upsell_max);
 
         set_transient($cache_key, $upsell_query_ids, 600);
 
