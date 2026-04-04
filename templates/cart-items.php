@@ -110,7 +110,7 @@ $beecart_show_trust_badges      = $beecart_settings['show_trust_badges'] ?? true
     <?php if (!$beecart_is_empty): ?>
         <div class="bc-item-list">
             <?php foreach ($beecart_cart->get_cart() as $beecart_cart_item_key => $beecart_cart_item):
-                $beecart_product_obj = apply_filters('woocommerce_cart_item_product', $beecart_cart_item['data'], $beecart_cart_item, $beecart_cart_item_key);
+                $beecart_product_obj = apply_filters('woocommerce_cart_item_product', $beecart_cart_item['data'], $beecart_cart_item, $beecart_cart_item_key); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
                 if ($beecart_product_obj && $beecart_product_obj->exists() && $beecart_cart_item['quantity'] > 0) {
                     $beecart_product_name  = $beecart_product_obj->get_name();
                     $beecart_thumbnail_id  = $beecart_product_obj->get_image_id();
@@ -264,10 +264,10 @@ $beecart_show_trust_badges      = $beecart_settings['show_trust_badges'] ?? true
                             foreach ($beecart_product_variations as $beecart_v) {
                                 $beecart_p_map[$beecart_v['variation_id']] = wp_strip_all_tags(wc_price($beecart_v['display_price']));
                             }
-                            $beecart_prices_json = esc_attr(wp_json_encode($beecart_p_map));
+                            $beecart_prices_json = wp_json_encode($beecart_p_map);
                         }
                     ?>
-                        <div class="bc-upsell-item" data-id="<?php echo esc_attr(get_the_ID()); ?>" <?php if ($beecart_prices_json) echo 'data-prices="' . $beecart_prices_json . '"'; ?>>
+                        <div class="bc-upsell-item" data-id="<?php echo esc_attr(get_the_ID()); ?>" <?php if ($beecart_prices_json) echo 'data-prices="' . esc_attr($beecart_prices_json) . '"'; ?>>
                             <div class="bc-upsell-img-wrap">
                                 <a href="<?php echo esc_url(get_permalink()); ?>" class="bc-upsell-link">
                                     <?php if ($beecart_upsell_img): ?>

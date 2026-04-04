@@ -297,8 +297,8 @@ class BeeCart
         check_ajax_referer('beecart-nonce', 'security');
 
         $product_id   = isset($_POST['product_id']) ? absint(wp_unslash($_POST['product_id'])) : (isset($_POST['add-to-cart']) ? absint(wp_unslash($_POST['add-to-cart'])) : 0);
-        $quantity     = empty($_POST['quantity']) ? 1 : wc_stock_amount(wp_unslash($_POST['quantity']));
-        $variation_id = isset($_POST['variation_id']) ? absint($_POST['variation_id']) : '';
+        $quantity     = empty($_POST['quantity']) ? 1 : absint(wp_unslash($_POST['quantity']));
+        $variation_id = isset($_POST['variation_id']) ? absint(wp_unslash($_POST['variation_id'])) : '';
 
         $variation = array();
         foreach ($_POST as $key => $value) {
