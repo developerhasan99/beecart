@@ -86,19 +86,6 @@ class Popsi_Cart_Admin
                 'gift'  => Popsi_Cart_Drawer::get_svg_icon('gift', 'bc-checkpoint-icon'),
             ),
         ));
-
-        // Add global admin CSS as inline style
-        $admin_css = '
-            #adminmenu .toplevel_page_popsi-cart .wp-menu-image img {
-                padding: 0;
-                opacity: 0.9;
-            }
-
-            #adminmenu .toplevel_page_popsi-cart.current .wp-menu-image img {
-                opacity: 1;
-            }
-        ';
-        wp_add_inline_style('popsi-cart-admin-style', $admin_css);
     }
 
     public function render_cart_builder()
