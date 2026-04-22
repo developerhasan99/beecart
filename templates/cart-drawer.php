@@ -3,60 +3,60 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$beecart_drawer_settings = $this->get_settings();
+$popsi_cart_drawer_settings = $this->get_settings();
 
-$beecart_drawer_heading = $beecart_drawer_settings['cart_title'] ?? 'Your Cart';
-$beecart_drawer_countdown_minutes = $beecart_drawer_settings['timer_duration'] ?? 15;
-$beecart_drawer_bg_color = $beecart_drawer_settings['bg_color'] ?? '#FFFFFF';
-$beecart_drawer_text_color = $beecart_drawer_settings['text_color'] ?? '#000000';
-$beecart_drawer_accent_color = $beecart_drawer_settings['accent_color'] ?? '#f6f6f7';
-$beecart_drawer_show_cart_count = $beecart_drawer_settings['show_cart_count'] ?? true;
-$beecart_drawer_inherit_fonts = $beecart_drawer_settings['inherit_fonts'] ?? true;
+$popsi_cart_drawer_heading = $popsi_cart_drawer_settings['cart_title'] ?? 'Your Cart';
+$popsi_cart_drawer_countdown_minutes = $popsi_cart_drawer_settings['timer_duration'] ?? 15;
+$popsi_cart_drawer_bg_color = $popsi_cart_drawer_settings['bg_color'] ?? '#FFFFFF';
+$popsi_cart_drawer_text_color = $popsi_cart_drawer_settings['text_color'] ?? '#000000';
+$popsi_cart_drawer_accent_color = $popsi_cart_drawer_settings['accent_color'] ?? '#f6f6f7';
+$popsi_cart_drawer_show_cart_count = $popsi_cart_drawer_settings['show_cart_count'] ?? true;
+$popsi_cart_drawer_inherit_fonts = $popsi_cart_drawer_settings['inherit_fonts'] ?? true;
 
-$beecart_drawer_show_announcement = $beecart_drawer_settings['show_announcement'] ?? false;
-$beecart_drawer_announcement = $beecart_drawer_settings['announcement_text'] ?? '';
-$beecart_drawer_announcement_bg = $beecart_drawer_settings['announcement_bg'] ?? '#000000';
-$beecart_drawer_announcement_text_color = $beecart_drawer_settings['announcement_text_color'] ?? '#ffffff';
-$beecart_drawer_announcement_bar_size = $beecart_drawer_settings['announcement_bar_size'] ?? 'medium';
-$beecart_drawer_announcement_font_size = $beecart_drawer_settings['announcement_font_size'] ?? '13px';
+$popsi_cart_drawer_show_announcement = $popsi_cart_drawer_settings['show_announcement'] ?? false;
+$popsi_cart_drawer_announcement = $popsi_cart_drawer_settings['announcement_text'] ?? '';
+$popsi_cart_drawer_announcement_bg = $popsi_cart_drawer_settings['announcement_bg'] ?? '#000000';
+$popsi_cart_drawer_announcement_text_color = $popsi_cart_drawer_settings['announcement_text_color'] ?? '#ffffff';
+$popsi_cart_drawer_announcement_bar_size = $popsi_cart_drawer_settings['announcement_bar_size'] ?? 'medium';
+$popsi_cart_drawer_announcement_font_size = $popsi_cart_drawer_settings['announcement_font_size'] ?? '13px';
 
-$beecart_drawer_enable_timer = $beecart_drawer_settings['enable_timer'] ?? false;
+$popsi_cart_drawer_enable_timer = $popsi_cart_drawer_settings['enable_timer'] ?? false;
 ?>
 <div class="bc-drawer-wrap"
-    style="font-family: <?php echo $beecart_drawer_inherit_fonts ? 'inherit' : 'sans-serif'; ?>;">
+    style="font-family: <?php echo $popsi_cart_drawer_inherit_fonts ? 'inherit' : 'sans-serif'; ?>;">
 
     <!-- Overlay -->
     <div class="bc-overlay"></div>
 
     <!-- Drawer container -->
-    <div class="bc-drawer-panel" style="background-color: <?php echo esc_attr($beecart_drawer_bg_color); ?>; color: <?php echo esc_attr($beecart_drawer_text_color); ?>;">
+    <div class="bc-drawer-panel" style="background-color: <?php echo esc_attr($popsi_cart_drawer_bg_color); ?>; color: <?php echo esc_attr($popsi_cart_drawer_text_color); ?>;">
 
         <!-- Header -->
         <div class="bc-drawer-header">
-            <h2 class="bc-drawer-title" style="color: <?php echo esc_attr($beecart_drawer_text_color); ?>;">
-                <span><?php echo esc_html($beecart_drawer_heading); ?></span>
-                <?php if ($beecart_drawer_show_cart_count): ?>
+            <h2 class="bc-drawer-title" style="color: <?php echo esc_attr($popsi_cart_drawer_text_color); ?>;">
+                <span><?php echo esc_html($popsi_cart_drawer_heading); ?></span>
+                <?php if ($popsi_cart_drawer_show_cart_count): ?>
                 <span><span class="bc-drawer-title-sep">•</span> <span class="bc-cart-count-display"><?php echo esc_html(WC()->cart->get_cart_contents_count()); ?></span></span>
                 <?php endif; ?>
             </h2>
-            <button title="Close Cart" class="bc-drawer-close" style="background-color: <?php echo esc_attr($beecart_drawer_accent_color); ?>;">
+            <button title="Close Cart" class="bc-drawer-close" style="background-color: <?php echo esc_attr($popsi_cart_drawer_accent_color); ?>;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" style="color: #6b7280;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
 
         <!-- Announcement Bar -->
-        <?php if ($beecart_drawer_show_announcement): 
-            $beecart_drawer_size_class = 'size-medium';
-            if ($beecart_drawer_announcement_bar_size === 'small') $beecart_drawer_size_class = 'size-small';
-            if ($beecart_drawer_announcement_bar_size === 'large') $beecart_drawer_size_class = 'size-large';
+        <?php if ($popsi_cart_drawer_show_announcement): 
+            $popsi_cart_drawer_size_class = 'size-medium';
+            if ($popsi_cart_drawer_announcement_bar_size === 'small') $popsi_cart_drawer_size_class = 'size-small';
+            if ($popsi_cart_drawer_announcement_bar_size === 'large') $popsi_cart_drawer_size_class = 'size-large';
             
             // Format initial string with timer strong element
-            $beecart_drawer_formatted_announcement = str_replace('{timer}', '<strong class=\'bc-timer-bold\'>' . sprintf('%02d:00', (int)$beecart_drawer_countdown_minutes) . '</strong>', $beecart_drawer_announcement);
+            $popsi_cart_drawer_formatted_announcement = str_replace('{timer}', '<strong class=\'bc-timer-bold\'>' . sprintf('%02d:00', (int)$popsi_cart_drawer_countdown_minutes) . '</strong>', $popsi_cart_drawer_announcement);
         ?>
         <div class="bc-drawer-top-notices">
-            <div class="bc-announcement <?php echo esc_attr($beecart_drawer_size_class); ?>"
-                style="background-color: <?php echo esc_attr($beecart_drawer_announcement_bg); ?>; color: <?php echo esc_attr($beecart_drawer_announcement_text_color); ?>; font-size: <?php echo esc_attr($beecart_drawer_announcement_font_size); ?>;">
-                <?php echo wp_kses_post($beecart_drawer_formatted_announcement); ?>
+            <div class="bc-announcement <?php echo esc_attr($popsi_cart_drawer_size_class); ?>"
+                style="background-color: <?php echo esc_attr($popsi_cart_drawer_announcement_bg); ?>; color: <?php echo esc_attr($popsi_cart_drawer_announcement_text_color); ?>; font-size: <?php echo esc_attr($popsi_cart_drawer_announcement_font_size); ?>;">
+                <?php echo wp_kses_post($popsi_cart_drawer_formatted_announcement); ?>
             </div>
         </div>
         <?php endif; ?>

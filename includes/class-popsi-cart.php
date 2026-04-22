@@ -3,36 +3,36 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-class BeeCart
+class Popsi_Cart_Drawer
 {
     /** @var array|null In-request cache for settings. Cleared after save. */
     private static $_settings_cache = null;
 
     public function init()
     {
-        add_shortcode('beecart', array($this, 'cart_icon_shortcode'));
-        add_shortcode('beecart_icon', array($this, 'cart_icon_shortcode'));
+        add_shortcode('popsi_cart', array($this, 'cart_icon_shortcode'));
+        add_shortcode('popsi_cart_icon', array($this, 'cart_icon_shortcode'));
 
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
         add_action('wp_footer', array($this, 'output_cart_drawer'));
 
-        // Core AJAX - Action names MUST match beecart.js
-        add_action('wp_ajax_beecart_add_to_cart', array($this, 'ajax_add_to_cart'));
-        add_action('wp_ajax_nopriv_beecart_add_to_cart', array($this, 'ajax_add_to_cart'));
-        add_action('wp_ajax_beecart_get_cart', array($this, 'ajax_get_cart'));
-        add_action('wp_ajax_nopriv_beecart_get_cart', array($this, 'ajax_get_cart'));
+        // Core AJAX - Action names MUST match popsi-cart.js
+        add_action('wp_ajax_popsi_cart_add_to_cart', array($this, 'ajax_add_to_cart'));
+        add_action('wp_ajax_nopriv_popsi_cart_add_to_cart', array($this, 'ajax_add_to_cart'));
+        add_action('wp_ajax_popsi_cart_get_cart', array($this, 'ajax_get_cart'));
+        add_action('wp_ajax_nopriv_popsi_cart_get_cart', array($this, 'ajax_get_cart'));
 
         // This handles both quantity updates AND removal (qty=0)
-        add_action('wp_ajax_beecart_update_item', array($this, 'ajax_update_item'));
-        add_action('wp_ajax_nopriv_beecart_update_item', array($this, 'ajax_update_item'));
+        add_action('wp_ajax_popsi_cart_update_item', array($this, 'ajax_update_item'));
+        add_action('wp_ajax_nopriv_popsi_cart_update_item', array($this, 'ajax_update_item'));
 
         // Feature AJAX
-        add_action('wp_ajax_beecart_apply_coupon', array($this, 'ajax_apply_coupon'));
-        add_action('wp_ajax_nopriv_beecart_apply_coupon', array($this, 'ajax_apply_coupon'));
-        add_action('wp_ajax_beecart_remove_coupon', array($this, 'ajax_remove_coupon'));
-        add_action('wp_ajax_nopriv_beecart_remove_coupon', array($this, 'ajax_remove_coupon'));
+        add_action('wp_ajax_popsi_cart_apply_coupon', array($this, 'ajax_apply_coupon'));
+        add_action('wp_ajax_nopriv_popsi_cart_apply_coupon', array($this, 'ajax_apply_coupon'));
+        add_action('wp_ajax_popsi_cart_remove_coupon', array($this, 'ajax_remove_coupon'));
+        add_action('wp_ajax_nopriv_popsi_cart_remove_coupon', array($this, 'ajax_remove_coupon'));
 
-        add_action('wp_ajax_beecart_save_settings', array($this, 'ajax_save_settings'));
+        add_action('wp_ajax_popsi_cart_save_settings', array($this, 'ajax_save_settings'));
 
         add_filter('wp_nav_menu_items', array($this, 'append_cart_icon_to_menu'), 10, 2);
         add_action('woocommerce_add_to_cart', array($this, 'set_just_added_cookie'), 10, 6);
@@ -41,7 +41,7 @@ class BeeCart
     public function set_just_added_cookie()
     {
         if (!wp_doing_ajax() && !headers_sent()) {
-            setcookie('beecart_just_added', '1', time() + 30, '/');
+            setcookie('popsi_cart_just_added', '1', time() + 30, '/');
         }
     }
 
@@ -67,7 +67,7 @@ class BeeCart
 
         // Also check if the 'placement' matches the 'theme_location'
         if ($menu_slug === $placement || (isset($args->theme_location) && $args->theme_location === $placement)) {
-            $items .= '<li class="menu-item beecart-menu-item">' . $this->cart_icon_shortcode() . '</li>';
+            $items .= '<li class="menu-item popsi-cart-menu-item">' . $this->cart_icon_shortcode() . '</li>';
         }
 
         return $items;
@@ -76,7 +76,7 @@ class BeeCart
 
     public function cart_icon_shortcode_output()
     {
-        include BEECART_PATH . 'templates/cart-icon.php';
+        include POPSI_CART_PATH . 'templates/cart-icon.php';
     }
 
     public function enqueue_assets()
@@ -84,20 +84,20 @@ class BeeCart
         if (function_exists('is_cart') && is_cart()) return;
         if (function_exists('is_checkout') && is_checkout()) return;
 
-        // We don't load beecart-admin.css anymore since it's tailwind
-        // wp_enqueue_style('beecart-admin-style', BEECART_URL . 'assets/css/beecart-admin.css', array(), BEECART_VERSION);
+        // We don't load popsi-cart-admin.css anymore since it's tailwind
+        // wp_enqueue_style('popsi-cart-admin-style', POPSI_CART_URL . 'assets/css/popsi-cart-admin.css', array(), POPSI_CART_VERSION);
 
         // Native / Frontend CSS
-        wp_enqueue_style('beecart-style', BEECART_URL . 'assets/css/beecart.css', array(), BEECART_VERSION);
+        wp_enqueue_style('popsi-cart-style', POPSI_CART_URL . 'assets/css/popsi-cart.css', array(), POPSI_CART_VERSION);
 
         // Priority loading: Enqueue in header with defer strategy for best performance
-        wp_enqueue_script('beecart-script', BEECART_URL . 'assets/js/beecart.js', array('jquery'), BEECART_VERSION, array(
+        wp_enqueue_script('popsi-cart-script', POPSI_CART_URL . 'assets/js/popsi-cart.js', array('jquery'), POPSI_CART_VERSION, array(
             'strategy' => 'defer',
         ));
 
-        wp_localize_script('beecart-script', 'beecartData', array(
+        wp_localize_script('popsi-cart-script', 'popsiCartData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('beecart-nonce'),
+            'nonce'    => wp_create_nonce('popsi-cart-nonce'),
             'settings' => $this->get_settings()
         ));
 
@@ -108,7 +108,7 @@ class BeeCart
             // Strip any attempt to break out of the <style> block (XSS prevention)
             $safe_css = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', $custom_css);
             $safe_css = wp_strip_all_tags($safe_css);
-            wp_add_inline_style('beecart-style', $safe_css);
+            wp_add_inline_style('popsi-cart-style', $safe_css);
         }
     }
 
@@ -177,7 +177,7 @@ class BeeCart
             'upsell_category'             => '',
             'upsell_btn_text'             => 'Add to Cart',
             'show_trust_badges'           => true,
-            'trust_badge_image'           => BEECART_URL . 'assets/img/payment-badge.svg',
+            'trust_badge_image'           => POPSI_CART_URL . 'assets/img/payment-badge.svg',
             'custom_css'                  => '',
             'trans_checkout_btn'          => 'Checkout',
             'trans_continue_shopping'     => 'Continue Shopping',
@@ -202,7 +202,7 @@ class BeeCart
             return self::$_settings_cache;
         }
 
-        $saved    = get_option('beecart_settings', array());
+        $saved    = get_option('popsi_cart_settings', array());
         $defaults = self::get_default_settings();
 
         // wp_parse_args ensures new default keys appear for existing users automatically
@@ -221,12 +221,12 @@ class BeeCart
         if (function_exists('is_cart') && is_cart()) return;
         if (function_exists('is_checkout') && is_checkout()) return;
 
-        include BEECART_PATH . 'templates/cart-drawer.php';
+        include POPSI_CART_PATH . 'templates/cart-drawer.php';
     }
 
     public function ajax_get_cart()
     {
-        check_ajax_referer('beecart-nonce', 'security');
+        check_ajax_referer('popsi-cart-nonce', 'security');
         ob_start();
         $this->render_cart_content();
         $html = ob_get_clean();
@@ -240,7 +240,7 @@ class BeeCart
 
     public function ajax_update_item()
     {
-        check_ajax_referer('beecart-nonce', 'security');
+        check_ajax_referer('popsi-cart-nonce', 'security');
 
         if (! isset($_POST['cart_item_key'])) {
             wp_send_json_error();
@@ -267,7 +267,7 @@ class BeeCart
 
     public function ajax_apply_coupon()
     {
-        check_ajax_referer('beecart-nonce', 'security');
+        check_ajax_referer('popsi-cart-nonce', 'security');
         $coupon_code = isset($_POST['coupon']) ? sanitize_text_field(wp_unslash($_POST['coupon'])) : '';
 
         if (! empty($coupon_code)) {
@@ -280,7 +280,7 @@ class BeeCart
 
     public function ajax_remove_coupon()
     {
-        check_ajax_referer('beecart-nonce', 'security');
+        check_ajax_referer('popsi-cart-nonce', 'security');
         $coupon_code = isset($_POST['coupon']) ? sanitize_text_field(wp_unslash($_POST['coupon'])) : '';
 
         if (! empty($coupon_code)) {
@@ -293,7 +293,7 @@ class BeeCart
 
     public function ajax_add_to_cart()
     {
-        check_ajax_referer('beecart-nonce', 'security');
+        check_ajax_referer('popsi-cart-nonce', 'security');
 
         $product_id   = isset($_POST['product_id']) ? absint(wp_unslash($_POST['product_id'])) : (isset($_POST['add-to-cart']) ? absint(wp_unslash($_POST['add-to-cart'])) : 0);
         $quantity     = empty($_POST['quantity']) ? 1 : absint(wp_unslash($_POST['quantity']));
@@ -326,11 +326,11 @@ class BeeCart
     public function ajax_save_settings()
     {
         // 1. Verify admin nonce
-        check_ajax_referer('beecart-admin-nonce', 'security');
+        check_ajax_referer('popsi-cart-admin-nonce', 'security');
 
         // 2. Verify capability
         if (! current_user_can('manage_options')) {
-            wp_send_json_error(__('Unauthorized.', 'beecart'), 403);
+            wp_send_json_error(__('Unauthorized.', 'popsi-cart-drawer'), 403);
         }
 
         // 3. Decode JSON payload from JS
@@ -338,19 +338,19 @@ class BeeCart
         $data = json_decode($raw, true);
 
         if (! is_array($data)) {
-            wp_send_json_error(__('Invalid settings data.', 'beecart'));
+            wp_send_json_error(__('Invalid settings data.', 'popsi-cart-drawer'));
         }
 
         // 4. Sanitize every field
         $clean = $this->sanitize_settings($data);
 
-        // 5. Persist — autoload=false: only loaded when BeeCart needs them
-        update_option('beecart_settings', $clean, false);
+        // 5. Persist — autoload=false: only loaded when Popsi Cart needs them
+        update_option('popsi_cart_settings', $clean, false);
 
         // 6. Clear static cache so next get_settings() call reads fresh data
         self::$_settings_cache = null;
 
-        wp_send_json_success(__('Settings saved.', 'beecart'));
+        wp_send_json_success(__('Settings saved.', 'popsi-cart-drawer'));
     }
 
     private function sanitize_settings(array $raw): array
@@ -633,13 +633,13 @@ class BeeCart
 
     public function render_cart_content()
     {
-        include BEECART_PATH . 'templates/cart-items.php';
+        include POPSI_CART_PATH . 'templates/cart-items.php';
     }
 
     public function cart_icon_shortcode()
     {
         ob_start();
-        include BEECART_PATH . 'templates/cart-icon.php';
+        include POPSI_CART_PATH . 'templates/cart-icon.php';
         return ob_get_clean();
     }
 
@@ -648,10 +648,10 @@ class BeeCart
      * Captured output ensures literal HTML is used where possible,
      * but still available as a string for JS localization.
      */
-    public static function get_svg_icon($beecart_icon_name, $beecart_icon_class = '')
+    public static function get_svg_icon($popsi_cart_icon_name, $popsi_cart_icon_class = '')
     {
         ob_start();
-        include BEECART_PATH . 'templates/icons.php';
+        include POPSI_CART_PATH . 'templates/icons.php';
         return ob_get_clean();
     }
 }

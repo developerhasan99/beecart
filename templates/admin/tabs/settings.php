@@ -36,10 +36,10 @@
                         x-model="$store.admin.settings.custom_css"
                         rows="12"
                         spellcheck="false"
-                        placeholder="/* Add your custom CSS here */&#10;.beecart-drawer {&#10;    border-left: 2px solid #000;&#10;}"
+                        placeholder="/* Add your custom CSS here */&#10;.popsi-cart-drawer {&#10;    border-left: 2px solid #000;&#10;}"
                         class="block w-full rounded-none border-0 bg-transparent p-0 text-sm font-mono text-slate-300 ring-0 focus:ring-0 resize-none min-h-[300px]"></textarea>
                 </div>
-                <p class="text-xs text-gray-400">Add custom styles to override existing cart design. Use .beecart-drawer as root selector.</p>
+                <p class="text-xs text-gray-400">Add custom styles to override existing cart design. Use .popsi-cart-drawer as root selector.</p>
             </div>
         </div>
     </div>

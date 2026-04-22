@@ -76,13 +76,14 @@ document.addEventListener("alpine:init", () => {
       trans_discounts: "Discounts",
       trans_coupon_accordion_title: "Have a Coupon?",
       show_shipping_notice: true,
-      shipping_notice_text: "Shipping and taxes will be calculated at checkout.",
+      shipping_notice_text:
+        "Shipping and taxes will be calculated at checkout.",
       show_subtotal_on_checkout: true,
       enable_total_line: true,
       trans_total: "Total",
-      ...(Array.isArray(beecartAdminData.settings)
+      ...(Array.isArray(popsiCartAdminData.settings)
         ? {}
-        : beecartAdminData.settings),
+        : popsiCartAdminData.settings),
     },
     addProgressBar() {
       this.settings.progress_bars.push({
@@ -90,9 +91,7 @@ document.addEventListener("alpine:init", () => {
         away_text: "You're only {amount} away from {goal}",
         completed_text: "🎉 Congratulations! You have unlocked all rewards.",
         show_labels: true,
-        checkpoints: [
-          { threshold: 50, label: "Free Shipping", icon: "truck" },
-        ],
+        checkpoints: [{ threshold: 50, label: "Free Shipping", icon: "truck" }],
       });
     },
     removeProgressBar(index) {
@@ -103,7 +102,7 @@ document.addEventListener("alpine:init", () => {
     isSaving: false,
     isDirty: false,
     $intercept: false,
-    savedSettingsSnapshot: '',
+    savedSettingsSnapshot: "",
 
     init() {
       // Create initial snapshot for comparison
@@ -124,17 +123,19 @@ document.addEventListener("alpine:init", () => {
 
     discardSettings() {
       if (!this.isDirty) return;
-      
+
       this.$intercept = true;
       const original = JSON.parse(this.savedSettingsSnapshot);
-      
+
       // Update all keys to restore state while maintaining proxy references
-      Object.keys(original).forEach(key => {
+      Object.keys(original).forEach((key) => {
         this.settings[key] = original[key];
       });
-      
+
       this.isDirty = false;
-      setTimeout(() => { this.$intercept = false; }, 0);
+      setTimeout(() => {
+        this.$intercept = false;
+      }, 0);
     },
 
     setTab(tab) {
@@ -147,11 +148,11 @@ document.addEventListener("alpine:init", () => {
 
       try {
         const response = await jQuery.ajax({
-          url: beecartAdminData.ajax_url,
+          url: popsiCartAdminData.ajax_url,
           type: "POST",
           data: {
-            action: "beecart_save_settings",
-            security: beecartAdminData.nonce,
+            action: "popsi_cart_save_settings",
+            security: popsiCartAdminData.nonce,
             settings: JSON.stringify(this.settings),
           },
         });
@@ -162,7 +163,7 @@ document.addEventListener("alpine:init", () => {
           this.isDirty = false;
           this.showToast(response.data || "Settings saved!", "success");
         } else {
-          this.showToast((response.data || "An error occurred."), "error");
+          this.showToast(response.data || "An error occurred.", "error");
         }
       } catch (error) {
         this.showToast("Network error. Please try again.", "error");
@@ -250,6 +251,6 @@ document.addEventListener("alpine:init", () => {
   }));
 });
 
-jQuery(document).on("click", "#bee-save-settings", function (e) {
+jQuery(document).on("click", "#popsi-save-settings", function (e) {
   Alpine.store("admin").saveSettings();
 });

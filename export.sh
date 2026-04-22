@@ -4,9 +4,9 @@
 set -e
 
 # Define variables
-PLUGIN_SLUG="beecart"
+PLUGIN_SLUG="popsi-cart-drawer"
 # Extract version from main plugin file
-VERSION=$(grep -m 1 "Version: " beecart.php | grep -o "[0-9.]*")
+VERSION=$(grep -m 1 "Version: " popsi-cart-drawer.php | grep -o "[0-9.]*")
 EXPORT_DIR="export"
 ARCHIVE_NAME="${PLUGIN_SLUG}-${VERSION}.zip"
 

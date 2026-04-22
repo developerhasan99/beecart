@@ -39,7 +39,7 @@
                         </button>
                         <template x-if="$store.admin.settings.trust_badge_image">
                             <button type="button" class="px-4 py-2 text-sm font-medium text-gray-600 rounded-md border border-solid border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer"
-                                @click.prevent="$store.admin.settings.trust_badge_image = beecartAdminData.default_badge">
+                                @click.prevent="$store.admin.settings.trust_badge_image = popsiCartAdminData.default_badge">
                                 Reset to Default
                             </button>
                         </template>

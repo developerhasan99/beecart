@@ -1,4 +1,4 @@
-=== BeeCart – AOV Booster, Cart Drawer & Upsell Suite for WooCommerce ===
+=== Popsi Cart Drawer for WooCommerce – AOV Booster, Cart Drawer & Upsell Suite ===
 Contributors: developerhasan99
 Tags: woocommerce, cart, side cart, upsell, cart drawer
 Requires Plugins: woocommerce
@@ -13,7 +13,7 @@ A powerful WooCommerce side cart plugin with an AOV Booster, cart drawer, upsell
 
 == Description ==
 
-**BeeCart** is a premium WooCommerce side-cart plugin that transforms your store's cart experience into a conversion-optimized, fully customizable off-canvas drawer. It is designed to boost your Average Order Value (AOV) and reduce cart abandonment with a suite of powerful features — all manageable from a beautiful, no-code admin panel.
+**Popsi Cart Drawer for WooCommerce** is a premium WooCommerce side-cart plugin that transforms your store's cart experience into a conversion-optimized, fully customizable off-canvas drawer. It is designed to boost your Average Order Value (AOV) and reduce cart abandonment with a suite of powerful features — all manageable from a beautiful, no-code admin panel.
 
 = Core Features =
 
@@ -39,10 +39,10 @@ Display a custom trust/payment badge image at the bottom of the cart to build bu
 Total control over colors, fonts (theme inheritance), button radius, icon style, cart bubble, and more — all from the admin panel live preview.
 
 **🛍 Cart Icon**
-Use `[beecart_icon]` shortcode or auto-inject the cart icon into any navigation menu.
+Use `[popsi_cart_icon]` shortcode or auto-inject the cart icon into any navigation menu.
 
 **🌍 Translation Ready**
-All user-facing strings are translatable. The text domain is `beecart`.
+All user-facing strings are translatable. The text domain is `popsi-cart-drawer`.
 
 = Use Cases =
 
@@ -59,37 +59,37 @@ All user-facing strings are translatable. The text domain is `beecart`.
 
 == Installation ==
 
-1. Upload the `beecart` folder to the `/wp-content/plugins/` directory, or install through the WordPress Plugins screen directly.
+1. Upload the `popsi-cart-drawer` folder to the `/wp-content/plugins/` directory, or install through the WordPress Plugins screen directly.
 2. Activate the plugin through the **Plugins** screen in WordPress.
-3. Navigate to **BeeCart** in the WordPress admin menu.
+3. Navigate to **Popsi Cart** in the WordPress admin menu.
 4. In the **Placement** tab, enable **"Enable Cart Drawer Site-wide"**.
 5. Customize the design, rewards, upsells, and other settings to match your store.
 
 == Frequently Asked Questions ==
 
-= Does BeeCart work without WooCommerce? =
+= Does Popsi Cart Drawer for WooCommerce work without WooCommerce? =
 
-No. BeeCart is built exclusively for WooCommerce and requires it to be installed and activated.
+No. Popsi Cart Drawer for WooCommerce is built exclusively for WooCommerce and requires it to be installed and activated.
 
 = How do I display the cart icon in my header or navigation? =
 
-You can use the `[beecart_icon]` shortcode anywhere on your site. Alternatively, go to **BeeCart → Placement → Menu Placement** to automatically inject the cart icon into a specific navigation menu.
+You can use the `[popsi_cart_icon]` shortcode anywhere on your site. Alternatively, go to **Popsi Cart → Placement → Menu Placement** to automatically inject the cart icon into a specific navigation menu.
 
 = Can I change the colors and design of the cart? =
 
-Yes! Go to **BeeCart → Design** and customize the background color, text color, button colors, border radius, cart icon style, and more. Changes are reflected in the live preview on the right.
+Yes! Go to **Popsi Cart → Design** and customize the background color, text color, button colors, border radius, cart icon style, and more. Changes are reflected in the live preview on the right.
 
-= Does BeeCart support variable products in upsells? =
+= Does Popsi Cart Drawer for WooCommerce support variable products in upsells? =
 
 Yes. When a variable product is shown as an upsell recommendation, a variation selector (dropdown) is displayed so the customer can choose their option before adding to cart.
 
 = Is the plugin compatible with AJAX add-to-cart? =
 
-Yes. BeeCart intercepts standard WooCommerce add-to-cart form submissions and handles them via AJAX, then opens the cart drawer automatically.
+Yes. Popsi Cart Drawer for WooCommerce intercepts standard WooCommerce add-to-cart form submissions and handles them via AJAX, then opens the cart drawer automatically.
 
 = Can I run multiple progress bars? =
 
-Yes! BeeCart supports multiple reward progress bars per cart. Each bar can have its own thresholds, type (subtotal or quantity), and reward checkpoints.
+Yes! Popsi Cart Drawer for WooCommerce supports multiple reward progress bars per cart. Each bar can have its own thresholds, type (subtotal or quantity), and reward checkpoints.
 
 == Screenshots ==
 

@@ -39,12 +39,12 @@
             <select id="menu_placement" x-model="$store.admin.settings.menu_placement" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none">
                 <option value="none" :selected="$store.admin.settings.menu_placement == 'none'">None</option>
                 <?php
-                $beecart_menus = get_terms(array('taxonomy' => 'nav_menu', 'hide_empty' => false));
-                if (! is_wp_error($beecart_menus)) :
-                    foreach ($beecart_menus as $beecart_menu) :
-                        $beecart_menu_slug = esc_attr($beecart_menu->slug);
+                $popsi_cart_menus = get_terms(array('taxonomy' => 'nav_menu', 'hide_empty' => false));
+                if (! is_wp_error($popsi_cart_menus)) :
+                    foreach ($popsi_cart_menus as $popsi_cart_menu) :
+                        $popsi_cart_menu_slug = esc_attr($popsi_cart_menu->slug);
                 ?>
-                        <option value="<?php echo esc_attr($beecart_menu_slug); ?>" :selected="$store.admin.settings.menu_placement == '<?php echo esc_attr($beecart_menu_slug); ?>'"><?php echo esc_html($beecart_menu->name); ?></option>
+                        <option value="<?php echo esc_attr($popsi_cart_menu_slug); ?>" :selected="$store.admin.settings.menu_placement == '<?php echo esc_attr($popsi_cart_menu_slug); ?>'"><?php echo esc_html($popsi_cart_menu->name); ?></option>
                 <?php 
                     endforeach;
                 endif;
@@ -57,7 +57,7 @@
             <h3 class="text-sm font-semibold text-blue-900 mt-0 mb-2">Shortcode & Snippets</h3>
             <p class="text-sm text-blue-800 mb-3">You can use these shortcodes to place the cart icon manually on any page, menu, or builder.</p>
             <div class="flex items-center gap-2">
-                <code class="px-2 py-1 bg-white text-blue-900 border border-blue-200 rounded text-xs select-all">[beecart_icon]</code>
+                <code class="px-2 py-1 bg-white text-blue-900 border border-blue-200 rounded text-xs select-all">[popsi_cart_icon]</code>
                 <span class="text-xs text-blue-700">Displays the floating cart toggle button.</span>
             </div>
         </div>

@@ -69,7 +69,7 @@
                                                 backgroundColor: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) <= (barIndex === 0 ? 65 : 35) ? ($store.admin.settings.rewards_bar_fg || '#93D3FF') : ($store.admin.settings.rewards_bar_bg || '#E2E2E2'),
                                                 color: (cp.threshold / Math.max(10, cp.threshold, ...(bar.checkpoints || []).map(g => g.threshold || 0)) * 100) <= (barIndex === 0 ? 65 : 35) ? ($store.admin.settings.rewards_complete_icon_color || '#4D4949') : ($store.admin.settings.rewards_incomplete_icon_color || '#4D4949')
                                             }">
-                                            <span x-html="beecartAdminData.icon_svgs[cp.icon || 'truck'] || ''"></span>
+                                            <span x-html="popsiCartAdminData.icon_svgs[cp.icon || 'truck'] || ''"></span>
                                             <template x-if="bar.show_labels !== false">
                                                 <div class="bc-checkpoint-label" :style="{ color: $store.admin.settings.text_color || '#000000' }" x-text="cp.label"></div>
                                             </template>
@@ -86,7 +86,7 @@
                     <div class="bc-item">
                         <template x-if="$store.admin.settings.show_item_images !== false">
                             <div class="bc-item-img-wrap">
-                                <img src="<?php echo esc_url(BEECART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Preview Image" />
+                                <img src="<?php echo esc_url(POPSI_CART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Preview Image" />
                             </div>
                         </template>
                         <div class="bc-item-details">
@@ -119,9 +119,9 @@
                                 </div>
                                 <div class="bc-item-discount-badge">
                                     <?php 
-                                    $beecart_icon_name = 'tag';
-                                    $beecart_icon_class = 'bc-badge-icon';
-                                    include BEECART_PATH . 'templates/icons.php'; 
+                                    $popsi_cart_icon_name = 'tag';
+                                    $popsi_cart_icon_class = 'bc-badge-icon';
+                                    include POPSI_CART_PATH . 'templates/icons.php'; 
                                     ?>
                                     <span class="bc-badge-text">AUTO 5</span>
                                 </div>
@@ -132,7 +132,7 @@
                     <div class="bc-item">
                         <template x-if="$store.admin.settings.show_item_images !== false">
                             <div class="bc-item-img-wrap">
-                                <img src="<?php echo esc_url(BEECART_URL . 'assets/img/demo-product-2.jpeg'); ?>" alt="Preview Image 2" />
+                                <img src="<?php echo esc_url(POPSI_CART_URL . 'assets/img/demo-product-2.jpeg'); ?>" alt="Preview Image 2" />
                             </div>
                         </template>
                         <div class="bc-item-details">
@@ -169,7 +169,7 @@
                     <div class="bc-upsells-list">
                         <div class="bc-upsell-item">
                             <div class="bc-upsell-img-wrap">
-                                <img src="<?php echo esc_url(BEECART_URL . 'assets/img/demo-product-2.jpeg'); ?>" alt="Bag">
+                                <img src="<?php echo esc_url(POPSI_CART_URL . 'assets/img/demo-product-2.jpeg'); ?>" alt="Bag">
                             </div>
                             <div class="bc-upsell-details">
                                 <h5 class="bc-upsell-title" :style="{ color: $store.admin.settings.text_color || '#000000' }">Placeholder product</h5>
@@ -183,9 +183,9 @@
                                         </select>
                                         <span class="bc-upsell-select-icon">
                                             <?php 
-                                            $beecart_icon_name = 'chevron-down';
-                                            $beecart_icon_class = '';
-                                            include BEECART_PATH . 'templates/icons.php'; 
+                                            $popsi_cart_icon_name = 'chevron-down';
+                                            $popsi_cart_icon_class = '';
+                                            include POPSI_CART_PATH . 'templates/icons.php'; 
                                             ?>
                                         </span>
                                     </div>
@@ -205,7 +205,7 @@
 
                         <div class="bc-upsell-item">
                             <div class="bc-upsell-img-wrap">
-                                <img src="<?php echo esc_url(BEECART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Product 2">
+                                <img src="<?php echo esc_url(POPSI_CART_URL . 'assets/img/demo-product-1.webp'); ?>" alt="Product 2">
                             </div>
                             <div class="bc-upsell-details">
                                 <h5 class="bc-upsell-title" :style="{ color: $store.admin.settings.text_color || '#000000' }">Sample accessory</h5>
@@ -230,7 +230,7 @@
 
                         <div class="bc-upsell-item">
                             <div class="bc-upsell-img-wrap">
-                                <img src="<?php echo esc_url(BEECART_URL . 'assets/img/demo-product-2.jpeg'); ?>" alt="Product 3">
+                                <img src="<?php echo esc_url(POPSI_CART_URL . 'assets/img/demo-product-2.jpeg'); ?>" alt="Product 3">
                             </div>
                             <div class="bc-upsell-details">
                                 <h5 class="bc-upsell-title" :style="{ color: $store.admin.settings.text_color || '#000000' }">Bonus bundle</h5>

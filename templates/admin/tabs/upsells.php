@@ -51,14 +51,14 @@
                 <select id="upsell_category" x-model="$store.admin.settings.upsell_category" class="flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                     <option value="" :selected="$store.admin.settings.upsell_category == ''">— Select a category —</option>
                     <?php
-                    $beecart_upsell_product_cats = get_terms(array(
+                    $popsi_cart_upsell_product_cats = get_terms(array(
                         'taxonomy'   => 'product_cat',
                         'hide_empty' => false,
                     ));
-                    if (!is_wp_error($beecart_upsell_product_cats) && !empty($beecart_upsell_product_cats)):
-                        foreach ($beecart_upsell_product_cats as $beecart_upsell_cat): 
-                           $beecart_upsell_slug = esc_attr($beecart_upsell_cat->slug); ?>
-                            <option value="<?php echo esc_attr($beecart_upsell_slug); ?>" :selected="$store.admin.settings.upsell_category == '<?php echo esc_attr($beecart_upsell_slug); ?>'"><?php echo esc_html($beecart_upsell_cat->name); ?> (<?php echo esc_html($beecart_upsell_cat->count); ?>)</option>
+                    if (!is_wp_error($popsi_cart_upsell_product_cats) && !empty($popsi_cart_upsell_product_cats)):
+                        foreach ($popsi_cart_upsell_product_cats as $popsi_cart_upsell_cat): 
+                           $popsi_cart_upsell_slug = esc_attr($popsi_cart_upsell_cat->slug); ?>
+                            <option value="<?php echo esc_attr($popsi_cart_upsell_slug); ?>" :selected="$store.admin.settings.upsell_category == '<?php echo esc_attr($popsi_cart_upsell_slug); ?>'"><?php echo esc_html($popsi_cart_upsell_cat->name); ?> (<?php echo esc_html($popsi_cart_upsell_cat->count); ?>)</option>
                     <?php endforeach;
                     endif; ?>
                 </select>

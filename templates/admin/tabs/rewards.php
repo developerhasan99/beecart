@@ -123,7 +123,7 @@
                                                     <div class="space-y-1">
                                                         <label class="text-[10px] font-bold uppercase text-gray-400">Icon</label>
                                                         <select x-model="cp.icon" class="flex h-8 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-xs focus:ring-1 focus:ring-ring">
-                                                            <template x-for="(label, val) in beecartAdminData.icons" :key="val">
+                                                            <template x-for="(label, val) in popsiCartAdminData.icons" :key="val">
                                                                 <option :value="val" x-text="label" :selected="cp.icon == val"></option>
                                                             </template>
                                                         </select>
