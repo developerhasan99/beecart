@@ -11,6 +11,7 @@ class Popsi_Cart_Admin
         add_action('admin_menu', array($this, 'register_menus'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('admin_notices', array($this, 'maybe_display_disabled_notice'));
+        add_filter('plugin_action_links_' . plugin_basename(POPSI_CART_FILE), array($this, 'add_plugin_action_links'));
     }
 
     public function register_menus()
@@ -127,5 +128,12 @@ class Popsi_Cart_Admin
             </div>
             <?php
         }
+    }
+
+    public function add_plugin_action_links($links)
+    {
+        $settings_link = '<a href="' . admin_url('admin.php?page=popsi-cart') . '">' . __('Settings', 'popsi-cart-drawer') . '</a>';
+        array_unshift($links, $settings_link);
+        return $links;
     }
 }
