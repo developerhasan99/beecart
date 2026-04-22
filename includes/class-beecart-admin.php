@@ -10,7 +10,6 @@ class BeeCart_Admin
     {
         add_action('admin_menu', array($this, 'register_menus'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
-        add_action('admin_head', array($this, 'output_global_admin_css'));
         add_action('admin_notices', array($this, 'maybe_display_disabled_notice'));
     }
 
@@ -69,7 +68,6 @@ class BeeCart_Admin
             );
         }
 
-
         wp_localize_script('beecart-admin-script', 'beecartAdminData', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('beecart-admin-nonce'),
@@ -87,17 +85,9 @@ class BeeCart_Admin
                 'gift'  => BeeCart::get_svg_icon('gift', 'bc-checkpoint-icon'),
             ),
         ));
-    }
 
-    public function render_cart_builder()
-    {
-        include BEECART_PATH . 'templates/admin/cart-builder.php';
-    }
-
-    public function output_global_admin_css()
-    {
-?>
-        <style id="beecart-global-admin-css">
+        // Add global admin CSS as inline style
+        $admin_css = '
             #adminmenu .toplevel_page_beecart .wp-menu-image img {
                 padding: 0;
                 opacity: 0.9;
@@ -106,8 +96,13 @@ class BeeCart_Admin
             #adminmenu .toplevel_page_beecart.current .wp-menu-image img {
                 opacity: 1;
             }
-        </style>
-<?php
+        ';
+        wp_add_inline_style('beecart-admin-style', $admin_css);
+    }
+
+    public function render_cart_builder()
+    {
+        include BEECART_PATH . 'templates/admin/cart-builder.php';
     }
 
     public function maybe_display_disabled_notice()
@@ -123,14 +118,14 @@ class BeeCart_Admin
 
         if (! ($settings['enable_cart_drawer'] ?? false)) {
             $settings_url = admin_url('admin.php?page=beecart');
-?>
+            ?>
             <div class="notice notice-warning is-dismissible">
                 <p>
                     <strong>BeeCart:</strong> The cart drawer is currently disabled.
                     <a href="<?php echo esc_url($settings_url); ?>">Enable it now</a> to show the drawer on your storefront.
                 </p>
             </div>
-<?php
+            <?php
         }
     }
 }

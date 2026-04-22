@@ -15,7 +15,6 @@ class BeeCart
 
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
         add_action('wp_footer', array($this, 'output_cart_drawer'));
-        add_action('wp_head', array($this, 'output_custom_css'), 999);
 
         // Core AJAX - Action names MUST match beecart.js
         add_action('wp_ajax_beecart_add_to_cart', array($this, 'ajax_add_to_cart'));
@@ -101,6 +100,16 @@ class BeeCart
             'nonce'    => wp_create_nonce('beecart-nonce'),
             'settings' => $this->get_settings()
         ));
+
+        // Add custom CSS as inline style
+        $settings = $this->get_settings();
+        $custom_css = isset($settings['custom_css']) ? $settings['custom_css'] : '';
+        if (! empty($custom_css)) {
+            // Strip any attempt to break out of the <style> block (XSS prevention)
+            $safe_css = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', $custom_css);
+            $safe_css = wp_strip_all_tags($safe_css);
+            wp_add_inline_style('beecart-style', $safe_css);
+        }
     }
 
     public static function get_default_settings()
@@ -200,18 +209,6 @@ class BeeCart
         self::$_settings_cache = wp_parse_args($saved, $defaults);
 
         return self::$_settings_cache;
-    }
-
-    public function output_custom_css()
-    {
-        $settings   = $this->get_settings();
-        $custom_css = isset($settings['custom_css']) ? $settings['custom_css'] : '';
-        if (! empty($custom_css)) {
-            // Strip any attempt to break out of the <style> block (XSS prevention)
-            $safe_css = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', $custom_css);
-            $safe_css = wp_strip_all_tags($safe_css);
-            echo '<style id="beecart-custom-css">' . $safe_css . '</style>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        }
     }
 
     public function output_cart_drawer()
