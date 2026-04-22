@@ -22,7 +22,7 @@ class Popsi_Cart_Admin
             'manage_options',
             'popsi-cart',
             array($this, 'render_cart_builder'),
-            POPSI_CART_URL . 'assets/img/popsi-cart-icon.svg',
+            'dashicons-cart',
             58
         );
 

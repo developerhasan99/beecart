@@ -41,7 +41,7 @@ $popsi_cart_sidebar_sections = array(
                     <path d="M3.103 6.034h17.794"></path>
                     <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"></path>
                 </svg>
-            </div><span class="text-2xl font-bold tracking-tight text-gray-900">Popsi<span class="text-amber-500">Cart</span></span>
+            </div><span class="text-2xl font-bold tracking-tight text-gray-900">Popsi Cart Drawer</span>
         </div>
         <div class="flex gap-3">
             <button type="button" 
