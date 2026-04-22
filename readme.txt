@@ -1,4 +1,4 @@
-=== Popsi Cart Drawer for WooCommerce – AOV Booster, Cart Drawer & Upsell Suite ===
+=== Popsi Cart Drawer for WooCommerce ===
 Contributors: developerhasan99
 Tags: woocommerce, cart, side cart, upsell, cart drawer
 Requires Plugins: woocommerce
