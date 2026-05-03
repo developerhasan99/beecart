@@ -66,7 +66,6 @@ document.addEventListener("alpine:init", () => {
       upsell_btn_text: "Add to Cart",
       show_trust_badges: true,
       trust_badge_image: "",
-      custom_css: "",
       trans_checkout_btn: "Checkout",
       trans_continue_shopping: "Continue Shopping",
       trans_empty_cart: "Your cart is currently empty.",

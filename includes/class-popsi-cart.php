@@ -101,15 +101,6 @@ class Popsi_Cart_Drawer
             'settings' => $this->get_settings()
         ));
 
-        // Add custom CSS as inline style
-        $settings = $this->get_settings();
-        $custom_css = isset($settings['custom_css']) ? $settings['custom_css'] : '';
-        if (! empty($custom_css)) {
-            // Strip any attempt to break out of the <style> block (XSS prevention)
-            $safe_css = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', $custom_css);
-            $safe_css = wp_strip_all_tags($safe_css);
-            wp_add_inline_style('popsi-cart-style', $safe_css);
-        }
     }
 
     public static function get_default_settings()
@@ -178,7 +169,6 @@ class Popsi_Cart_Drawer
             'upsell_btn_text'             => 'Add to Cart',
             'show_trust_badges'           => true,
             'trust_badge_image'           => POPSI_CART_URL . 'assets/img/payment-badge.svg',
-            'custom_css'                  => '',
             'trans_checkout_btn'          => 'Checkout',
             'trans_continue_shopping'     => 'Continue Shopping',
             'trans_empty_cart'            => 'Your cart is currently empty.',
@@ -423,9 +413,6 @@ class Popsi_Cart_Drawer
                 $clean[$key] = esc_url_raw((string) $raw[$key]);
             } elseif ($key === 'progress_bars') {
                 $clean[$key] = $this->sanitize_progress_bars($raw[$key]);
-            } elseif ($key === 'custom_css') {
-                $safe = preg_replace('/<\s*\/?\s*style[^>]*>/i', '', (string) $raw[$key]);
-                $clean[$key] = wp_strip_all_tags($safe);
             } elseif ($key === 'rewards_bars_layout') {
                 $layout = (string)$raw[$key];
                 $clean[$key] = in_array($layout, ['row', 'column'], true) ? $layout : 'column';
