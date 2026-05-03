@@ -23,7 +23,7 @@ $popsi_cart_drawer_announcement_font_size = $popsi_cart_drawer_settings['announc
 $popsi_cart_drawer_enable_timer = $popsi_cart_drawer_settings['enable_timer'] ?? false;
 ?>
 <div class="bc-drawer-wrap"
-    style="font-family: <?php echo $popsi_cart_drawer_inherit_fonts ? 'inherit' : 'sans-serif'; ?>;">
+    style="font-family: <?php echo esc_attr($popsi_cart_drawer_inherit_fonts ? 'inherit' : 'sans-serif'); ?>;">
 
     <!-- Overlay -->
     <div class="bc-overlay"></div>

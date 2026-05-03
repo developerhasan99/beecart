@@ -88,10 +88,10 @@ $popsi_cart_show_trust_badges      = $popsi_cart_settings['show_trust_badges'] ?
                                 $popsi_cart_pos = ($popsi_cart_goal_val / $popsi_cart_max_threshold) * 100;
                                 $popsi_cart_icon_key = $popsi_cart_goal['icon'] ?? 'truck';
                             ?>
-                                <div class="bc-checkpoint <?php echo $popsi_cart_reached ? 'is-reached' : ''; ?>"
+                                <div class="bc-checkpoint <?php echo esc_attr($popsi_cart_reached ? 'is-reached' : ''); ?>"
                                     style="left: <?php echo esc_attr($popsi_cart_pos); ?>%; 
-                                       background-color: <?php echo $popsi_cart_reached ? esc_attr($popsi_cart_settings['rewards_bar_fg'] ?? '#93D3FF') : esc_attr($popsi_cart_settings['rewards_bar_bg'] ?? '#E2E2E2'); ?>;
-                                       color: <?php echo $popsi_cart_reached ? esc_attr($popsi_cart_settings['rewards_complete_icon_color'] ?? '#4D4949') : esc_attr($popsi_cart_settings['rewards_incomplete_icon_color'] ?? '#4D4949'); ?>;">
+                                       background-color: <?php echo esc_attr($popsi_cart_reached ? ($popsi_cart_settings['rewards_bar_fg'] ?? '#93D3FF') : ($popsi_cart_settings['rewards_bar_bg'] ?? '#E2E2E2')); ?>;
+                                       color: <?php echo esc_attr($popsi_cart_reached ? ($popsi_cart_settings['rewards_complete_icon_color'] ?? '#4D4949') : ($popsi_cart_settings['rewards_incomplete_icon_color'] ?? '#4D4949')); ?>;">
                                     <?php 
                                     $popsi_cart_icon_name = $popsi_cart_icon_key;
                                     $popsi_cart_icon_class = 'bc-checkpoint-icon';
@@ -279,7 +279,7 @@ $popsi_cart_show_trust_badges      = $popsi_cart_settings['show_trust_badges'] ?
                             $popsi_cart_prices_json = wp_json_encode($popsi_cart_p_map);
                         }
                     ?>
-                        <div class="bc-upsell-item" data-id="<?php echo esc_attr(get_the_ID()); ?>" <?php if ($popsi_cart_prices_json) echo 'data-prices="' . esc_attr($popsi_cart_prices_json) . '"'; ?>>
+                        <div class="bc-upsell-item" data-id="<?php echo esc_attr(get_the_ID()); ?>" <?php if ($popsi_cart_prices_json) echo ' data-prices="' . esc_attr($popsi_cart_prices_json) . '"'; ?>>
                             <div class="bc-upsell-img-wrap">
                                 <a href="<?php echo esc_url(get_permalink()); ?>" class="bc-upsell-link">
                                     <?php if ($popsi_cart_upsell_img): ?>
