@@ -6,7 +6,6 @@ if (! defined('ABSPATH')) {
 $popsi_cart_cart = WC()->cart;
 if (!$popsi_cart_cart) return;
 
-// Ensure totals are calculated so discounts and subtotals are accurate
 $popsi_cart_cart->calculate_totals();
 
 $popsi_cart_settings = $this->get_settings();
@@ -46,7 +45,6 @@ $popsi_cart_show_trust_badges      = $popsi_cart_settings['show_trust_badges'] ?
                 $popsi_cart_current_val = ($popsi_cart_type === 'quantity') ? $popsi_cart_cart->get_cart_contents_count() : (float)$popsi_cart_cart->get_subtotal();
                 $popsi_cart_goals = !empty($popsi_cart_bar['checkpoints']) ? $popsi_cart_bar['checkpoints'] : array();
 
-                // Sort goals by threshold
                 usort($popsi_cart_goals, function ($a, $b) {
                     return (float)$a['threshold'] - (float)$b['threshold'];
                 });

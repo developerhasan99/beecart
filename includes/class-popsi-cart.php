@@ -5,7 +5,6 @@ if (! defined('ABSPATH')) {
 
 class Popsi_Cart_Drawer
 {
-    /** @var array|null In-request cache for settings. Cleared after save. */
     private static $_settings_cache = null;
 
     public function init()
@@ -16,17 +15,14 @@ class Popsi_Cart_Drawer
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
         add_action('wp_footer', array($this, 'output_cart_drawer'));
 
-        // Core AJAX - Action names MUST match popsi-cart.js
         add_action('wp_ajax_popsi_cart_add_to_cart', array($this, 'ajax_add_to_cart'));
         add_action('wp_ajax_nopriv_popsi_cart_add_to_cart', array($this, 'ajax_add_to_cart'));
         add_action('wp_ajax_popsi_cart_get_cart', array($this, 'ajax_get_cart'));
         add_action('wp_ajax_nopriv_popsi_cart_get_cart', array($this, 'ajax_get_cart'));
 
-        // This handles both quantity updates AND removal (qty=0)
         add_action('wp_ajax_popsi_cart_update_item', array($this, 'ajax_update_item'));
         add_action('wp_ajax_nopriv_popsi_cart_update_item', array($this, 'ajax_update_item'));
 
-        // Feature AJAX
         add_action('wp_ajax_popsi_cart_apply_coupon', array($this, 'ajax_apply_coupon'));
         add_action('wp_ajax_nopriv_popsi_cart_apply_coupon', array($this, 'ajax_apply_coupon'));
         add_action('wp_ajax_popsi_cart_remove_coupon', array($this, 'ajax_remove_coupon'));
@@ -54,7 +50,6 @@ class Popsi_Cart_Drawer
             return $items;
         }
 
-        // Try to match the menu slug
         $menu_slug = '';
         if (isset($args->menu) && is_object($args->menu)) {
             $menu_slug = $args->menu->slug;
@@ -65,7 +60,6 @@ class Popsi_Cart_Drawer
             }
         }
 
-        // Also check if the 'placement' matches the 'theme_location'
         if ($menu_slug === $placement || (isset($args->theme_location) && $args->theme_location === $placement)) {
             $items .= '<li class="menu-item popsi-cart-menu-item">' . $this->cart_icon_shortcode() . '</li>';
         }
@@ -84,13 +78,8 @@ class Popsi_Cart_Drawer
         if (function_exists('is_cart') && is_cart()) return;
         if (function_exists('is_checkout') && is_checkout()) return;
 
-        // We don't load popsi-cart-admin.css anymore since it's tailwind
-        // wp_enqueue_style('popsi-cart-admin-style', POPSI_CART_URL . 'assets/css/popsi-cart-admin.css', array(), POPSI_CART_VERSION);
-
-        // Native / Frontend CSS
         wp_enqueue_style('popsi-cart-style', POPSI_CART_URL . 'assets/css/popsi-cart.css', array(), POPSI_CART_VERSION);
 
-        // Priority loading: Enqueue in header with defer strategy for best performance
         wp_enqueue_script('popsi-cart-script', POPSI_CART_URL . 'assets/js/popsi-cart.js', array('jquery'), POPSI_CART_VERSION, array(
             'strategy' => 'defer',
         ));
@@ -187,7 +176,6 @@ class Popsi_Cart_Drawer
 
     public function get_settings()
     {
-        // Static class-level cache: only one DB call per PHP request
         if (self::$_settings_cache !== null) {
             return self::$_settings_cache;
         }
@@ -195,7 +183,6 @@ class Popsi_Cart_Drawer
         $saved    = get_option('popsi_cart_settings', array());
         $defaults = self::get_default_settings();
 
-        // wp_parse_args ensures new default keys appear for existing users automatically
         self::$_settings_cache = wp_parse_args($saved, $defaults);
 
         return self::$_settings_cache;
@@ -239,7 +226,6 @@ class Popsi_Cart_Drawer
         $cart_item_key = sanitize_text_field(wp_unslash($_POST['cart_item_key']));
         $quantity      = isset($_POST['quantity']) ? absint(wp_unslash($_POST['quantity'])) : 0;
 
-        // Ensure cart is loaded
         if (!WC()->cart) {
             wp_send_json_error();
         }
@@ -300,7 +286,6 @@ class Popsi_Cart_Drawer
 
         if ($passed_validation && WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation)) {
             if (isset($_POST['add-to-cart'])) {
-                // If it came from a standard form, we might need to trigger this to help other plugins
                 do_action('woocommerce_ajax_added_to_cart', $product_id); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
             }
             $this->ajax_get_cart();
@@ -309,21 +294,14 @@ class Popsi_Cart_Drawer
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Settings: Save, Sanitize
-    // -------------------------------------------------------------------------
-
     public function ajax_save_settings()
     {
-        // 1. Verify admin nonce
         check_ajax_referer('popsi-cart-admin-nonce', 'security');
 
-        // 2. Verify capability
         if (! current_user_can('manage_options')) {
             wp_send_json_error(__('Unauthorized.', 'popsi-cart-drawer'), 403);
         }
 
-        // 3. Decode JSON payload from JS
         $raw = isset($_POST['settings']) ? wp_unslash($_POST['settings']) : '{}'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $data = json_decode($raw, true);
 
@@ -331,13 +309,10 @@ class Popsi_Cart_Drawer
             wp_send_json_error(__('Invalid settings data.', 'popsi-cart-drawer'));
         }
 
-        // 4. Sanitize every field
         $clean = $this->sanitize_settings($data);
 
-        // 5. Persist — autoload=false: only loaded when Popsi Cart needs them
         update_option('popsi_cart_settings', $clean, false);
 
-        // 6. Clear static cache so next get_settings() call reads fresh data
         self::$_settings_cache = null;
 
         wp_send_json_success(__('Settings saved.', 'popsi-cart-drawer'));

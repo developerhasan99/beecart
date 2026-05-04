@@ -17,8 +17,6 @@
             </div>
         </div>
 
-        <!-- TODO: The time on the cart, should have local storage based reservation system. So it will not reset on page refresh. -->
-
         <!-- Content Section -->
         <div class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

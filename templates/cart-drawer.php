@@ -50,7 +50,6 @@ $popsi_cart_drawer_enable_timer = $popsi_cart_drawer_settings['enable_timer'] ??
             if ($popsi_cart_drawer_announcement_bar_size === 'small') $popsi_cart_drawer_size_class = 'size-small';
             if ($popsi_cart_drawer_announcement_bar_size === 'large') $popsi_cart_drawer_size_class = 'size-large';
             
-            // Format initial string with timer strong element
             $popsi_cart_drawer_formatted_announcement = str_replace('{timer}', '<strong class=\'bc-timer-bold\'>' . sprintf('%02d:00', (int)$popsi_cart_drawer_countdown_minutes) . '</strong>', $popsi_cart_drawer_announcement);
         ?>
         <div class="bc-drawer-top-notices">

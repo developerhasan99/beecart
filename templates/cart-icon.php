@@ -5,7 +5,6 @@ if (! defined('ABSPATH')) {
 
 $popsi_cart_icon_settings = isset($this) ? $this->get_settings() : (new Popsi_Cart_Drawer())->get_settings();
 $popsi_cart_icon_cart_url = wc_get_cart_url();
-// Initial count will be fetched via AJAX in JS to bypass caching
 $popsi_cart_icon_enable_drawer = isset($popsi_cart_icon_settings['enable_cart_drawer']) ? (bool)$popsi_cart_icon_settings['enable_cart_drawer'] : false;
 
 $popsi_cart_icon_type = $popsi_cart_icon_settings['cart_icon_type'] ?? 'bag-1';
