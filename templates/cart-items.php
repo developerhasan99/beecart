@@ -1,4 +1,10 @@
 <?php
+/**
+ * Cart items template for Popsi Cart Drawer.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -45,7 +51,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 			<?php
 			foreach ( $popsi_cart_progress_bars as $popsi_cart_bar ) :
 				$popsi_cart_type        = $popsi_cart_bar['type'] ?? 'subtotal';
-				$popsi_cart_current_val = ( $popsi_cart_type === 'quantity' ) ? $popsi_cart_cart->get_cart_contents_count() : (float) $popsi_cart_cart->get_subtotal();
+				$popsi_cart_current_val = ( 'quantity' === $popsi_cart_type ) ? $popsi_cart_cart->get_cart_contents_count() : (float) $popsi_cart_cart->get_subtotal();
 				$popsi_cart_goals       = ! empty( $popsi_cart_bar['checkpoints'] ) ? $popsi_cart_bar['checkpoints'] : array();
 
 				usort(
@@ -73,17 +79,17 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 				<div class="bc-progress-wrap">
 					<div class="bc-progress-text" style="color: <?php echo esc_attr( $popsi_cart_text_color ); ?>;">
 						<?php
-						if ( $popsi_cart_next_goal ) :
+						if ( 'subtotal' === $popsi_cart_type ) {
 							$popsi_cart_diff        = (float) $popsi_cart_next_goal['threshold'] - $popsi_cart_current_val;
-							$popsi_cart_amount_text = ( $popsi_cart_type === 'subtotal' ) ? wc_price( $popsi_cart_diff ) : (int) $popsi_cart_diff;
+							$popsi_cart_amount_text = ( 'subtotal' === $popsi_cart_type ) ? wc_price( $popsi_cart_diff ) : (int) $popsi_cart_diff;
 							$popsi_cart_msg         = $popsi_cart_bar['away_text'] ?? "You're only {amount} away from {goal}";
 							$popsi_cart_msg         = str_replace( '{amount}', '<strong>' . $popsi_cart_amount_text . '</strong>', $popsi_cart_msg );
 							$popsi_cart_msg         = str_replace( '{goal}', '<strong>' . esc_html( $popsi_cart_next_goal['label'] ) . '</strong>', $popsi_cart_msg );
 							echo wp_kses_post( $popsi_cart_msg );
-						else :
+						} else {
 							?>
 							<?php echo esc_html( $popsi_cart_bar['completed_text'] ?? '🎉 Congratulations! You have unlocked all rewards.' ); ?>
-						<?php endif; ?>
+						<?php } ?>
 					</div>
 
 					<div class="bc-progress-bar" style="background-color: <?php echo esc_attr( $popsi_cart_settings['rewards_bar_bg'] ?? '#E2E2E2' ); ?>; margin-bottom: <?php echo ( $popsi_cart_bar['show_labels'] ?? true ) ? '24px' : '0'; ?>;">
@@ -91,7 +97,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 
 						<div class="bc-checkpoints">
 							<?php
-							foreach ( $popsi_cart_goals as $popsi_cart_goal ) :
+							foreach ( $popsi_cart_goals as $popsi_cart_goal ) {
 								$popsi_cart_goal_val = (float) $popsi_cart_goal['threshold'];
 								$popsi_cart_reached  = $popsi_cart_current_val >= $popsi_cart_goal_val;
 								$popsi_cart_pos      = ( $popsi_cart_goal_val / $popsi_cart_max_threshold ) * 100;
@@ -112,7 +118,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 										</div>
 									<?php endif; ?>
 								</div>
-							<?php endforeach; ?>
+							<?php } ?>
 						</div>
 					</div>
 				</div>
@@ -140,7 +146,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 					$popsi_cart_product_url   = $popsi_cart_product_obj->get_permalink();
 					?>
 					<div class="bc-item">
-						<?php if ( $popsi_cart_show_item_images !== false ) : ?>
+						<?php if ( false !== $popsi_cart_show_item_images ) : ?>
 							<a href="<?php echo esc_url( $popsi_cart_product_url ); ?>" class="bc-item-img-wrap">
 								<?php if ( $popsi_cart_thumbnail_url ) : ?>
 									<img src="<?php echo esc_url( $popsi_cart_thumbnail_url ); ?>" alt="<?php echo esc_attr( $popsi_cart_product_name ); ?>" />
@@ -185,7 +191,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 							?>
 
 							<div class="bc-item-prices">
-								<?php if ( $popsi_cart_has_sale && $popsi_cart_show_strikethrough !== false ) : ?>
+								<?php if ( $popsi_cart_has_sale && false !== $popsi_cart_show_strikethrough ) : ?>
 									<span class="bc-item-old-price"><?php echo wp_kses_post( wc_price( $popsi_cart_regular_price ) ); ?></span>
 								<?php endif; ?>
 								<span class="bc-item-price" style="color: <?php echo esc_attr( $popsi_cart_text_color ); ?>;"><?php echo wp_kses_post( $popsi_cart_product_price ); ?></span>
@@ -244,7 +250,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 			</svg>
 			<p class="bc-empty-cart-text" style="color: <?php echo esc_attr( $popsi_cart_text_color ); ?>;"><?php echo esc_html( $popsi_cart_settings['trans_empty_cart'] ?? 'Your cart is empty.' ); ?></p>
 			<button class="bc-empty-cart-btn"
-				style="background-color: <?php echo esc_attr( $popsi_cart_btn_color ); ?>; color: <?php echo esc_attr( $popsi_cart_btn_text_color ); ?>; border-radius: <?php echo esc_attr( $popsi_cart_btn_radius ); ?>;">
+				style="background-color: <?php echo esc_attr( $popsi_cart_btn_color ); ?>; color: <?php echo esc_attr( $popsi_cart_btn_text_color ); ?>; border-radius: <?php echo esc_attr( $popsi_cart_btn_radius ); ?>">
 				<?php echo esc_html( $popsi_cart_settings['trans_continue_shopping'] ?? 'Return to shop' ); ?>
 			</button>
 		</div>
@@ -382,7 +388,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 					<span><?php echo esc_html( $popsi_cart_settings['trans_coupon_accordion_title'] ?? 'Have a Coupon?' ); ?></span>
 					<span class="bc-coupon-toggle-icon">
 						<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
-							<path d="m6 9 6 6 6-6"></path>
+							<path d="M6 9 6 21 18 21 18 9"></path>
 						</svg>
 					</span>
 				</button>
@@ -409,7 +415,8 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 			<div class="bc-summary-row" style="color: <?php echo esc_attr( $popsi_cart_text_color ); ?>;">
 				<div class="label-wrap">
 					<span><?php echo esc_html( ( $popsi_cart_settings['trans_discounts'] ?? 'Discounts' ) . ':' ); ?></span>
-					<?php if ( $popsi_cart_applied_coupons_footer = $popsi_cart_cart->get_applied_coupons() ) : ?>
+					<?php $popsi_cart_applied_coupons_footer = $popsi_cart_cart->get_applied_coupons(); ?>
+					<?php if ( ! empty( $popsi_cart_applied_coupons_footer ) ) : ?>
 						<?php foreach ( $popsi_cart_applied_coupons_footer as $popsi_cart_coupon_code ) : ?>
 							<div class="bc-summary-discount-badge">
 								<span class="bc-summary-badge-text"><?php echo esc_html( strtoupper( $popsi_cart_coupon_code ) ); ?></span>

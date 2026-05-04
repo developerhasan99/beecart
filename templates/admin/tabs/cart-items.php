@@ -1,5 +1,14 @@
-<?php if ( ! defined( 'ABSPATH' ) ) {
-	exit;} ?>
+<?php
+/**
+ * Cart items tab template for Popsi Cart Drawer admin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div x-show="$store.admin.activeTab === 'cart_items'" class="tab-pane p-6" style="display: none;">
 	<h2 class="text-lg font-semibold mt-0 mb-2 flex items-center gap-2">
 		<span class="dashicons dashicons-cart"></span> Cart items

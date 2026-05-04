@@ -1,11 +1,27 @@
 <?php
+/**
+ * Admin class for Popsi Cart Drawer plugin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Admin class for Popsi Cart Drawer.
+ *
+ * @package Popsi_Cart_Drawer
+ */
 class Popsi_Cart_Admin {
 
 
+	/**
+	 * Initialize the admin class.
+	 *
+	 * @return void
+	 */
 	public function init() {
 		add_action( 'admin_menu', array( $this, 'register_menus' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
@@ -13,6 +29,11 @@ class Popsi_Cart_Admin {
 		add_filter( 'plugin_action_links_' . plugin_basename( POPSI_CART_FILE ), array( $this, 'add_plugin_action_links' ) );
 	}
 
+	/**
+	 * Register admin menus.
+	 *
+	 * @return void
+	 */
 	public function register_menus() {
 		add_menu_page(
 			'Popsi Cart',
@@ -34,25 +55,31 @@ class Popsi_Cart_Admin {
 		);
 	}
 
+	/**
+	 * Enqueue admin assets.
+	 *
+	 * @param string $hook The current admin page hook.
+	 * @return void
+	 */
 	public function enqueue_admin_assets( $hook ) {
 		if ( strpos( $hook, 'popsi-cart' ) === false ) {
 			return;
 		}
 
 		wp_enqueue_media();
-		// Load standard admin styles for the tab system
+		// Load standard admin styles for the tab system.
 		wp_enqueue_style( 'popsi-cart-admin-style', POPSI_CART_URL . 'assets/css/popsi-cart-admin.css', array(), POPSI_CART_VERSION );
 
-		// Ensure Vanilla drawer classes load natively inside the admin without Tailwind conflicts
+		// Ensure Vanilla drawer classes load natively inside the admin without Tailwind conflicts.
 		wp_enqueue_style( 'popsi-cart-drawer-style', POPSI_CART_URL . 'assets/css/cart-drawer.css', array(), POPSI_CART_VERSION );
 
 		wp_enqueue_script( 'popsi-cart-admin-script', POPSI_CART_URL . 'assets/js/popsi-cart-admin.js', array( 'jquery' ), POPSI_CART_VERSION, true );
 
-		// Use local Alpine.js files instead of CDN to comply with WordPress.org guidelines
+		// Use local Alpine.js files instead of CDN to comply with WordPress.org guidelines.
 		wp_enqueue_script( 'alpine-collapse', POPSI_CART_URL . 'assets/js/vendor/alpine-collapse.min.js', array( 'popsi-cart-admin-script' ), '3.15.11', true );
 		wp_enqueue_script( 'alpine-js', POPSI_CART_URL . 'assets/js/vendor/alpine.min.js', array( 'alpine-collapse' ), '3.15.11', true );
 
-		// For the preview, we'll also need the frontend styles/scripts
+		// For the preview, we'll also need the frontend styles/scripts.
 		wp_enqueue_style( 'popsi-cart-style', POPSI_CART_URL . 'assets/css/popsi-cart.css', array(), POPSI_CART_VERSION );
 
 		$plugin          = new Popsi_Cart_Drawer();
@@ -89,12 +116,22 @@ class Popsi_Cart_Admin {
 		);
 	}
 
+	/**
+	 * Render the cart builder page.
+	 *
+	 * @return void
+	 */
 	public function render_cart_builder() {
 		include POPSI_CART_PATH . 'templates/admin/cart-builder.php';
 	}
 
+	/**
+	 * Maybe display disabled notice.
+	 *
+	 * @return void
+	 */
 	public function maybe_display_disabled_notice() {
-		// Don't show on our own settings page as we already have a banner there
+		// Don't show on our own settings page as we already have a banner there.
 		$screen = get_current_screen();
 		if ( $screen && strpos( $screen->id, 'popsi-cart' ) !== false ) {
 			return;
@@ -116,6 +153,12 @@ class Popsi_Cart_Admin {
 		}
 	}
 
+	/**
+	 * Add plugin action links.
+	 *
+	 * @param array $links Existing plugin action links.
+	 * @return array Modified plugin action links.
+	 */
 	public function add_plugin_action_links( $links ) {
 		$settings_link = '<a href="' . admin_url( 'admin.php?page=popsi-cart' ) . '">' . __( 'Settings', 'popsi-cart-drawer' ) . '</a>';
 		array_unshift( $links, $settings_link );

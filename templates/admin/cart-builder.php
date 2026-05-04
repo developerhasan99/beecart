@@ -1,5 +1,13 @@
-<?php if ( ! defined( 'ABSPATH' ) ) {
-	exit;}
+<?php
+/**
+ * Cart builder template for Popsi Cart Drawer admin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 $popsi_cart_sidebar_sections = array(
 	array(
@@ -32,7 +40,7 @@ $popsi_cart_sidebar_sections = array(
 			),
 			array(
 				'title'  => 'Cart items',
-				'handle' => 'cart_items',
+				'handle' => 'cart-items',
 				'icon'   => 'dashicons-cart',
 			),
 			array(
@@ -45,7 +53,7 @@ $popsi_cart_sidebar_sections = array(
 	array(
 		'title' => 'Footer',
 		'tabs'  => array(
-			// array('title' => 'Add-ons', 'handle' => 'addons', 'icon' => 'dashicons-plus-alt'),
+			// TODO: Add-ons tab - placeholder for future implementation.
 			array(
 				'title'  => 'Coupon form',
 				'handle' => 'discount',
@@ -56,7 +64,7 @@ $popsi_cart_sidebar_sections = array(
 				'handle' => 'summary',
 				'icon'   => 'dashicons-clipboard',
 			),
-			// array('title' => 'Express payments', 'handle' => 'express_payments', 'icon' => 'dashicons-money-alt'),
+			// TODO: Express payments tab - placeholder for future implementation.
 			array(
 				'title'  => 'Trust badges',
 				'handle' => 'badges',
@@ -126,12 +134,12 @@ $popsi_cart_sidebar_sections = array(
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/design.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/announcements.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/rewards.php'; ?>
-			<?php require POPSI_CART_PATH . 'templates/admin/tabs/cart_items.php'; ?>
+			<?php require POPSI_CART_PATH . 'templates/admin/tabs/cart-items.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/upsells.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/addons.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/discount.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/summary.php'; ?>
-			<?php require POPSI_CART_PATH . 'templates/admin/tabs/express_payments.php'; ?>
+			<?php require POPSI_CART_PATH . 'templates/admin/tabs/express-payments.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/badges.php'; ?>
 			<?php require POPSI_CART_PATH . 'templates/admin/tabs/settings.php'; ?>
 		</div>

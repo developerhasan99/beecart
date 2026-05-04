@@ -1,4 +1,10 @@
 <?php
+/**
+ * Cart icon template for Popsi Cart Drawer.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

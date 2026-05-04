@@ -1,5 +1,14 @@
-<?php if ( ! defined( 'ABSPATH' ) ) {
-	exit;} ?>
+<?php
+/**
+ * Settings tab template for Popsi Cart Drawer admin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div x-show="$store.admin.activeTab === 'settings'" class="tab-pane p-6" style="display: none;">
 	<h2 class="text-lg font-semibold mt-0 mb-6 flex items-center gap-2"><span class="dashicons dashicons-admin-generic"></span> Settings</h2>
 

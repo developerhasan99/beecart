@@ -1,5 +1,14 @@
-<?php if ( ! defined( 'ABSPATH' ) ) {
-	exit;} ?>
+<?php
+/**
+ * Rewards tab template for Popsi Cart Drawer admin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div x-show="$store.admin.activeTab === 'rewards'" class="tab-pane p-6" style="display: none;">
 	<h2 class="text-lg font-semibold flex items-center gap-2 m-0"><span class="dashicons dashicons-awards"></span> Progress Rewards</h2>
 	<p class="text-sm text-gray-500 mt-1">Configure tiered rewards that customers unlock as they add items to their cart.</p>

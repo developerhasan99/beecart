@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: Popsi Cart Drawer for WooCommerce
  * Description: A premium side cart plugin for WooCommerce featuring Cart Drawer, Upsell, and Cart Progress.
@@ -12,6 +11,8 @@
  * Tested up to: 6.9
  * Requires PHP: 7.4
  * Text Domain: popsi-cart-drawer
+ *
+ * @package Popsi_Cart_Drawer
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

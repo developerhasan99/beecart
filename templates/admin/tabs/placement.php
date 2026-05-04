@@ -1,5 +1,14 @@
-<?php if ( ! defined( 'ABSPATH' ) ) {
-	exit;} ?>
+<?php
+/**
+ * Placement tab template for Popsi Cart Drawer admin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div x-show="$store.admin.activeTab === 'placement'" class="tab-pane p-6" style="display: none;">
 	<h2 class="text-lg font-semibold mt-0 mb-0 flex items-center gap-2"><span class="dashicons dashicons-layout"></span> Placement</h2>
 	<p class="text-sm text-gray-500 mb-6">Manage how and where the cart drawer appears on your site.</p>

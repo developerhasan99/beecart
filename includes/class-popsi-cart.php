@@ -1,12 +1,33 @@
 <?php
+/**
+ * Main class for Popsi Cart Drawer plugin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Main class for Popsi Cart Drawer.
+ *
+ * @package Popsi_Cart_Drawer
+ */
 class Popsi_Cart_Drawer {
 
-	private static ?array $_settings_cache = null;
+	/**
+	 * Settings cache.
+	 *
+	 * @var array|null
+	 */
+	private static ?array $settings_cache = null;
 
+	/**
+	 * Initialize the plugin.
+	 *
+	 * @return void
+	 */
 	public function init() {
 		add_shortcode( 'popsi_cart', array( $this, 'cart_icon_shortcode' ) );
 		add_shortcode( 'popsi_cart_icon', array( $this, 'cart_icon_shortcode' ) );
@@ -33,17 +54,29 @@ class Popsi_Cart_Drawer {
 		add_action( 'woocommerce_add_to_cart', array( $this, 'set_just_added_cookie' ), 10, 6 );
 	}
 
+	/**
+	 * Set just added cookie.
+	 *
+	 * @return void
+	 */
 	public function set_just_added_cookie() {
 		if ( ! wp_doing_ajax() && ! headers_sent() ) {
 			setcookie( 'popsi_cart_just_added', '1', time() + 30, '/' );
 		}
 	}
 
+	/**
+	 * Append cart icon to menu.
+	 *
+	 * @param string   $items Menu items HTML.
+	 * @param stdClass $args  Menu arguments.
+	 * @return string Modified menu items HTML.
+	 */
 	public function append_cart_icon_to_menu( string $items, stdClass $args ) {
 		$settings  = $this->get_settings();
 		$placement = $settings['menu_placement'] ?? 'none';
 
-		if ( $placement === 'none' ) {
+		if ( 'none' === $placement ) {
 			return $items;
 		}
 
@@ -65,10 +98,20 @@ class Popsi_Cart_Drawer {
 	}
 
 
+	/**
+	 * Output cart icon shortcode.
+	 *
+	 * @return void
+	 */
 	public function cart_icon_shortcode_output() {
 		include POPSI_CART_PATH . 'templates/cart-icon.php';
 	}
 
+	/**
+	 * Enqueue frontend assets.
+	 *
+	 * @return void
+	 */
 	public function enqueue_assets() {
 		if ( function_exists( 'is_cart' ) && is_cart() ) {
 			return;
@@ -100,6 +143,11 @@ class Popsi_Cart_Drawer {
 		);
 	}
 
+	/**
+	 * Get default settings.
+	 *
+	 * @return array Default settings array.
+	 */
 	public static function get_default_settings() {
 		return array(
 			'enable_cart_drawer'            => false,
@@ -189,19 +237,29 @@ class Popsi_Cart_Drawer {
 		);
 	}
 
+	/**
+	 * Get plugin settings.
+	 *
+	 * @return array Plugin settings array.
+	 */
 	public function get_settings() {
-		if ( self::$_settings_cache !== null ) {
-			return self::$_settings_cache;
+		if ( null !== self::$settings_cache ) {
+			return self::$settings_cache;
 		}
 
 		$saved    = get_option( 'popsi_cart_settings', array() );
 		$defaults = self::get_default_settings();
 
-		self::$_settings_cache = wp_parse_args( $saved, $defaults );
+		self::$settings_cache = wp_parse_args( $saved, $defaults );
 
-		return self::$_settings_cache;
+		return self::$settings_cache;
 	}
 
+	/**
+	 * Output cart drawer HTML.
+	 *
+	 * @return void
+	 */
 	public function output_cart_drawer() {
 		$settings = $this->get_settings();
 		if ( ! ( $settings['enable_cart_drawer'] ?? false ) ) {
@@ -218,6 +276,11 @@ class Popsi_Cart_Drawer {
 		include POPSI_CART_PATH . 'templates/cart-drawer.php';
 	}
 
+	/**
+	 * AJAX handler for getting cart.
+	 *
+	 * @return void
+	 */
 	public function ajax_get_cart() {
 		check_ajax_referer( 'popsi-cart-nonce', 'security' );
 		ob_start();
@@ -233,6 +296,11 @@ class Popsi_Cart_Drawer {
 		);
 	}
 
+	/**
+	 * AJAX handler for updating cart item.
+	 *
+	 * @return void
+	 */
 	public function ajax_update_item() {
 		check_ajax_referer( 'popsi-cart-nonce', 'security' );
 
@@ -247,7 +315,7 @@ class Popsi_Cart_Drawer {
 			wp_send_json_error();
 		}
 
-		if ( $quantity == 0 ) {
+		if ( 0 === $quantity ) {
 			WC()->cart->remove_cart_item( $cart_item_key );
 		} else {
 			WC()->cart->set_quantity( $cart_item_key, $quantity );
@@ -258,6 +326,11 @@ class Popsi_Cart_Drawer {
 		$this->ajax_get_cart();
 	}
 
+	/**
+	 * AJAX handler for applying coupon.
+	 *
+	 * @return void
+	 */
 	public function ajax_apply_coupon() {
 		check_ajax_referer( 'popsi-cart-nonce', 'security' );
 		$coupon_code = isset( $_POST['coupon'] ) ? sanitize_text_field( wp_unslash( $_POST['coupon'] ) ) : '';
@@ -270,6 +343,11 @@ class Popsi_Cart_Drawer {
 		$this->ajax_get_cart();
 	}
 
+	/**
+	 * AJAX handler for removing coupon.
+	 *
+	 * @return void
+	 */
 	public function ajax_remove_coupon() {
 		check_ajax_referer( 'popsi-cart-nonce', 'security' );
 		$coupon_code = isset( $_POST['coupon'] ) ? sanitize_text_field( wp_unslash( $_POST['coupon'] ) ) : '';
@@ -282,6 +360,11 @@ class Popsi_Cart_Drawer {
 		$this->ajax_get_cart();
 	}
 
+	/**
+	 * AJAX handler for adding to cart.
+	 *
+	 * @return void
+	 */
 	public function ajax_add_to_cart() {
 		check_ajax_referer( 'popsi-cart-nonce', 'security' );
 
@@ -308,6 +391,11 @@ class Popsi_Cart_Drawer {
 		}
 	}
 
+	/**
+	 * AJAX handler for saving settings.
+	 *
+	 * @return void
+	 */
 	public function ajax_save_settings() {
 		check_ajax_referer( 'popsi-cart-admin-nonce', 'security' );
 
@@ -326,11 +414,17 @@ class Popsi_Cart_Drawer {
 
 		update_option( 'popsi_cart_settings', $clean, false );
 
-		self::$_settings_cache = null;
+		self::$settings_cache = null;
 
 		wp_send_json_success( __( 'Settings saved.', 'popsi-cart-drawer' ) );
 	}
 
+	/**
+	 * Sanitize settings array.
+	 *
+	 * @param array $raw Raw settings data.
+	 * @return array Sanitized settings data.
+	 */
 	private function sanitize_settings( array $raw ): array {
 		$defaults = self::get_default_settings();
 		$allowed  = array_keys( $defaults );
@@ -384,7 +478,7 @@ class Popsi_Cart_Drawer {
 
 		foreach ( $allowed as $key ) {
 			if ( ! array_key_exists( $key, $raw ) ) {
-				continue; // leave missing keys to wp_parse_args defaults
+				continue; // Leave missing keys to wp_parse_args defaults.
 			}
 
 			if ( in_array( $key, $bool_keys, true ) ) {
@@ -398,9 +492,9 @@ class Popsi_Cart_Drawer {
 				$clean[ $key ] = absint( $raw[ $key ] );
 			} elseif ( in_array( $key, $url_keys, true ) ) {
 				$clean[ $key ] = esc_url_raw( (string) $raw[ $key ] );
-			} elseif ( $key === 'progress_bars' ) {
+			} elseif ( 'progress_bars' === $key ) {
 				$clean[ $key ] = $this->sanitize_progress_bars( $raw[ $key ] );
-			} elseif ( $key === 'rewards_bars_layout' ) {
+			} elseif ( 'rewards_bars_layout' === $key ) {
 				$layout        = (string) $raw[ $key ];
 				$clean[ $key ] = in_array( $layout, array( 'row', 'column' ), true ) ? $layout : 'column';
 			} else {
@@ -411,6 +505,12 @@ class Popsi_Cart_Drawer {
 		return $clean;
 	}
 
+	/**
+	 * Sanitize progress bars array.
+	 *
+	 * @param array $input Raw progress bars data.
+	 * @return array Sanitized progress bars data.
+	 */
 	private function sanitize_progress_bars( array $input ): array {
 		$sanitized = array();
 		if ( is_array( $input ) ) {
@@ -438,6 +538,15 @@ class Popsi_Cart_Drawer {
 		return $sanitized;
 	}
 
+	/**
+	 * Get cart upsell cache key.
+	 *
+	 * @param array  $cart_items Cart items.
+	 * @param string $upsell_source Upsell source.
+	 * @param int    $upsell_max Maximum upsell items.
+	 * @param string $upsell_category Upsell category.
+	 * @return string Cache key.
+	 */
 	private function get_cart_upsell_cache_key( array $cart_items, string $upsell_source, int $upsell_max, string $upsell_category ): string {
 		$cart_signature = array();
 
@@ -461,6 +570,13 @@ class Popsi_Cart_Drawer {
 		);
 	}
 
+	/**
+	 * Collect product relation IDs.
+	 *
+	 * @param array  $cart_items Cart items.
+	 * @param string $relation Relation type ('upsells' or 'cross_sells').
+	 * @return array Product relation IDs.
+	 */
 	private function collect_product_relation_ids( array $cart_items, string $relation ): array {
 		$collected_ids = array();
 
@@ -472,9 +588,9 @@ class Popsi_Cart_Drawer {
 			$product      = $cart_item['data'];
 			$relation_ids = array();
 
-			if ( $relation === 'upsells' ) {
+			if ( 'upsells' === $relation ) {
 				$relation_ids = $product->get_upsell_ids();
-			} elseif ( $relation === 'cross_sells' ) {
+			} elseif ( 'cross_sells' === $relation ) {
 				$relation_ids = $product->get_cross_sell_ids();
 			}
 
@@ -489,6 +605,13 @@ class Popsi_Cart_Drawer {
 		return array_values( $collected_ids );
 	}
 
+	/**
+	 * Collect related product IDs.
+	 *
+	 * @param array $cart_items Cart items.
+	 * @param int   $limit Maximum number of related products.
+	 * @return array Related product IDs.
+	 */
 	private function collect_related_product_ids( array $cart_items, int $limit ): array {
 		$related_ids = array();
 
@@ -510,6 +633,15 @@ class Popsi_Cart_Drawer {
 		return array_values( $related_ids );
 	}
 
+	/**
+	 * Get upsell query IDs.
+	 *
+	 * @param array  $cart_items Cart items.
+	 * @param string $upsell_source Upsell source.
+	 * @param int    $upsell_max Maximum upsell items.
+	 * @param string $upsell_category Upsell category.
+	 * @return array Upsell query IDs.
+	 */
 	public function get_upsell_query_ids( array $cart_items, string $upsell_source, int $upsell_max, string $upsell_category = '' ): array {
 		if ( $upsell_max < 1 ) {
 			return array();
@@ -537,22 +669,22 @@ class Popsi_Cart_Drawer {
 			'return' => 'ids',
 		);
 
-		if ( $upsell_source === 'best_sellers' ) {
+		if ( 'best_sellers' === $upsell_source ) {
 			$query_args['orderby'] = 'popularity';
 			$query_args['order']   = 'DESC';
-		} elseif ( $upsell_source === 'newest' ) {
+		} elseif ( 'newest' === $upsell_source ) {
 			$query_args['orderby'] = 'date';
 			$query_args['order']   = 'DESC';
-		} elseif ( $upsell_source === 'category' && ! empty( $upsell_category ) ) {
+		} elseif ( 'category' === $upsell_source && ! empty( $upsell_category ) ) {
 			$query_args['category'] = array( $upsell_category );
 			$query_args['orderby']  = 'date';
 			$query_args['order']    = 'DESC';
-		} elseif ( $upsell_source === 'upsells' ) {
+		} elseif ( 'upsells' === $upsell_source ) {
 			$upsell_ids = $this->collect_product_relation_ids( $cart_items, 'upsells' );
 			if ( ! empty( $upsell_ids ) ) {
 				$query_args['include'] = array_diff( $upsell_ids, $excluded_ids );
 				if ( empty( $query_args['include'] ) ) {
-					// Fallback to popularity if no specific upsells found
+					// Fallback to popularity if no specific upsells found.
 					unset( $query_args['include'] );
 					$query_args['orderby'] = 'popularity';
 				} else {
@@ -561,7 +693,7 @@ class Popsi_Cart_Drawer {
 			} else {
 				$query_args['orderby'] = 'popularity';
 			}
-		} elseif ( $upsell_source === 'cross_sells' ) {
+		} elseif ( 'cross_sells' === $upsell_source ) {
 			$cross_sell_ids = $this->collect_product_relation_ids( $cart_items, 'cross_sells' );
 			if ( ! empty( $cross_sell_ids ) ) {
 				$query_args['include'] = array_diff( $cross_sell_ids, $excluded_ids );
@@ -574,7 +706,7 @@ class Popsi_Cart_Drawer {
 			} else {
 				$query_args['orderby'] = 'popularity';
 			}
-		} elseif ( $upsell_source === 'related' ) {
+		} elseif ( 'related' === $upsell_source ) {
 			$related_ids = $this->collect_related_product_ids( $cart_items, $upsell_max + count( $excluded_ids ) );
 			if ( ! empty( $related_ids ) ) {
 				$query_args['include'] = array_diff( $related_ids, $excluded_ids );
@@ -593,7 +725,7 @@ class Popsi_Cart_Drawer {
 
 		$ids = wc_get_products( $query_args );
 
-		// Filter out excluded IDs (items already in cart) and slice to max
+		// Filter out excluded IDs (items already in cart) and slice to max.
 		$filtered_ids     = array_diff( $ids, $excluded_ids );
 		$upsell_query_ids = array_slice( $filtered_ids, 0, $upsell_max );
 
@@ -604,10 +736,20 @@ class Popsi_Cart_Drawer {
 
 	// -------------------------------------------------------------------------
 
+	/**
+	 * Render cart content.
+	 *
+	 * @return void
+	 */
 	public function render_cart_content() {
 		include POPSI_CART_PATH . 'templates/cart-items.php';
 	}
 
+	/**
+	 * Cart icon shortcode callback.
+	 *
+	 * @return string Cart icon HTML.
+	 */
 	public function cart_icon_shortcode() {
 		ob_start();
 		include POPSI_CART_PATH . 'templates/cart-icon.php';
@@ -618,8 +760,16 @@ class Popsi_Cart_Drawer {
 	 * Helper to get SVG icon from template.
 	 * Captured output ensures literal HTML is used where possible,
 	 * but still available as a string for JS localization.
+	 *
+	 * @param string $icon_name Icon name.
+	 * @param string $icon_class Icon CSS class.
+	 * @return string SVG icon HTML.
 	 */
-	public static function get_svg_icon( string $popsi_cart_icon_name, string $popsi_cart_icon_class = '' ) {
+	public static function get_svg_icon( string $icon_name, string $icon_class = '' ) {
+		// Set variables expected by icons.php template.
+		$popsi_cart_icon_name  = $icon_name;
+		$popsi_cart_icon_class = $icon_class;
+
 		ob_start();
 		include POPSI_CART_PATH . 'templates/icons.php';
 		return ob_get_clean();

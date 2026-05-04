@@ -1,5 +1,14 @@
-<?php if ( ! defined( 'ABSPATH' ) ) {
-	exit;} ?>
+<?php
+/**
+ * Cart preview template for Popsi Cart Drawer admin.
+ *
+ * @package Popsi_Cart_Drawer
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div x-data class="bc-drawer-wrap">
 	<div class="bc-drawer-panel !top-[46px] md:!top-8 relative"
 		:style="{
