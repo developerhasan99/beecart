@@ -14,29 +14,28 @@
  * Text Domain: popsi-cart-drawer
  */
 
-if (! defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
 
-define('POPSI_CART_VERSION', '1.1.3');
-define('POPSI_CART_FILE', __FILE__);
-define('POPSI_CART_PATH', plugin_dir_path(__FILE__));
-define('POPSI_CART_URL', plugin_dir_url(__FILE__));
+define( 'POPSI_CART_VERSION', '1.1.3' );
+define( 'POPSI_CART_FILE', __FILE__ );
+define( 'POPSI_CART_PATH', plugin_dir_path( __FILE__ ) );
+define( 'POPSI_CART_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Main instance initialization
  */
-function popsi_cart_run()
-{
-    if (class_exists('WooCommerce')) {
-        require_once POPSI_CART_PATH . 'includes/class-popsi-cart.php';
-        require_once POPSI_CART_PATH . 'includes/class-popsi-cart-admin.php';
+function popsi_cart_run() {
+	if ( class_exists( 'WooCommerce' ) ) {
+		require_once POPSI_CART_PATH . 'includes/class-popsi-cart.php';
+		require_once POPSI_CART_PATH . 'includes/class-popsi-cart-admin.php';
 
-        $plugin = new Popsi_Cart_Drawer();
-        $plugin->init();
+		$plugin = new Popsi_Cart_Drawer();
+		$plugin->init();
 
-        $admin = new Popsi_Cart_Admin();
-        $admin->init();
-    }
+		$admin = new Popsi_Cart_Admin();
+		$admin->init();
+	}
 }
-add_action('plugins_loaded', 'popsi_cart_run');
+add_action( 'plugins_loaded', 'popsi_cart_run' );

@@ -1,0 +1,31 @@
+{
+    "name": "developerhasan99/popsi-cart-drawer",
+    "description": "A WordPress cart drawer plugin",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "squizlabs/php_codesniffer": "^3.9"
+    },
+    "scripts": {
+        "phpcs": [
+            "vendor/bin/phpcs"
+        ],
+        "phpcbf": [
+            "vendor/bin/phpcbf"
+        ],
+        "phpcs:compat": [
+            "vendor/bin/phpcs --standard=PHPCompatibilityWP"
+        ],
+        "phpcs:all": [
+            "vendor/bin/phpcs --standard=WordPress --extensions=php --ignore=vendor/,node_modules/"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

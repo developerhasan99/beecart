@@ -1,3 +1,5 @@
 /node_modules
 /export
 /plugin-check-report.md
+/vendor
+/composer.lock

@@ -1,3 +1,25 @@
 {
-  "cSpell.words": ["popsi-cart-drawer", "popsi-cart"]
+  "cSpell.words": [
+    "nopriv",
+    "popsi",
+    "popsi-cart",
+    "popsi-cart-drawer"
+  ],
+  "phpcs.enable": true,
+  "phpcs.executablePath": "./vendor/bin/phpcs",
+  "phpcs.autoConfigSearch": true,
+  "phpcs.standard": "WordPress",
+  "phpcbf.enable": true,
+  "phpcbf.executablePath": "./vendor/bin/phpcbf",
+  "phpcbf.autoConfigSearch": true,
+  "phpcbf.standard": "WordPress",
+  "php.validate.executablePath": "/opt/homebrew/bin/php",
+  "php.validate.run": "onSave",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.phpcs": "explicit"
+  },
+  "php.suggest.basic": false,
+  "intelephense.environment.phpVersion": "8.0",
+  "intelephense.environment.shortOpenTag": false,
+  "intelephense.files.maxSize": 5000000
 }

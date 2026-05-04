@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "tailwindcss -i ./assets/css/admin-tailwind.css -o ./assets/css/popsi-cart-admin.css --watch",
     "build": "tailwindcss -i ./assets/css/admin-tailwind.css -o ./assets/css/popsi-cart-admin.css --minify",
+    "lint": "vendor/bin/phpcs",
+    "lint:fix": "vendor/bin/phpcbf",
+    "lint:compat": "vendor/bin/phpcs --standard=PHPCompatibilityWP",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
