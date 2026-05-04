@@ -1,4 +1,16 @@
 <?php
+/**
+ * Cart Drawer Template
+ *
+ * This template displays the slide-out cart drawer with all cart contents,
+ * announcement bars, and checkout functionality.
+ *
+ * @package Popsi_Cart_Drawer
+ * @since   1.0.0
+ *
+ * @var array $popsi_cart_drawer_settings Cart drawer settings from the database.
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -48,10 +60,10 @@ $popsi_cart_drawer_enable_timer = $popsi_cart_drawer_settings['enable_timer'] ??
 		<?php
 		if ( $popsi_cart_drawer_show_announcement ) :
 			$popsi_cart_drawer_size_class = 'size-medium';
-			if ( $popsi_cart_drawer_announcement_bar_size === 'small' ) {
+			if ( 'small' === $popsi_cart_drawer_announcement_bar_size ) {
 				$popsi_cart_drawer_size_class = 'size-small';
 			}
-			if ( $popsi_cart_drawer_announcement_bar_size === 'large' ) {
+			if ( 'large' === $popsi_cart_drawer_announcement_bar_size ) {
 				$popsi_cart_drawer_size_class = 'size-large';
 			}
 

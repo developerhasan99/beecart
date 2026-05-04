@@ -1,15 +1,20 @@
 <?php
+/**
+ * Icons Template
+ *
+ * This template renders SVG icons based on the provided icon name.
+ * Used throughout the cart drawer for various UI elements.
+ *
+ * @package Popsi_Cart_Drawer
+ * @since   1.0.0
+ *
+ * @var string $popsi_cart_icon_name The name of the icon (e.g., 'truck', 'tag', 'gift')
+ * @var string $popsi_cart_icon_class Optional CSS class to add to the SVG
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-/**
- * Renders an SVG icon based on the $popsi_cart_icon_name variable.
- * Expected variables:
- *
- * @var string $popsi_cart_icon_name The name of the icon (e.g., 'cart', 'truck')
- * @var string $popsi_cart_icon_class Optional CSS class to add to the SVG
- */
 
 $popsi_cart_icon_name  = $popsi_cart_icon_name ?? '';
 $popsi_cart_icon_class = $popsi_cart_icon_class ?? '';
