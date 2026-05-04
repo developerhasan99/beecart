@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Popsi_Cart_Drawer {
 
-	private static $_settings_cache = null;
+	private static ?array $_settings_cache = null;
 
 	public function init() {
 		add_shortcode( 'popsi_cart', array( $this, 'cart_icon_shortcode' ) );
@@ -39,7 +39,7 @@ class Popsi_Cart_Drawer {
 		}
 	}
 
-	public function append_cart_icon_to_menu( $items, $args ) {
+	public function append_cart_icon_to_menu( string $items, stdClass $args ) {
 		$settings  = $this->get_settings();
 		$placement = $settings['menu_placement'] ?? 'none';
 
@@ -411,7 +411,7 @@ class Popsi_Cart_Drawer {
 		return $clean;
 	}
 
-	private function sanitize_progress_bars( $input ): array {
+	private function sanitize_progress_bars( array $input ): array {
 		$sanitized = array();
 		if ( is_array( $input ) ) {
 			foreach ( $input as $bar ) {

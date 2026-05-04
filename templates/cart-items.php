@@ -445,7 +445,7 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 				onmouseenter="this.style.backgroundColor = '<?php echo esc_attr( $popsi_cart_btn_hover_color ); ?>'; this.style.color = '<?php echo esc_attr( $popsi_cart_btn_hover_text_color ); ?>'"
 				onmouseleave="this.style.backgroundColor = '<?php echo esc_attr( $popsi_cart_btn_color ); ?>'; this.style.color = '<?php echo esc_attr( $popsi_cart_btn_text_color ); ?>'"
 				style="background-color: <?php echo esc_attr( $popsi_cart_btn_color ); ?>; color: <?php echo esc_attr( $popsi_cart_btn_text_color ); ?>; border-radius: <?php echo esc_attr( $popsi_cart_btn_radius ); ?>;">
-				<span><?php echo esc_html( $popsi_cart_settings['trans_checkout_btn'] ?? 'Zur Kasse' ); ?></span>
+				<span><?php echo esc_html( $popsi_cart_settings['trans_checkout_btn'] ?? 'Checkout' ); ?></span>
 				<?php if ( $popsi_cart_settings['show_subtotal_on_checkout'] ?? true ) : ?>
 					<span class="bc-checkout-sep">•</span>
 					<span><?php echo wp_kses_post( $popsi_cart_cart->get_total() ); ?></span>

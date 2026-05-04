@@ -1,9 +1,13 @@
 {
   "cSpell.words": [
+    "absint",
+    "Hookname",
+    "kses",
     "nopriv",
     "popsi",
     "popsi-cart",
-    "popsi-cart-drawer"
+    "popsi-cart-drawer",
+    "upsells"
   ],
   "phpcs.enable": true,
   "phpcs.executablePath": "./vendor/bin/phpcs",
