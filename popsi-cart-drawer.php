@@ -52,7 +52,7 @@ function popsi_cart_run() {
 		$admin = new Popsi_Cart_Admin();
 		$admin->init();
 	} else {
-		// Show admin notice if WooCommerce is not installed
+		// Show admin notice if WooCommerce is not installed.
 		add_action( 'admin_notices', 'popsi_cart_woocommerce_missing_notice' );
 	}
 }
