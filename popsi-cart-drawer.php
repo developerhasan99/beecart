@@ -25,6 +25,20 @@ define( 'POPSI_CART_PATH', plugin_dir_path( __FILE__ ) );
 define( 'POPSI_CART_URL', plugin_dir_url( __FILE__ ) );
 
 /**
+ * Display admin notice when WooCommerce is not installed
+ */
+function popsi_cart_woocommerce_missing_notice() {
+	?>
+	<div class="notice notice-error is-dismissible">
+		<p>
+			<strong><?php esc_html_e( 'Popsi Cart Drawer', 'popsi-cart-drawer' ); ?></strong><br>
+			<?php esc_html_e( 'WooCommerce is required to use the Popsi Cart Drawer plugin. Please install and activate WooCommerce to continue.', 'popsi-cart-drawer' ); ?>
+		</p>
+	</div>
+	<?php
+}
+
+/**
  * Main instance initialization
  */
 function popsi_cart_run() {
@@ -37,6 +51,9 @@ function popsi_cart_run() {
 
 		$admin = new Popsi_Cart_Admin();
 		$admin->init();
+	} else {
+		// Show admin notice if WooCommerce is not installed
+		add_action( 'admin_notices', 'popsi_cart_woocommerce_missing_notice' );
 	}
 }
 add_action( 'plugins_loaded', 'popsi_cart_run' );
