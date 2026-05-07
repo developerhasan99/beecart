@@ -40,7 +40,7 @@ $popsi_cart_sidebar_sections = array(
 			),
 			array(
 				'title'  => 'Cart items',
-				'handle' => 'cart-items',
+				'handle' => 'cart_items',
 				'icon'   => 'dashicons-cart',
 			),
 			array(
@@ -53,7 +53,6 @@ $popsi_cart_sidebar_sections = array(
 	array(
 		'title' => 'Footer',
 		'tabs'  => array(
-			// TODO: Add-ons tab - placeholder for future implementation.
 			array(
 				'title'  => 'Coupon form',
 				'handle' => 'discount',
@@ -64,7 +63,6 @@ $popsi_cart_sidebar_sections = array(
 				'handle' => 'summary',
 				'icon'   => 'dashicons-clipboard',
 			),
-			// TODO: Express payments tab - placeholder for future implementation.
 			array(
 				'title'  => 'Trust badges',
 				'handle' => 'badges',
