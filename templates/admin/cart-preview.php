@@ -272,7 +272,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div x-show="$store.admin.settings.enable_coupon" class="bc-coupon-accordion" x-data="{ open: false }">
 				<button type="button" @click="open = !open" class="bc-coupon-toggle" :style="{ color: $store.admin.settings.text_color || '#000000' }">
 					<span x-text="$store.admin.settings.trans_coupon_accordion_title || 'Have a Coupon?'"></span>
-					<span class="dashicons dashicons-arrow-down-alt2 bc-coupon-toggle-icon" :class="{ 'is-open': open }"></span>
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down bc-coupon-toggle-icon" :class="{ 'is-open': open }">
+						<path d="m6 9 6 6 6-6"></path>
+					</svg>
 				</button>
 				<div x-show="open" x-collapse
 					class="bc-coupon-accordion-content">

@@ -387,8 +387,8 @@ $popsi_cart_show_trust_badges    = $popsi_cart_settings['show_trust_badges'] ?? 
 				<button type="button" class="bc-coupon-toggle" style="color: <?php echo esc_attr( $popsi_cart_text_color ); ?>;">
 					<span><?php echo esc_html( $popsi_cart_settings['trans_coupon_accordion_title'] ?? 'Have a Coupon?' ); ?></span>
 					<span class="bc-coupon-toggle-icon">
-						<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
-							<path d="M6 9 6 21 18 21 18 9"></path>
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
+							<path d="m6 9 6 6 6-6"></path>
 						</svg>
 					</span>
 				</button>

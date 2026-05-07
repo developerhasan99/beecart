@@ -741,6 +741,10 @@ body.wp-admin .bc-upsell-select {
   justify-content: center;
   transition: transform 0.2s;
 }
+.bc-coupon-toggle-icon svg {
+  width: 16px;
+  height: 16px;
+}
 .bc-coupon-toggle-icon.is-open {
   transform: rotate(180deg);
 }
