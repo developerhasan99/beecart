@@ -664,9 +664,9 @@ class Popsi_Cart_Drawer {
 		$excluded_ids = array_values( $excluded_ids );
 
 		$query_args = array(
-			'limit'      => $upsell_max + count( $excluded_ids ),
-			'status'     => 'publish',
-			'return'     => 'ids',
+			'limit'  => $upsell_max + count( $excluded_ids ),
+			'status' => 'publish',
+			'return' => 'ids',
 		);
 
 		if ( 'best_sellers' === $upsell_source ) {

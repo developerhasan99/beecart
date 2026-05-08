@@ -143,5 +143,4 @@ if ( $popsi_cart_show_upsells && ( ! $popsi_cart_is_empty || $popsi_cart_show_on
 	<?php endif; ?>
 <?php endif; ?>
 
-<!-- TODO: remove affiliate, grouped, and external product types from upsells -->
 <!-- TODO: fix variable product selection for any combination -->
