@@ -647,7 +647,7 @@ class Popsi_Cart_Drawer {
 			return array();
 		}
 
-		$cache_key        = $this->get_cart_upsell_cache_key( $cart_items, $upsell_source, $upsell_max, $upsell_category );
+		$cache_key        = $this->get_cart_upsell_cache_key( $cart_items, $upsell_source, $upsell_max, $upsell_category ) . '_filtered';
 		$upsell_query_ids = get_transient( $cache_key );
 
 		if ( false !== $upsell_query_ids && is_array( $upsell_query_ids ) ) {
@@ -664,9 +664,9 @@ class Popsi_Cart_Drawer {
 		$excluded_ids = array_values( $excluded_ids );
 
 		$query_args = array(
-			'limit'  => $upsell_max + count( $excluded_ids ),
-			'status' => 'publish',
-			'return' => 'ids',
+			'limit'      => $upsell_max + count( $excluded_ids ),
+			'status'     => 'publish',
+			'return'     => 'ids',
 		);
 
 		if ( 'best_sellers' === $upsell_source ) {
@@ -725,8 +725,20 @@ class Popsi_Cart_Drawer {
 
 		$ids = wc_get_products( $query_args );
 
+		// Additional filtering to exclude external, affiliate, and grouped products.
+		$filtered_ids = array();
+		foreach ( $ids as $product_id ) {
+			$product = wc_get_product( $product_id );
+			if ( $product ) {
+				// Exclude external, affiliate, and grouped product types using WooCommerce's built-in methods.
+				if ( ! $product->is_type( 'external' ) && ! $product->is_type( 'affiliate' ) && ! $product->is_type( 'grouped' ) ) {
+					$filtered_ids[] = $product_id;
+				}
+			}
+		}
+
 		// Filter out excluded IDs (items already in cart) and slice to max.
-		$filtered_ids     = array_diff( $ids, $excluded_ids );
+		$filtered_ids     = array_diff( $filtered_ids, $excluded_ids );
 		$upsell_query_ids = array_slice( $filtered_ids, 0, $upsell_max );
 
 		set_transient( $cache_key, $upsell_query_ids, 600 );
